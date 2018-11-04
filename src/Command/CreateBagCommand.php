@@ -94,7 +94,6 @@ class CreateBagCommand extends ContainerAwareCommand
         $bag->update();
 
         $package = isset($settings['serialize']) ? $settings['serialize'] : false;
-
         if ($package) {
            $bag->package($bag_dir, $package);
            $this->remove_unserialized_bag($bag_dir);
