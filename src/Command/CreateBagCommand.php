@@ -55,6 +55,12 @@ class CreateBagCommand extends ContainerAwareCommand
         $body_array = json_decode($response_body, true);
         $uuid = $body_array['uuid'][0]['value'];
 
+        if ($settings['bag_name'] == 'uuid') {
+            $bag_name = $uuid;
+        } else {
+            $bag_name = $nid;
+        }
+
         // Assemble the Fedora URL.
         $uuid_parts = explode('-', $uuid);
         $subparts = str_split($uuid_parts[0], 2);
@@ -65,12 +71,12 @@ class CreateBagCommand extends ContainerAwareCommand
         $response_body = (string) $response->getBody();
 
         // Create directories.
-        $bag_dir = $settings['output_dir'] . DIRECTORY_SEPARATOR . $nid;
+        $bag_dir = $settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         @mkdir($bag_dir);
-        $bag_temp_dir = $settings['temp_dir'] . DIRECTORY_SEPARATOR . $nid;
+        $bag_temp_dir = $settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         @mkdir($bag_temp_dir);
 
-        // Assemble data files.
+        // Assemble data files. Fow now we only have one.
         $data_files = array();
         $turtle_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'turtle.rdf';
         file_put_contents($turtle_file_path, $response_body);

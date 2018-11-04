@@ -25,10 +25,13 @@ Islandora Bagger requires a configuration file in YAML format:
 drupal_base_url: 'http://localhost:8000/node/'
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 
+# How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
+bag_name: nid
 temp_dir: /tmp/islandora_bagger_temp
 output_dir: /home/mark/islandora_bagger
 
-# Whether or not to zip up the Bag. One of false, zip, or tgz.
+# Whether or not to zip up the Bag. One of false, 'zip', or 'tgz'.
+# serialize: zip
 serialize: false
 
 # Include Internal-Sender-Identifier and Bagging-Date tags.
@@ -39,6 +42,7 @@ bag-info:
     Contact-Name: Mark Jordan
     Contact-Email: bags@sfu.ca
     Source-Organization: Simon Fraser University
+    Foo: Bar
 ```
 
 The command to generate a Bag takes two required parameters. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
