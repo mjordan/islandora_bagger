@@ -35,9 +35,27 @@ bag-info:
     Source-Organization: Simon Fraser University
 ```
 
-The command to generate a Bag takes two required parameters:
+The command to generate a Bag takes two required parameters. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
+
+The resulting Bag would look like this:
+
+```
+/home/mark/islandora_bagger/
+└── 112
+    ├── bag-info.txt
+    ├── bagit.txt
+    ├── data
+    │   └── turtle.rdf
+    ├── manifest-sha1.txt
+    └── tagmanifest-sha1.txt
+```
+
+## To do
+
+* Add plugins that allow the addition of various datafiles and dynamically generated bag-info.txt tags.
+* Add logging.
 
 ## Current maintainer
 
@@ -45,4 +63,4 @@ The command to generate a Bag takes two required parameters:
 
 ## License
 
-[GPLv2](http://www.gnu.org/licenses/gpl-2.0.txt)
+[MIT](https://opensource.org/licenses/MIT)
