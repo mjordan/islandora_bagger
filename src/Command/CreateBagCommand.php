@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Client;
@@ -37,8 +37,7 @@ class CreateBagCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $stopwatch = new Stopwatch();
-        $stopwatch->start('create_bag');
+        $io = new SymfonyStyle($input, $output);
 
         $nid = $input->getOption('node');
         $settings_path = $input->getOption('settings');
@@ -94,9 +93,31 @@ class CreateBagCommand extends ContainerAwareCommand
 
         $bag->update();
 
-        $fixity_check = $stopwatch->stop('create_bag');
-        $duration = $fixity_check->getDuration(); // milliseconds
-        $duration = $duration / 1000; // seconds
-        $output->writeln("Bag created in in $duration seconds.");
+        if ($settings['serialize']) {
+           $bag->package($bag_dir);
+           $this->remove_unserialized_bag($bag_dir);
+        }
+
+        $io->success("Bag created for node " . $nid . " at " . $bag_dir);
     }
+
+    /**
+     * Deletes the unserialized Bag directory and all of its contents.
+     *
+     * @param $dir string
+     *   Path to the directory.
+     *
+     * @return bool
+     *   True if the directory was deleted, false if not.
+     *
+     */
+    protected function remove_unserialized_bag($dir)
+    {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->remove_unserialized_bag("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
+
 }

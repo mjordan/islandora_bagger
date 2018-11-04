@@ -26,6 +26,8 @@ drupal_base_url: 'http://localhost:8000/node/'
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 temp_dir: /tmp/islandora_bagger_temp
 output_dir: /home/mark/islandora_bagger
+# Whether or not to zip up the Bag (.tgz).
+serialize: false
 # Include Internal-Sender-Identifier and Bagging-Date tags.
 include_basic_baginfo_tags: true
 # You can use any combination of additional tag name/ value here.
