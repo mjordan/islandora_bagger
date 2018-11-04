@@ -19,3 +19,6 @@ bag-info:
     Contact-Email: bags@sfu.ca
     Source-Organization: Simon Fraser University
     Foo: Bar
+
+# Whether or not to log Bag creation.
+log_bag_creation: true

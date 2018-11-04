@@ -43,8 +43,12 @@ class CreateBagCommand extends ContainerAwareCommand
         $settings_path = $input->getOption('settings');
         $settings = Yaml::parseFile($settings_path);
 
-        @mkdir($settings['output_dir']);
-        @mkdir($settings['temp_dir']);
+        if (!file_exists($settings['output_dir'])) {
+            mkdir($settings['output_dir']);
+        }
+        if (!file_exists($settings['output_dir'])) {
+            mkdir($settings['output_dir']);
+        }
 
         $client = new \GuzzleHttp\Client();
 
@@ -72,9 +76,13 @@ class CreateBagCommand extends ContainerAwareCommand
 
         // Create directories.
         $bag_dir = $settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
-        @mkdir($bag_dir);
+        if (!file_exists($bag_dir)) {
+            mkdir($bag_dir);
+        }
         $bag_temp_dir = $settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
-        @mkdir($bag_temp_dir);
+        if (!file_exists($bag_temp_dir)) {
+            mkdir($bag_temp_dir);
+        }
 
         // Assemble data files. Fow now we only have one.
         $data_files = array();
@@ -103,9 +111,21 @@ class CreateBagCommand extends ContainerAwareCommand
         if ($package) {
            $bag->package($bag_dir, $package);
            $this->remove_unserialized_bag($bag_dir);
+           $bag_name = $bag_name . '.' . $package;
         }
 
         $io->success("Bag created for node " . $nid . " at " . $bag_dir);
+        if ($settings['log_bag_creation']) {
+            $this->logger->info(
+                "Bag created.",
+                array(
+                    'node URL' => $settings['drupal_base_url'] . $nid,
+                    'node UUID' => $uuid,
+                    'Bag location' => $settings['output_dir'],
+                    'Bag name' => $bag_name
+                )
+            );
+        }
     }
 
     /**

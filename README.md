@@ -43,6 +43,9 @@ bag-info:
     Contact-Email: bags@sfu.ca
     Source-Organization: Simon Fraser University
     Foo: Bar
+
+# Whether or not to log Bag creation.
+log_bag_creation: true
 ```
 
 The command to generate a Bag takes two required parameters. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
@@ -64,8 +67,8 @@ The resulting Bag would look like this:
 
 ## To do
 
-* Add plugins that allow the addition of various datafiles and dynamically generated bag-info.txt tags.
-* Add logging.
+* Add plugins that allow the addition of various `data` files and dynamically generated bag-info.txt tags.
+* Add more logging.
 
 ## Current maintainer
 
