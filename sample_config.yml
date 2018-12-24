@@ -1,10 +1,14 @@
-drupal_base_url: 'http://localhost:8000/node/'
+drupal_base_url: 'http://localhost:8000'
+drupal_media_auth: ['admin', 'islandora']
+drupal_media_tags: ['/taxonomy/term/15']
+
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 
 # How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
 bag_name: nid
+
 temp_dir: /tmp/islandora_bagger_temp
-output_dir: /home/mark/islandora_bagger
+output_dir: /tmp
 
 # Whether or not to zip up the Bag. One of false, 'zip', or 'tgz'.
 # serialize: zip

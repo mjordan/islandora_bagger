@@ -41,25 +41,26 @@ class CreateBagCommand extends ContainerAwareCommand
 
         $nid = $input->getOption('node');
         $settings_path = $input->getOption('settings');
-        $settings = Yaml::parseFile($settings_path);
+        $this->settings = Yaml::parseFile($settings_path);
+        $this->settings['drupal_base_url'] .= '/node/';
 
-        if (!file_exists($settings['output_dir'])) {
-            mkdir($settings['output_dir']);
+        if (!file_exists($this->settings['output_dir'])) {
+            mkdir($this->settings['output_dir']);
         }
-        if (!file_exists($settings['output_dir'])) {
-            mkdir($settings['output_dir']);
+        if (!file_exists($this->settings['temp_dir'])) {
+            mkdir($this->settings['temp_dir']);
         }
 
         $client = new \GuzzleHttp\Client();
 
         // Get the node's UUID from Drupal.
-        $drupal_url = $settings['drupal_base_url'] . $nid . '?_format=json';
+        $drupal_url = $this->settings['drupal_base_url'] . $nid . '?_format=json';
         $response = $client->get($drupal_url);
         $response_body = (string) $response->getBody();
         $body_array = json_decode($response_body, true);
         $uuid = $body_array['uuid'][0]['value'];
 
-        if ($settings['bag_name'] == 'uuid') {
+        if ($this->settings['bag_name'] == 'uuid') {
             $bag_name = $uuid;
         } else {
             $bag_name = $nid;
@@ -68,21 +69,23 @@ class CreateBagCommand extends ContainerAwareCommand
         // Assemble the Fedora URL.
         $uuid_parts = explode('-', $uuid);
         $subparts = str_split($uuid_parts[0], 2);
-        $fedora_url = $settings['fedora_base_url'] . implode('/', $subparts) . '/'. $uuid;
+        $fedora_url = $this->settings['fedora_base_url'] . implode('/', $subparts) . '/'. $uuid;
 
         // Get the Turtle from Fedora.
         $response = $client->get($fedora_url);
         $response_body = (string) $response->getBody();
 
         // Create directories.
-        $bag_dir = $settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
+        $bag_dir = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         if (!file_exists($bag_dir)) {
             mkdir($bag_dir);
         }
-        $bag_temp_dir = $settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
+        $bag_temp_dir = $this->settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         if (!file_exists($bag_temp_dir)) {
             mkdir($bag_temp_dir);
         }
+
+        $this->fetch_media($nid);
 
         // Assemble data files. Fow now we only have one.
         $data_files = array();
@@ -90,9 +93,9 @@ class CreateBagCommand extends ContainerAwareCommand
         file_put_contents($turtle_file_path, $response_body);
 
         // Create the Bag.
-        if ($settings['include_basic_baginfo_tags']) {
+        if ($this->settings['include_basic_baginfo_tags']) {
             $bag_info = array(
-                'Internal-Sender-Identifier' => $settings['drupal_base_url'] . $nid,
+                'Internal-Sender-Identifier' => $this->settings['drupal_base_url'] . $nid,
                 'Bagging-Date' => date("Y-m-d"),
             );
         } else {
@@ -101,35 +104,66 @@ class CreateBagCommand extends ContainerAwareCommand
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
         $bag->addFile($turtle_file_path, basename($turtle_file_path));
 
-        foreach ($settings['bag-info'] as $key => $value) {
+        foreach ($this->settings['bag-info'] as $key => $value) {
             $bag->setBagInfoData($key, $value);
         }
 
         $bag->update();
+        $this->remove_dir($bag_temp_dir);
 
-        $package = isset($settings['serialize']) ? $settings['serialize'] : false;
+        $package = isset($this->settings['serialize']) ? $this->settings['serialize'] : false;
         if ($package) {
            $bag->package($bag_dir, $package);
-           $this->remove_unserialized_bag($bag_dir);
+           $this->remove_dir($bag_dir);
            $bag_name = $bag_name . '.' . $package;
         }
 
         $io->success("Bag created for node " . $nid . " at " . $bag_dir);
-        if ($settings['log_bag_creation']) {
+        if ($this->settings['log_bag_creation']) {
             $this->logger->info(
                 "Bag created.",
                 array(
-                    'node URL' => $settings['drupal_base_url'] . $nid,
+                    'node URL' => $this->settings['drupal_base_url'] . $nid,
                     'node UUID' => $uuid,
-                    'Bag location' => $settings['output_dir'],
+                    'Bag location' => $this->settings['output_dir'],
                     'Bag name' => $bag_name
                 )
             );
         }
     }
 
+    protected function fetch_media($nid)
+    {
+        // Get the media associated with this node using the Islandora-supplied Manage Media View.
+        $media_client = new \GuzzleHttp\Client();
+        $media_url = $this->settings['drupal_base_url'] . $nid . '/media';
+        $media_response = $media_client->request('GET', $media_url, [
+            'http_errors' => false,
+            'auth' => $this->settings['drupal_media_auth'], 
+            'query' => ['_format' => 'json']
+        ]);
+        $media_status_code = $media_response->getStatusCode();
+        $media_list = (string) $media_response->getBody();
+        $media_list = json_decode($media_list, true);
+
+        // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
+        foreach ($media_list as $media) {
+            if (count($media['field_media_use'])) {
+                foreach ($media['field_media_use'] as $term) {
+                    if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
+                        if (isset($media['field_media_image'])) {
+                            var_dump($media['field_media_image'][0]['url']);
+                        } else {
+                            var_dump($media['field_media_file'][0]['url']);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
-     * Deletes the unserialized Bag directory and all of its contents.
+     * Deletes a directory and all of its contents.
      *
      * @param $dir string
      *   Path to the directory.
@@ -138,11 +172,11 @@ class CreateBagCommand extends ContainerAwareCommand
      *   True if the directory was deleted, false if not.
      *
      */
-    protected function remove_unserialized_bag($dir)
+    protected function remove_dir($dir)
     {
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? $this->remove_unserialized_bag("$dir/$file") : unlink("$dir/$file");
+            (is_dir("$dir/$file")) ? $this->remove_dir("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
     }
