@@ -85,7 +85,7 @@ class CreateBagCommand extends ContainerAwareCommand
             mkdir($bag_temp_dir);
         }
 
-        $this->fetch_media($nid);
+        $media_file_path = $this->fetch_media($nid, $bag_temp_dir);
 
         // Assemble data files. Fow now we only have one.
         $data_files = array();
@@ -103,6 +103,8 @@ class CreateBagCommand extends ContainerAwareCommand
         }
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
         $bag->addFile($turtle_file_path, basename($turtle_file_path));
+        // @todo: how to handle multiple files?
+        $bag->addFile($media_file_path, basename($media_file_path));
 
         foreach ($this->settings['bag-info'] as $key => $value) {
             $bag->setBagInfoData($key, $value);
@@ -132,7 +134,7 @@ class CreateBagCommand extends ContainerAwareCommand
         }
     }
 
-    protected function fetch_media($nid)
+    protected function fetch_media($nid, $bag_temp_dir)
     {
         // Get the media associated with this node using the Islandora-supplied Manage Media View.
         $media_client = new \GuzzleHttp\Client();
@@ -152,12 +154,26 @@ class CreateBagCommand extends ContainerAwareCommand
                 foreach ($media['field_media_use'] as $term) {
                     if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
-                            var_dump($media['field_media_image'][0]['url']);
+                            $file_url = $media['field_media_image'][0]['url'];
                         } else {
-                            var_dump($media['field_media_file'][0]['url']);
+                            $file_url = $media['field_media_file'][0]['url'];
+                        }
+                        $filename = $this->get_filename_from_url($file_url);
+                        $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
+                        // Fetch file and save it to $bag_temp_dir with its original filename.
+                        $file_client = new \GuzzleHttp\Client();
+                        $file_response = $file_client->get($file_url, ['stream' => true,
+                            //'timeout' => $this->settings['http_timeout'],
+                            //'connect_timeout' => $this->settings['http_timeout'],
+                            //'verify' => $this->settings['verifyCA']
+                        ]);
+                        $file_body = $file_response->getBody();
+                        while (!$file_body->eof()) {
+                            file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
                         }
                     }
                 }
+                return $temp_file_path;
             }
         }
     }
@@ -174,11 +190,19 @@ class CreateBagCommand extends ContainerAwareCommand
      */
     protected function remove_dir($dir)
     {
+        // @todo: Add list here of invalid $dir values, e.g., /, /tmp.
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->remove_dir("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
+    }
+
+    protected function get_filename_from_url($url)
+    {
+        $path = parse_url('http://example.com/foo/bar/baz.jpg', PHP_URL_PATH);
+        $filename = pathinfo($path, PATHINFO_BASENAME);
+        return $filename;
     }
 
 }
