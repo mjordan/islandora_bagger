@@ -85,7 +85,7 @@ class CreateBagCommand extends ContainerAwareCommand
             mkdir($bag_temp_dir);
         }
 
-        $media_file_path = $this->fetch_media($nid, $bag_temp_dir);
+        $media_file_paths = $this->fetch_media($nid, $bag_temp_dir);
 
         // Assemble data files. Fow now we only have one.
         $data_files = array();
@@ -103,8 +103,9 @@ class CreateBagCommand extends ContainerAwareCommand
         }
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
         $bag->addFile($turtle_file_path, basename($turtle_file_path));
-        // @todo: how to handle multiple files?
-        $bag->addFile($media_file_path, basename($media_file_path));
+        foreach ($media_file_paths as $media_file_path) {
+            $bag->addFile($media_file_path, basename($media_file_path));
+        }
 
         foreach ($this->settings['bag-info'] as $key => $value) {
             $bag->setBagInfoData($key, $value);
@@ -151,6 +152,7 @@ class CreateBagCommand extends ContainerAwareCommand
         // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
         foreach ($media_list as $media) {
             if (count($media['field_media_use'])) {
+                $media_file_paths = array();
                 foreach ($media['field_media_use'] as $term) {
                     if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
@@ -171,9 +173,10 @@ class CreateBagCommand extends ContainerAwareCommand
                         while (!$file_body->eof()) {
                             file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
                         }
+                        $media_file_paths[] = $temp_file_path;
                     }
                 }
-                return $temp_file_path;
+                return $media_file_paths;
             }
         }
     }
