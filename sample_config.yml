@@ -1,8 +1,9 @@
+####################
+# General settings #
+####################
+
 drupal_base_url: 'http://localhost:8000'
 drupal_media_auth: ['admin', 'islandora']
-drupal_media_tags: ['/taxonomy/term/15']
-
-fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 
 # How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
 bag_name: nid
@@ -11,11 +12,7 @@ temp_dir: /tmp/islandora_bagger_temp
 output_dir: /tmp
 
 # Whether or not to zip up the Bag. One of false, 'zip', or 'tgz'.
-# serialize: zip
 serialize: false
-
-# Register plugins to populate bag-info.txt and the /date directory.
-plugins: ['AddBasicTags', 'AddNodeJson', 'AddFedoraTurtle', 'AddMedia']
 
 # Static bag-info.txt tags. No plugin needed.
 # You can use any combination of additional tag name / value here.
@@ -27,3 +24,17 @@ bag-info:
 
 # Whether or not to log Bag creation.
 log_bag_creation: true
+
+############################
+# Plugin-specific settings #
+############################
+
+# Register plugins to populate bag-info.txt and the /date directory.
+plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
+
+# Used by the 'AddFedoraTurtle' plugin.
+fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
+
+# Used by the 'AddMedia' plugin. Use an emply list (e.g., []) to include all media.
+# These are the Drupal taxomony term IDs from the "Islandora Media Use" vocabulary.
+drupal_media_tags: ['/taxonomy/term/15']

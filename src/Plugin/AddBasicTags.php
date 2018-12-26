@@ -8,7 +8,7 @@
 namespace App\Plugin;
 
 /**
- * Adds basic bag-info.txt tags.
+ * Adds basic bag-info.txt tags from dynamically generated data.
  */
 class AddBasicTags extends AbstractIbPlugin
 {
@@ -26,7 +26,7 @@ class AddBasicTags extends AbstractIbPlugin
     }
 
     /**
-     * Add two basic tags.
+     * Adds basic bag-info.txt tags from dynamically generated data.
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {

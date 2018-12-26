@@ -8,7 +8,7 @@
 namespace App\Plugin;
 
 /**
- * Adds basic bag-info.txt tags.
+ * Adds specific media to the Bag.
  */
 class AddMedia extends AbstractIbPlugin
 {
@@ -67,6 +67,7 @@ class AddMedia extends AbstractIbPlugin
 
         // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
         foreach ($media_list as $media) {
+            // @todo: Add logic to include all media, not just ones in the list of tags.
             if (count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
                     if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
@@ -88,14 +89,11 @@ class AddMedia extends AbstractIbPlugin
                         while (!$file_body->eof()) {
                             file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
                         }
-                        // $data_file_paths[] = $temp_file_path;
                         $bag->addFile($temp_file_path, basename($temp_file_path));
                     }
                 }
-                // return $data_file_paths;
             }
         }
-
         return $bag;
     }
 

@@ -8,7 +8,7 @@
 namespace App\Plugin;
 
 /**
- * Adds the Turtle representation of the Islandora object to the Bag.
+ * Adds Drupal's JSON representation of the Islandora object to the Bag.
  */
 class AddNodeJson extends AbstractIbPlugin
 {
@@ -26,7 +26,7 @@ class AddNodeJson extends AbstractIbPlugin
     }
 
     /**
-     * Adds the Turtle representation of the Islandora object to the Bag.
+     * Adds Drupal's JSON representation of the Islandora object to the Bag.
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {

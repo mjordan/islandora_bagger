@@ -8,7 +8,7 @@
 namespace App\Plugin;
 
 /**
- * Adds the Turtle representation of the Islandora object to the Bag.
+ * Adds Fedora's Turtle representation of the Islandora object to the Bag.
  */
 class AddFedoraTurtle extends AbstractIbPlugin
 {
@@ -26,7 +26,7 @@ class AddFedoraTurtle extends AbstractIbPlugin
     }
 
     /**
-     * Adds the Turtle representation of the Islandora object to the Bag.
+     * Adds Fedora's Turtle representation of the Islandora object to the Bag.
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {

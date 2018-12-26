@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Currently only adds the Fedora Turtle representation of the Islandora object to the Bag's `data` directory. Also supports adding `bag-info.txt` tags via a configuration file.
+Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `/data` directory and `bag-info.txt` file using plugins.
 
 This utility is for Islandora CLAW. For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -22,21 +22,23 @@ This utility is for Islandora CLAW. For creating Bags for Islandora 7.x, use [Is
 Islandora Bagger requires a configuration file in YAML format:
 
 ```yaml
-drupal_base_url: 'http://localhost:8000/node/'
-fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
+####################
+# General settings #
+####################
+
+drupal_base_url: 'http://localhost:8000'
+drupal_media_auth: ['admin', 'islandora']
 
 # How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
 bag_name: nid
+
 temp_dir: /tmp/islandora_bagger_temp
-output_dir: /home/mark/islandora_bagger
+output_dir: /tmp
 
 # Whether or not to zip up the Bag. One of false, 'zip', or 'tgz'.
-# serialize: zip
 serialize: false
 
-# Include Internal-Sender-Identifier and Bagging-Date tags.
-include_basic_baginfo_tags: true
-
+# Static bag-info.txt tags. No plugin needed.
 # You can use any combination of additional tag name / value here.
 bag-info:
     Contact-Name: Mark Jordan
@@ -46,6 +48,20 @@ bag-info:
 
 # Whether or not to log Bag creation.
 log_bag_creation: true
+
+############################
+# Plugin-specific settings #
+############################
+
+# Register plugins to populate bag-info.txt and the /date directory.
+plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
+
+# Used by the 'AddFedoraTurtle' plugin.
+fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
+
+# Used by the 'AddMedia' plugin. Use an emply list (e.g., []) to include all media.
+# These are the Drupal taxomony term IDs from the "Islandora Media Use" vocabulary.
+drupal_media_tags: ['/taxonomy/term/15']
 ```
 
 The command to generate a Bag takes two required parameters. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
@@ -67,10 +83,15 @@ The resulting Bag would look like this:
 └── tagmanifest-sha1.txt
 ```
 
+## Customizing the Bags
+
+Customizing the generated Bags is done via values in the configuration file, via plugins, or a combination of these two methods.
+
 ## To do
 
-* Add plugins that allow the addition of various `data` files and dynamically generated bag-info.txt tags.
+* Add more error and exception handling.
 * Add more logging.
+* Add tests.
 
 ## Current maintainer
 
