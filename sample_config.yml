@@ -14,9 +14,10 @@ output_dir: /tmp
 # serialize: zip
 serialize: false
 
-# Include Internal-Sender-Identifier and Bagging-Date tags.
-plugins: ['AddBasicTags', 'AddFedoraTurtle', 'AddMedia']
+# Register plugins to populate bag-info.txt and the /date directory.
+plugins: ['AddBasicTags', 'AddNodeJson', 'AddFedoraTurtle', 'AddMedia']
 
+# Static bag-info.txt tags. No plugin needed.
 # You can use any combination of additional tag name / value here.
 bag-info:
     Contact-Name: Mark Jordan

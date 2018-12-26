@@ -95,7 +95,7 @@ class CreateBagCommand extends ContainerAwareCommand
             $bag->setBagInfoData($key, $value);
         }
 
-        // Execute registered plugins
+        // Execute registered plugins.
         foreach ($this->settings['plugins'] as $plugin) {
             $plugin_name = 'App\Plugin\\' . $plugin;
             $bag_plugin = new $plugin_name($this->settings, $this->logger);
@@ -112,7 +112,7 @@ class CreateBagCommand extends ContainerAwareCommand
            $bag_name = $bag_name . '.' . $package;
         }
 
-        $io->success("Bag created for node " . $nid . " at " . $bag_dir);
+        $io->success("Bag created for " . $this->settings['drupal_base_url'] . $nid . " at " . $bag_dir);
         if ($this->settings['log_bag_creation']) {
             $this->logger->info(
                 "Bag created.",
