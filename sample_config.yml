@@ -15,6 +15,9 @@ output_dir: /tmp
 serialize: false
 
 # Include Internal-Sender-Identifier and Bagging-Date tags.
+plugins: ['AddBasicTags']
+
+# Include Internal-Sender-Identifier and Bagging-Date tags.
 include_basic_baginfo_tags: true
 
 # You can use any combination of additional tag name / value here.

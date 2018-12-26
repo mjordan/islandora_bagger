@@ -55,14 +55,16 @@ The command to generate a Bag takes two required parameters. Assuming the above 
 The resulting Bag would look like this:
 
 ```
-/home/mark/islandora_bagger/
-└── 112
-    ├── bag-info.txt
-    ├── bagit.txt
-    ├── data
-    │   └── turtle.rdf
-    ├── manifest-sha1.txt
-    └── tagmanifest-sha1.txt
+/tmp/112
+├── bag-info.txt
+├── bagit.txt
+├── data
+│   ├── baz.jpg
+│   ├── media.json
+│   ├── media.jsonld
+│   └── turtle.rdf
+├── manifest-sha1.txt
+└── tagmanifest-sha1.txt
 ```
 
 ## To do

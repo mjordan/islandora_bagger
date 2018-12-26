@@ -120,6 +120,13 @@ class CreateBagCommand extends ContainerAwareCommand
             $bag->setBagInfoData($key, $value);
         }
 
+       // Execute registered plugins
+        foreach ($this->settings['plugins'] as $plugin) {
+            $plugin_name = 'App\Plugin\\' . $plugin;
+            $bag_plugin = new $plugin_name($this->settings);
+            $bag = $bag_plugin->execute($bag, $nid);
+        }        
+
         $bag->update();
         $this->remove_dir($bag_temp_dir);
 
