@@ -66,6 +66,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $drupal_url = $this->settings['drupal_base_url'] . $nid . '?_format=json';
         $response = $client->get($drupal_url);
         $response_body = (string) $response->getBody();
+        $node_json = $response_body;        
         $body_array = json_decode($response_body, true);
         $uuid = $body_array['uuid'][0]['value'];
 
@@ -74,15 +75,6 @@ class CreateBagCommand extends ContainerAwareCommand
         } else {
             $bag_name = $nid;
         }
-
-        // Assemble the Fedora URL.
-        $uuid_parts = explode('-', $uuid);
-        $subparts = str_split($uuid_parts[0], 2);
-        $fedora_url = $this->settings['fedora_base_url'] . implode('/', $subparts) . '/'. $uuid;
-
-        // Get the Turtle from Fedora.
-        $response = $client->get($fedora_url);
-        $response_body = (string) $response->getBody();
 
         // Create directories.
         $bag_dir = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
@@ -98,8 +90,6 @@ class CreateBagCommand extends ContainerAwareCommand
 
         // Assemble data files. Fow now we only have one.
         $data_files = array();
-        $turtle_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'turtle.rdf';
-        file_put_contents($turtle_file_path, $response_body);
 
         // Create the Bag.
         if ($this->settings['include_basic_baginfo_tags']) {
@@ -111,7 +101,6 @@ class CreateBagCommand extends ContainerAwareCommand
             $bag_info = array();
         }
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
-        $bag->addFile($turtle_file_path, basename($turtle_file_path));
         foreach ($data_file_paths as $data_file_path) {
             $bag->addFile($data_file_path, basename($data_file_path));
         }
@@ -120,11 +109,11 @@ class CreateBagCommand extends ContainerAwareCommand
             $bag->setBagInfoData($key, $value);
         }
 
-       // Execute registered plugins
+        // Execute registered plugins
         foreach ($this->settings['plugins'] as $plugin) {
             $plugin_name = 'App\Plugin\\' . $plugin;
-            $bag_plugin = new $plugin_name($this->settings);
-            $bag = $bag_plugin->execute($bag, $nid);
+            $bag_plugin = new $plugin_name($this->settings, $this->logger);
+            $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json);
         }        
 
         $bag->update();
