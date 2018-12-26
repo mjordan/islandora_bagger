@@ -86,25 +86,11 @@ class CreateBagCommand extends ContainerAwareCommand
             mkdir($bag_temp_dir);
         }
 
-        $data_file_paths = $this->fetch_media($nid, $bag_temp_dir);
-
-        // Assemble data files. Fow now we only have one.
-        $data_files = array();
-
         // Create the Bag.
-        if ($this->settings['include_basic_baginfo_tags']) {
-            $bag_info = array(
-                'Internal-Sender-Identifier' => $this->settings['drupal_base_url'] . $nid,
-                'Bagging-Date' => date("Y-m-d"),
-            );
-        } else {
-            $bag_info = array();
-        }
+        $bag_info = array();
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
-        foreach ($data_file_paths as $data_file_path) {
-            $bag->addFile($data_file_path, basename($data_file_path));
-        }
 
+        // Add tags registered in the config file.
         foreach ($this->settings['bag-info'] as $key => $value) {
             $bag->setBagInfoData($key, $value);
         }
@@ -140,74 +126,6 @@ class CreateBagCommand extends ContainerAwareCommand
         }
     }
 
-    protected function fetch_media($nid, $bag_temp_dir)
-    {
-        // Get the media associated with this node using the Islandora-supplied Manage Media View.
-        $media_client = new \GuzzleHttp\Client();
-        $media_url = $this->settings['drupal_base_url'] . $nid . '/media';
-        $media_response = $media_client->request('GET', $media_url, [
-            'http_errors' => false,
-            'auth' => $this->settings['drupal_media_auth'],
-            'query' => ['_format' => 'json']
-        ]);
-        $media_status_code = $media_response->getStatusCode();
-        $media_list = (string) $media_response->getBody();
-        $json_data = $media_list;
-        $media_list = json_decode($media_list, true);
-
-        $data_file_paths = array();
-        if ($this->settings['include_json_data']) {
-            // JSON data about media for this node.
-            $json_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.json';
-            $data_file_paths[] = $json_data_file_path;
-            file_put_contents($json_data_file_path, $json_data);
-        }
-        if ($this->settings['include_jsonld_data']) {
-            // JSON-LS data about media for this node.
-            $jsonld_client = new \GuzzleHttp\Client();
-            $jsonld_url = $this->settings['drupal_base_url'] . $nid . '/media';
-            $jsonld_response = $media_client->request('GET', $media_url, [
-                'http_errors' => false,
-                'auth' => $this->settings['drupal_media_auth'],
-                'query' => ['_format' => 'jsonld']
-            ]);
-            $jsonld_data = (string) $jsonld_response->getBody();
-            $jsonld_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.jsonld';
-            $data_file_paths[] = $jsonld_data_file_path;            
-            file_put_contents($jsonld_data_file_path, $jsonld_data);
-        }
-
-        // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
-        foreach ($media_list as $media) {
-            if (count($media['field_media_use'])) {
-                foreach ($media['field_media_use'] as $term) {
-                    if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
-                        if (isset($media['field_media_image'])) {
-                            $file_url = $media['field_media_image'][0]['url'];
-                        } else {
-                            $file_url = $media['field_media_file'][0]['url'];
-                        }
-                        $filename = $this->get_filename_from_url($file_url);
-                        $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
-                        // Fetch file and save it to $bag_temp_dir with its original filename.
-                        $file_client = new \GuzzleHttp\Client();
-                        $file_response = $file_client->get($file_url, ['stream' => true,
-                            'timeout' => $this->settings['http_timeout'],
-                            'connect_timeout' => $this->settings['http_timeout'],
-                            'verify' => $this->settings['verify_ca']
-                        ]);
-                        $file_body = $file_response->getBody();
-                        while (!$file_body->eof()) {
-                            file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
-                        }
-                        $data_file_paths[] = $temp_file_path;
-                    }
-                }
-                return $data_file_paths;
-            }
-        }
-    }
-
     /**
      * Deletes a directory and all of its contents.
      *
@@ -226,13 +144,6 @@ class CreateBagCommand extends ContainerAwareCommand
             (is_dir("$dir/$file")) ? $this->remove_dir("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
-    }
-
-    protected function get_filename_from_url($url)
-    {
-        $path = parse_url('http://example.com/foo/bar/baz.jpg', PHP_URL_PATH);
-        $filename = pathinfo($path, PATHINFO_BASENAME);
-        return $filename;
     }
 
 }
