@@ -46,14 +46,15 @@ bag-info:
     Source-Organization: Simon Fraser University
     Foo: Bar
 
-# Whether or not to log Bag creation.
+# Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
 
 ############################
 # Plugin-specific settings #
 ############################
 
-# Register plugins to populate bag-info.txt and the /date directory.
+# Register plugins to populate bag-info.txt and the /data directory. Plugins
+# are executed in the order they are listed here.
 plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
 
 # Used by the 'AddFedoraTurtle' plugin.
@@ -99,24 +100,31 @@ Items in the "General Configuration" section provide some simple options for cus
 
 ### Plugins
 
+#### Included plugins
+
 Apart from the static tags mentioned in the previous section, all file content and additional tags are added to the Bag using plugins. The following plugins are provided:
 
 * AddBasicTags: Adds the `Internal-Sender-Identifier` bag-info.txt tag using the Drupal URL for the node as its value, and the `Bagging-Date` tag using the current date as its value.
-* AddNodeJson: Adds the Drupal JSON representation of the node, specifically, the response to a request to ``.
-* AddNodeJsonld: Adds the Drupal JSON-LD representation of the node, specifically, the response to a request to ``.
-* AddFedoraTurtle: Adds the Fedora Turtle RDF representation of the node, specifically, the response to a request to ``.
+* AddNodeJson: Adds the Drupal JSON representation of the node, specifically, the response to a request to `/node/2?_format=json`.
+* AddNodeJsonld: Adds the Drupal JSON-LD representation of the node, specifically, the response to a request to `/node/2?_format=jsonld`.
+* AddFedoraTurtle: Adds the Fedora Turtle RDF representation of the node.
 * AddMedia: Adds media files, such as the Original File, Preservation Master, etc., to the Bag. The specific files added are identified by the relevant tags from the "Islandora Media Use" vocabulary listed in the `drupal_media`tags` configuratoin option.
-* AddMediaJson: Adds the Drupal JSON representation of the node's media list, specifically, the response to a request to ``.
-* AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to ``.
+* AddMediaJson: Adds the Drupal JSON representation of the node's media list, specifically, the response to a request to `/node/2/media?_format=json`.
+* AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to `/node/2/media?_format=jsonld`.
+* Sample: A sample plugin for developers.
 
 #### Writing custom plugins
 
-Each plugin is a single PHP class that extends the base `AbstractIbPlugin` class. To create a plugin, make a copy of an existing plugin file and put it in the `islandora_bagger/src/Plugin` directory. In the `execute()` function, you have access to the Bag object, the Bag temporary directory, the node's ID, the node's JSON representation from Drupal. 
+Each plugin is a single PHP class that extends the base `AbstractIbPlugin` class. The `Sample.php` plugin illustrates what you can and need to do within a plugin. All plugins need to be in the `islandora_bagger/src/Plugin` directory, and must implement an `execute()` method. Within that method, you have access to the Bag object, the Bag temporary directory, the node's ID, the node's JSON representation from Drupal. You also have access to all values in the configuratin file via the `$this->settings` associative array.
+
+To use a custom plugin, simply register it in the `plugins` list in your configuation file.
 
 ## To do
 
 * Add more error and exception handling.
 * Add more logging.
+* Improve documentation for writing custom plugins.
+* Add CONTRIBUTING.md.
 * Add tests.
 
 ## Current maintainer

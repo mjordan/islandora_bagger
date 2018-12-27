@@ -29,7 +29,8 @@ log_bag_creation: true
 # Plugin-specific settings #
 ############################
 
-# Register plugins to populate bag-info.txt and the /date directory.
+# Register plugins to populate bag-info.txt and the /data directory. Plugins
+# are executed in the order they are listed here.
 plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
 
 # Used by the 'AddFedoraTurtle' plugin.
