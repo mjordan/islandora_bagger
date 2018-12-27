@@ -25,6 +25,9 @@ bag-info:
 # Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
 
+# Which has algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
+# hash_algorithm: md5
+
 ############################
 # Plugin-specific settings #
 ############################

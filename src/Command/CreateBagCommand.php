@@ -48,10 +48,8 @@ class CreateBagCommand extends ContainerAwareCommand
             60 : $this->settings['http_timeout'];
         $this->settings['verify_ca'] = (!isset($this->settings['verify_ca'])) ?
             true : $this->settings['verify_ca'];
-        $this->settings['include_json_data'] = (!isset($this->settings['include_json_data'])) ?
-            true : $this->settings['include_json_data'];
-        $this->settings['include_jsonld_data'] = (!isset($this->settings['include_jsonld_data'])) ?
-            true : $this->settings['include_jsonld_data'];                        
+        $this->settings['hash_algorithm'] = (!isset($this->settings['hash_algorithm'])) ?
+            'sha1' : $this->settings['hash_algorithm'];
 
         if (!file_exists($this->settings['output_dir'])) {
             mkdir($this->settings['output_dir']);
@@ -89,6 +87,7 @@ class CreateBagCommand extends ContainerAwareCommand
         // Create the Bag.
         $bag_info = array();
         $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
+        $bag->setHashEncoding($this->settings['hash_algorithm']);
 
         // Add tags registered in the config file.
         foreach ($this->settings['bag-info'] as $key => $value) {
