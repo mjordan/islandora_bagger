@@ -67,10 +67,10 @@ class AddMedia extends AbstractIbPlugin
 
         // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
         foreach ($media_list as $media) {
-            // @todo: Add logic to include all media, not just ones in the list of tags.
             if (count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
-                    if (in_array($term['url'], $this->settings['drupal_media_tags'])) {
+                    if (count($this->settings['drupal_media_tags']) == 0 ||
+                            in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
                             $file_url = $media['field_media_image'][0]['url'];
                         } else {
@@ -99,7 +99,7 @@ class AddMedia extends AbstractIbPlugin
 
     protected function get_filename_from_url($url)
     {
-        $path = parse_url('http://example.com/foo/bar/baz.jpg', PHP_URL_PATH);
+        $path = parse_url($url, PHP_URL_PATH);
         $filename = pathinfo($path, PATHINFO_BASENAME);
         return $filename;
     }

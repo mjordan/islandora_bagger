@@ -60,8 +60,9 @@ plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJ
 # Used by the 'AddFedoraTurtle' plugin.
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 
-# Used by the 'AddMedia' plugin. Use an emply list (e.g., []) to include all media.
-# These are the Drupal taxomony term IDs from the "Islandora Media Use" vocabulary.
+# Used by the 'AddMedia' plugin. These are the Drupal taxomony term IDs
+# from the "Islandora Media Use" vocabulary. Use an emply list (e.g., [])
+# to include all media.
 drupal_media_tags: ['/taxonomy/term/15']
 ```
 
@@ -76,7 +77,7 @@ The resulting Bag would look like this:
 ├── bag-info.txt
 ├── bagit.txt
 ├── data
-│   ├── baz.jpg
+│   ├── IMG_1410.JPG
 │   ├── media.json
 │   ├── media.jsonld
 │   ├── node.json
