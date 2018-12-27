@@ -8,7 +8,7 @@
 namespace App\Plugin;
 
 /**
- * Adds specific media to the Bag.
+ * Adds a node's media to the Bag.
  */
 class AddMedia extends AbstractIbPlugin
 {
@@ -26,7 +26,7 @@ class AddMedia extends AbstractIbPlugin
     }
 
     /**
-     * Add two basic tags.
+     * Adds a node's media to the Bag.
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
@@ -42,28 +42,6 @@ class AddMedia extends AbstractIbPlugin
         $media_list = (string) $media_response->getBody();
         $json_data = $media_list;
         $media_list = json_decode($media_list, true);
-
-        $data_file_paths = array();
-        if ($this->settings['include_json_data']) {
-            // JSON data about media for this node.
-            $json_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.json';
-            $data_file_paths[] = $json_data_file_path;
-            file_put_contents($json_data_file_path, $json_data);
-        }
-        if ($this->settings['include_jsonld_data']) {
-            // JSON-LS data about media for this node.
-            $jsonld_client = new \GuzzleHttp\Client();
-            $jsonld_url = $this->settings['drupal_base_url'] . $nid . '/media';
-            $jsonld_response = $media_client->request('GET', $media_url, [
-                'http_errors' => false,
-                'auth' => $this->settings['drupal_media_auth'],
-                'query' => ['_format' => 'jsonld']
-            ]);
-            $jsonld_data = (string) $jsonld_response->getBody();
-            $jsonld_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.jsonld';
-            $data_file_paths[] = $jsonld_data_file_path;            
-            file_put_contents($jsonld_data_file_path, $jsonld_data);
-        }
 
         // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
         foreach ($media_list as $media) {
