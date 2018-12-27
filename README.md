@@ -1,8 +1,8 @@
 # Islandora Bagger
 
-Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `/data` directory and `bag-info.txt` file using plugins.
+Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `/data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
-This utility is for Islandora CLAW. For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
+This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
 ## Requirements
 
@@ -78,7 +78,9 @@ The resulting Bag would look like this:
 │   ├── baz.jpg
 │   ├── media.json
 │   ├── media.jsonld
-│   └── turtle.rdf
+│   ├── node.json
+│   ├── node.jsonld
+│   └── node.turtle.rdf
 ├── manifest-sha1.txt
 └── tagmanifest-sha1.txt
 ```
@@ -86,6 +88,30 @@ The resulting Bag would look like this:
 ## Customizing the Bags
 
 Customizing the generated Bags is done via values in the configuration file, via plugins, or a combination of these two methods.
+
+### Configuration file
+
+Items in the "General Configuration" section provide some simple options for customizing Bags, e.g.:
+
+* whether the Bag is named using the node's ID or its UUID
+* whether the Bag is serialized (i.e., zipped)
+* what tags are included in the `bag-info.txt` file. Tags specified in general settings' `bag-info` option are static in that they are simple strings. In order to include tags that are dynamically generated, you must use a plugin.
+
+### Plugins
+
+Apart from the static tags mentioned in the previous section, all file content and additional tags are added to the Bag using plugins. The following plugins are provided:
+
+* AddBasicTags: Adds the `Internal-Sender-Identifier` bag-info.txt tag using the Drupal URL for the node as its value, and the `Bagging-Date` tag using the current date as its value.
+* AddNodeJson: Adds the Drupal JSON representation of the node, specifically, the response to a request to ``.
+* AddNodeJsonld: Adds the Drupal JSON-LD representation of the node, specifically, the response to a request to ``.
+* AddFedoraTurtle: Adds the Fedora Turtle RDF representation of the node, specifically, the response to a request to ``.
+* AddMedia: Adds media files, such as the Original File, Preservation Master, etc., to the Bag. The specific files added are identified by the relevant tags from the "Islandora Media Use" vocabulary listed in the `drupal_media`tags` configuratoin option.
+* AddMediaJson: Adds the Drupal JSON representation of the node's media list, specifically, the response to a request to ``.
+* AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to ``.
+
+#### Writing custom plugins
+
+Each plugin is a single PHP class that extends the base `AbstractIbPlugin` class. To create a plugin, make a copy of an existing plugin file and put it in the `islandora_bagger/src/Plugin` directory. In the `execute()` function, you have access to the Bag object, the Bag temporary directory, the node's ID, the node's JSON representation from Drupal. 
 
 ## To do
 
