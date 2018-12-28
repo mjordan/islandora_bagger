@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
+Command-line tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
 This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -79,6 +79,11 @@ fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 # from the "Islandora Media Use" vocabulary. Use an emply list (e.g., [])
 # to include all media.
 drupal_media_tags: ['/taxonomy/term/15']
+
+# Used by the 'AddMedia' plugin. Indicates whether the Bag should contain a file
+# named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
+# name corresponding to the 'drupal_media_tags' list. Default is false.
+include_media_use_list: true.
 ```
 
 The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
@@ -120,7 +125,7 @@ Apart from the static tags mentioned in the previous section, all file content a
 
 #### Included plugins
 
-The following plugins are bunlded with Islandora Bagger:
+The following plugins are bundled with Islandora Bagger:
 
 * AddBasicTags: Adds the `Internal-Sender-Identifier` bag-info.txt tag using the Drupal URL for the node as its value, and the `Bagging-Date` tag using the current date as its value.
 * AddNodeJson: Adds the Drupal JSON representation of the node, specifically, the response to a request to `/node/1234?_format=json`.

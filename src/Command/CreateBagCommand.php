@@ -43,7 +43,6 @@ class CreateBagCommand extends ContainerAwareCommand
         $nid = $input->getOption('node');
         $settings_path = $input->getOption('settings');
         $this->settings = Yaml::parseFile($settings_path);
-        $this->settings['drupal_base_url'] .= '/node/';
 
         // Set some configuration defaults.
         $this->settings['http_timeout'] = (!isset($this->settings['http_timeout'])) ?
@@ -63,7 +62,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $client = new \GuzzleHttp\Client();
 
         // Get the node's UUID from Drupal.
-        $drupal_url = $this->settings['drupal_base_url'] . $nid . '?_format=json';
+        $drupal_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '?_format=json';
         $response = $client->get($drupal_url);
         $response_body = (string) $response->getBody();
         $node_json = $response_body;
@@ -113,12 +112,12 @@ class CreateBagCommand extends ContainerAwareCommand
             $bag_name = $bag_name . '.' . $package;
         }
 
-        $io->success("Bag created for " . $this->settings['drupal_base_url'] . $nid . " at " . $bag_dir);
+        $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid . " at " . $bag_dir);
         if ($this->settings['log_bag_creation']) {
             $this->logger->info(
                 "Bag created.",
                 array(
-                    'node URL' => $this->settings['drupal_base_url'] . $nid,
+                    'node URL' => $this->settings['drupal_base_url'] . '/node/' . $nid,
                     'node UUID' => $uuid,
                     'Bag location' => $this->settings['output_dir'],
                     'Bag name' => $bag_name

@@ -30,9 +30,12 @@ class AddMedia extends AbstractIbPlugin
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
+        $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
+            false: $this->settings['include_media_use_list'];
+
         // Get the media associated with this node using the Islandora-supplied Manage Media View.
         $media_client = new \GuzzleHttp\Client();
-        $media_url = $this->settings['drupal_base_url'] . $nid . '/media';
+        $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
         $media_response = $media_client->request('GET', $media_url, [
             'http_errors' => false,
             'auth' => $this->settings['drupal_media_auth'],
@@ -45,6 +48,9 @@ class AddMedia extends AbstractIbPlugin
 
         // Loop through all the media and pick the ones that are tagged with terms in $this->settings['drupal_media_tags'].
         // If that list is empty, add all media to the Bag.
+        if ($this->settings['include_media_use_list']) {
+            $file_use_list = '';
+        }
         foreach ($media_list as $media) {
             if (count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
@@ -56,6 +62,13 @@ class AddMedia extends AbstractIbPlugin
                             $file_url = $media['field_media_file'][0]['url'];
                         }
                         $filename = $this->getFilenameFromUrl($file_url);
+
+                        if ($this->settings['include_media_use_list']) {
+                            $term_info = $this->fetchTermInfo($term['url']);
+                            $term_external_uri = $term_info['field_external_uri'][0]['uri'];
+                            $file_use_list .= $filename . "\t" . $term_external_uri . PHP_EOL;
+                        }
+
                         $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
                         // Fetch file and save it to $bag_temp_dir with its original filename.
                         // @todo: Determine what to do if the file already exists.
@@ -74,6 +87,11 @@ class AddMedia extends AbstractIbPlugin
                 }
             }
         }
+        if ($this->settings['include_media_use_list']) {
+            $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media_use_summary.tsv';
+            file_put_contents($temp_file_path, $file_use_list);
+            $bag->addFile($temp_file_path, 'media_use_summary.tsv');
+        }
         return $bag;
     }
 
@@ -82,5 +100,19 @@ class AddMedia extends AbstractIbPlugin
         $path = parse_url($url, PHP_URL_PATH);
         $filename = pathinfo($path, PATHINFO_BASENAME);
         return $filename;
+    }
+
+    protected function fetchTermInfo($term)
+    {
+        $client = new \GuzzleHttp\Client();
+        $url = $this->settings['drupal_base_url'] . $term;
+        $response = $client->request('GET', $url, [
+            'http_errors' => false,
+            'auth' => $this->settings['drupal_media_auth'],
+            'query' => ['_format' => 'json']
+        ]);
+        $body = (string) $response->getBody();
+        $tag_info = json_decode($body, true);
+        return $tag_info;
     }
 }

@@ -31,7 +31,7 @@ class AddMediaJson extends AbstractIbPlugin
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
         $client = new \GuzzleHttp\Client();
-        $media_url = $this->settings['drupal_base_url'] . $nid . '/media';
+        $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
         $response = $client->request('GET', $media_url, [
             'http_errors' => false,
             'auth' => $this->settings['drupal_media_auth'],

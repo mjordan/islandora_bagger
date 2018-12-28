@@ -31,7 +31,7 @@ class AddNodeJsonld extends AbstractIbPlugin
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
         $client = new \GuzzleHttp\Client();
-        $url = $this->settings['drupal_base_url'] . $nid;
+        $url = $this->settings['drupal_base_url'] . '/node/' . $nid;
         $response = $client->request('GET', $url, [
             'http_errors' => false,
             'query' => ['_format' => 'jsonld']
