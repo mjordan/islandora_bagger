@@ -12,8 +12,6 @@
     "require": {
         "php": "^7.1.3",
         "guzzlehttp/guzzle": "~6.0",
-        "ramsey/uuid": "~3.0",
-        "ralouphie/mimey": "*",
         "scholarslab/bagit": "~0.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
@@ -28,9 +26,7 @@
     },
     "require-dev": {
         "symfony/dotenv": "*",
-        "symfony/web-server-bundle": "*",
         "symfony/phpunit-bridge": "*",
-        "symfony/browser-kit": "*",
         "squizlabs/php_codesniffer":"*"
     },
     "config": {

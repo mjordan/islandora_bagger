@@ -10,7 +10,7 @@ namespace App\Plugin;
 /**
  * Abstract class for plugins.
  */
-abstract class AbstractIbPlugin 
+abstract class AbstractIbPlugin
 {
     /**
      * Constructor.

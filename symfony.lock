@@ -44,11 +44,8 @@
     "psr/simple-cache": {
         "version": "1.0.1"
     },
-    "ralouphie/mimey": {
-        "version": "2.0.0"
-    },
-    "ramsey/uuid": {
-        "version": "3.8.0"
+    "ralouphie/getallheaders": {
+        "version": "2.0.5"
     },
     "scholarslab/bagit": {
         "version": "0.3.0"
@@ -61,9 +58,6 @@
             "version": "3.0",
             "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
         }
-    },
-    "symfony/browser-kit": {
-        "version": "v4.1.7"
     },
     "symfony/cache": {
         "version": "v4.1.7"
@@ -84,9 +78,6 @@
         "version": "v4.1.7"
     },
     "symfony/dependency-injection": {
-        "version": "v4.1.7"
-    },
-    "symfony/dom-crawler": {
         "version": "v4.1.7"
     },
     "symfony/dotenv": {
@@ -161,9 +152,6 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.10.0"
     },
-    "symfony/process": {
-        "version": "v4.1.7"
-    },
     "symfony/property-access": {
         "version": "v4.1.7"
     },
@@ -190,15 +178,6 @@
     },
     "symfony/stopwatch": {
         "version": "v4.1.7"
-    },
-    "symfony/web-server-bundle": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
     },
     "symfony/yaml": {
         "version": "v4.1.7"

@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `/data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
+Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
 This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -26,38 +26,48 @@ Islandora Bagger requires a configuration file in YAML format:
 # General settings #
 ####################
 
+# Required.
 drupal_base_url: 'http://localhost:8000'
 drupal_media_auth: ['admin', 'islandora']
 
-# How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
+# Required. How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
 bag_name: nid
 
+# Both temp_dir and output_dir are required.
 temp_dir: /tmp/islandora_bagger_temp
 output_dir: /tmp
 
-# Whether or not to zip up the Bag. One of false, 'zip', or 'tgz'.
+# Required. Whether or not to zip up the Bag. One of 'false', 'zip', or 'tgz'.
 serialize: false
 
-# Static bag-info.txt tags. No plugin needed.
-# You can use any combination of additional tag name / value here.
+# Optional. Static bag-info.txt tags. No plugin needed. You can use any combination
+# of tag name / value here, as long as ou seprate tags from values using a colon (:).
 bag-info:
     Contact-Name: Mark Jordan
     Contact-Email: bags@sfu.ca
     Source-Organization: Simon Fraser University
     Foo: Bar
 
-# Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
+# Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
 
-# Which has algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
+# Optional. Which has algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
 # hash_algorithm: md5
+
+# Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
+# http_timeout: 120.
+
+# Optional. Whether or not to verify the Certificate Authority verification in
+# Guzzle requests against websites that use HTTPS. Used on Mac OSX if Guzzle
+# is interacting with websites running HTTPS. Default is true.
+# verify_ca: false
 
 ############################
 # Plugin-specific settings #
 ############################
 
-# Register plugins to populate bag-info.txt and the /data directory. Plugins
-# are executed in the order they are listed here.
+# Required. Register plugins to populate bag-info.txt and the data directory.
+# Plugins are executed in the order they are listed here.
 plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
 
 # Used by the 'AddFedoraTurtle' plugin.
@@ -69,7 +79,7 @@ fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 drupal_media_tags: ['/taxonomy/term/15']
 ```
 
-The command to generate a Bag takes two required parameters. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
+The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
 
@@ -92,7 +102,7 @@ The resulting Bag would look like this:
 
 ## Customizing the Bags
 
-Customizing the generated Bags is done via values in the configuration file, via plugins, or a combination of these two methods.
+Customizing the generated Bags is done via values in the configuration file and via plugins.
 
 ### Configuration file
 
@@ -129,7 +139,6 @@ To use a custom plugin, simply register its class name in the `plugins` list in 
 
 * Add more error and exception handling.
 * Add more logging.
-* Improve documentation for writing custom plugins.
 * Add CONTRIBUTING.md.
 * Add tests.
 

@@ -54,7 +54,7 @@ class AddMedia extends AbstractIbPlugin
                         } else {
                             $file_url = $media['field_media_file'][0]['url'];
                         }
-                        $filename = $this->get_filename_from_url($file_url);
+                        $filename = $this->getFilenameFromUrl($file_url);
                         $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
                         // Fetch file and save it to $bag_temp_dir with its original filename.
                         $file_client = new \GuzzleHttp\Client();
@@ -75,7 +75,7 @@ class AddMedia extends AbstractIbPlugin
         return $bag;
     }
 
-    protected function get_filename_from_url($url)
+    protected function getFilenameFromUrl($url)
     {
         $path = parse_url($url, PHP_URL_PATH);
         $filename = pathinfo($path, PATHINFO_BASENAME);

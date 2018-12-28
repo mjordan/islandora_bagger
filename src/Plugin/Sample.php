@@ -48,7 +48,7 @@ class Sample extends AbstractIbPlugin
         $my_data = "This is a special file to include in the Bag.";
 
         // All files you want to include in the Bag need to be
-        // written to $bag_temp_dir. 
+        // written to $bag_temp_dir.
         $my_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'my.data';
         file_put_contents($my_data_file_path, $my_data);
 

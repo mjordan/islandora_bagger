@@ -19,7 +19,8 @@ class CreateBagCommand extends ContainerAwareCommand
 {
     private $params;
 
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         // Set log output path in config/packages/{environment}/monolog.yaml
         $this->logger = $logger;
 
@@ -44,6 +45,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $this->settings = Yaml::parseFile($settings_path);
         $this->settings['drupal_base_url'] .= '/node/';
 
+        // Set some configuration defaults.
         $this->settings['http_timeout'] = (!isset($this->settings['http_timeout'])) ?
             60 : $this->settings['http_timeout'];
         $this->settings['verify_ca'] = (!isset($this->settings['verify_ca'])) ?
@@ -64,7 +66,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $drupal_url = $this->settings['drupal_base_url'] . $nid . '?_format=json';
         $response = $client->get($drupal_url);
         $response_body = (string) $response->getBody();
-        $node_json = $response_body;        
+        $node_json = $response_body;
         $body_array = json_decode($response_body, true);
         $uuid = $body_array['uuid'][0]['value'];
 
@@ -99,16 +101,16 @@ class CreateBagCommand extends ContainerAwareCommand
             $plugin_name = 'App\Plugin\\' . $plugin;
             $bag_plugin = new $plugin_name($this->settings, $this->logger);
             $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json);
-        }        
+        }
 
         $bag->update();
-        $this->remove_dir($bag_temp_dir);
+        $this->removeDir($bag_temp_dir);
 
         $package = isset($this->settings['serialize']) ? $this->settings['serialize'] : false;
         if ($package) {
-           $bag->package($bag_dir, $package);
-           $this->remove_dir($bag_dir);
-           $bag_name = $bag_name . '.' . $package;
+            $bag->package($bag_dir, $package);
+            $this->removeDir($bag_dir);
+            $bag_name = $bag_name . '.' . $package;
         }
 
         $io->success("Bag created for " . $this->settings['drupal_base_url'] . $nid . " at " . $bag_dir);
@@ -135,14 +137,13 @@ class CreateBagCommand extends ContainerAwareCommand
      *   True if the directory was deleted, false if not.
      *
      */
-    protected function remove_dir($dir)
+    protected function removeDir($dir)
     {
         // @todo: Add list here of invalid $dir values, e.g., /, /tmp.
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? $this->remove_dir("$dir/$file") : unlink("$dir/$file");
+            (is_dir("$dir/$file")) ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
     }
-
 }
