@@ -30,13 +30,18 @@ class AddBasicTags extends AbstractIbPlugin
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
-        $node_url = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid;
-        $bag->setBagInfoData('Internal-Sender-Identifier', $node_url);
-        $bag->setBagInfoData('Bagging-Date', date("Y-m-d"));
+        $node_id = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid;
+        $bag->setBagInfoData('Internal-Sender-Identifier', $node_id);
+        $bagging_date = date("Y-m-d");
+        $bag->setBagInfoData('Bagging-Date', $bagging_date);
 
         if ($this->settings['log_bag_creation']) {
             $this->logger->info(
-                "Tags added from plugin."
+                "Internal-Sender-Id and Bagging-Date Tags added from AddBasicTags plugin.",
+                array(
+                    'Internal-Sender-Id' => $node_id,
+                    'Bagging-Date' => $bagging_date,
+                )
             );
         }
 

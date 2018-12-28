@@ -55,10 +55,10 @@ class Sample extends AbstractIbPlugin
         // Then you must call the $bag->addFile() method.
         $bag->addFile($my_data_file_path, 'my.data');
 
-        // We also want to add a custom bag-info.txt tag.
+        // You may want to add a custom bag-info.txt tag.
         $bag->setBagInfoData('My-Custom-Tag', "some value");
 
-        // Log something, for example, a value from the configuration file.
+        // And you probaby should log something, for example, a value from the configuration file.
         $this->logger->info(
             "Hello from Drupal.",
             array(

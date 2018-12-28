@@ -2,13 +2,13 @@
 
 /**
  * @file
- * Defines the AbstractIbPlugin class.
+ * Defines the abstract class for Islandora Bagger plugins.
  */
 
 namespace App\Plugin;
 
 /**
- * Abstract class for plugins.
+ * Abstract class for Islandora Bagger plugins.
  */
 abstract class AbstractIbPlugin
 {

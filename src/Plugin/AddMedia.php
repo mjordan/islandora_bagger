@@ -43,7 +43,8 @@ class AddMedia extends AbstractIbPlugin
         $json_data = $media_list;
         $media_list = json_decode($media_list, true);
 
-        // Loop through all the media and pick the ones that are tagged with terms in $taxonomy_terms_to_check.
+        // Loop through all the media and pick the ones that are tagged with terms in $this->settings['drupal_media_tags'].
+        // If that list is empty, add all media to the Bag.
         foreach ($media_list as $media) {
             if (count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
@@ -57,6 +58,7 @@ class AddMedia extends AbstractIbPlugin
                         $filename = $this->getFilenameFromUrl($file_url);
                         $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
                         // Fetch file and save it to $bag_temp_dir with its original filename.
+                        // @todo: Determine what to do if the file already exists.
                         $file_client = new \GuzzleHttp\Client();
                         $file_response = $file_client->get($file_url, ['stream' => true,
                             'timeout' => $this->settings['http_timeout'],

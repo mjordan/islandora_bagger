@@ -33,9 +33,11 @@ log_bag_creation: true
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
 # http_timeout: 120.
 
-# Optional. Whether or not to verify the Certificate Authority verification in
-# Guzzle requests against websites that use HTTPS. Used on Mac OSX if Guzzle
-# is interacting with websites running HTTPS. Default is true.
+# Optional. Whether or not to verify the Certificate Authority in Guzzle requests
+# against websites that implement HTTPS. Used on Mac OSX if Islandora Bagger is
+# interacting with websites running HTTPS. Default is true. Note that if you set
+# verify_ca to false, you are bypassing HTTPS encryption between Islandora Bagger
+# and the remote website. Use at your own risk.
 # verify_ca: false
 
 ############################

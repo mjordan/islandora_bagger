@@ -57,9 +57,11 @@ log_bag_creation: true
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
 # http_timeout: 120.
 
-# Optional. Whether or not to verify the Certificate Authority verification in
-# Guzzle requests against websites that use HTTPS. Used on Mac OSX if Guzzle
-# is interacting with websites running HTTPS. Default is true.
+# Optional. Whether or not to verify the Certificate Authority in Guzzle requests
+# against websites that implement HTTPS. Used on Mac OSX if Islandora Bagger is
+# interacting with websites running HTTPS. Default is true. Note that if you set
+# verify_ca to false, you are bypassing HTTPS encryption between Islandora Bagger
+# and the remote website. Use at your own risk.
 # verify_ca: false
 
 ############################
@@ -79,7 +81,7 @@ fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 drupal_media_tags: ['/taxonomy/term/15']
 ```
 
-The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Islandora node ID you want to generate a Bag from is 112, the command would look like this:
+The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
 
