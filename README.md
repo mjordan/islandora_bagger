@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Command-line tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
+Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
 This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -65,7 +65,7 @@ bag-info:
 # verify_ca: false
 
 # Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
-#  include_payload_oxum: false
+# include_payload_oxum: false
 
 ############################
 # Plugin-specific settings #
@@ -112,7 +112,7 @@ The resulting Bag would look like this:
 
 ## REST interface usage (experimental)
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged, and then fetches the files and other data from the Islandora instance. The request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header, and then fetches the files and other data from the Islandora instance. Creation of the Bag is asyncronous to the request, since the request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
 
 To use the REST API
 
@@ -162,7 +162,7 @@ To use a custom plugin, simply register its class name in the `plugins` list in 
 * Add more error and exception handling.
 * Add more logging.
 * Add CONTRIBUTING.md.
-* Figure out how to include configuration data in REST requests.
+* Figure out best way to include configuration data in REST requests.
 * Add tests.
 
 ## Current maintainer
