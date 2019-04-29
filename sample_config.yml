@@ -16,6 +16,9 @@ output_dir: /tmp
 # Required. Whether or not to zip up the Bag. One of 'false', 'zip', or 'tgz'.
 serialize: false
 
+# Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
+log_bag_creation: true
+
 # Optional. Static bag-info.txt tags. No plugin needed. You can use any combination
 # of tag name / value here, as long as ou seprate tags from values using a colon (:).
 bag-info:
@@ -24,14 +27,11 @@ bag-info:
     Source-Organization: Simon Fraser University
     Foo: Bar
 
-# Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
-log_bag_creation: true
-
 # Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
 # hash_algorithm: md5
 
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
-# http_timeout: 120.
+# http_timeout: 120
 
 # Optional. Whether or not to verify the Certificate Authority in Guzzle requests
 # against websites that implement HTTPS. Used on Mac OSX if Islandora Bagger is
@@ -39,6 +39,9 @@ log_bag_creation: true
 # verify_ca to false, you are bypassing HTTPS encryption between Islandora Bagger
 # and the remote website. Use at your own risk.
 # verify_ca: false
+
+# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
+#  include_payload_oxum: false
 
 ############################
 # Plugin-specific settings #

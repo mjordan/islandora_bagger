@@ -26,6 +26,8 @@ class IslandoraBagger
             true : $this->settings['verify_ca'];
         $this->settings['hash_algorithm'] = (!isset($this->settings['hash_algorithm'])) ?
             'sha1' : $this->settings['hash_algorithm'];
+        $this->settings['include_payload_oxum'] = (!isset($this->settings['include_payload_oxum'])) ?
+            true : $this->settings['include_payload_oxum'];
 
         if (!file_exists($this->settings['output_dir'])) {
             mkdir($this->settings['output_dir']);
@@ -77,6 +79,10 @@ class IslandoraBagger
             $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json);
         }
 
+        if ($this->settings['include_payload_oxum']) {
+            $bag->setBagInfoData('Payload-Oxum', $this->generateOctetstreamSum($bag));
+        }
+
         $bag->update();
         $this->removeDir($bag_temp_dir);
 
@@ -102,6 +108,24 @@ class IslandoraBagger
         // @todo: Return Bag directory path on success or false failure to command here.
         return $bag_dir;
     }
+
+    /**
+     * @param object $bag
+     *  The Bag object.
+     *
+     * @return string
+     *   The Payload-Oxum value. 
+     */
+     protected function generateOctetstreamSum($bag)
+     {
+         $file_counter = 0;
+         $filesize_sum = 0;
+         foreach ($bag->getBagContents() as $file_path) {
+             $file_counter++;
+             $filesize_sum = filesize($file_path) + $filesize_sum;
+         }
+         return $filesize_sum . '.' . $file_counter;
+     }
 
     /**
      * Deletes a directory and all of its contents.
