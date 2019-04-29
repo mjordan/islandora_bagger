@@ -41,7 +41,7 @@ bag-info:
 # verify_ca: false
 
 # Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
-#  include_payload_oxum: false
+# include_payload_oxum: false
 
 ############################
 # Plugin-specific settings #

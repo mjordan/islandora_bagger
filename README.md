@@ -15,7 +15,7 @@ This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.
 1. `cd islandora_bagger`
 1. `php composer.phar install` (or equivalent on your system, e.g., `./composer install`)
 
-## Usage
+## Command-line usage
 
 ### The configuration file
 
@@ -145,11 +145,24 @@ Each plugin is a PHP class that extends the base `AbstractIbPlugin` class. The `
 
 To use a custom plugin, simply register its class name in the `plugins` list in your configuation file.
 
+## REST interface usage
+
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged, and then fetches the files and other data from the Islandora instance. The request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
+
+Assuming you have run Riprap with the "sample_db_config.yml" configuration file, you can see the API in action by running:
+
+1. Copy your configuration file to `/tmp/sample_config.yml`.
+1. `php bin/console server:start`
+1. `curl -v -X POST -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`
+
+Currently, configuration data is not included in the REST PUT request; Islandora Bagger reads it from a static file at `/tmp/sample_config.yml`. Work is underway to address this.
+
 ## To do
 
 * Add more error and exception handling.
 * Add more logging.
 * Add CONTRIBUTING.md.
+* Figure out how to include configuration data in REST requests.
 * Add tests.
 
 ## Current maintainer

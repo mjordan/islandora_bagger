@@ -5,7 +5,11 @@ namespace App\Service;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-require 'vendor/scholarslab/bagit/lib/bagit.php';
+// We need the first set_include_path() for the console command, and the second
+// for the REST API.
+set_include_path(get_include_path() . PATH_SEPARATOR . 'vendor/scholarslab/bagit/lib/');
+set_include_path(get_include_path() . PATH_SEPARATOR . '../vendor/scholarslab/bagit/lib/');
+require 'bagit.php';
 
 class IslandoraBagger
 {
