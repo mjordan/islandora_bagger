@@ -110,6 +110,18 @@ The resulting Bag would look like this:
 └── tagmanifest-sha1.txt
 ```
 
+## REST interface usage (experimental)
+
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged, and then fetches the files and other data from the Islandora instance. The request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
+
+To use the REST API
+
+1. Create a configuration file as described above and copy your configuration file to `/tmp/sample_config.yml`.
+1. `php bin/console server:start`
+1. `curl -v -X POST -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`
+
+Currently, configuration data is not included in the REST PUT request; Islandora Bagger reads it from a static file at `/tmp/sample_config.yml`. Work is underway to address this. Also, the only HTTP method supported in `PUT`. This API is in its earliest stages and will change substantially before it is ready for production use.
+
 ## Customizing the Bags
 
 Customizing the generated Bags is done via values in the configuration file and via plugins.
@@ -144,18 +156,6 @@ The following plugins are bundled with Islandora Bagger:
 Each plugin is a PHP class that extends the base `AbstractIbPlugin` class. The `Sample.php` plugin illustrates what you can (and must) do within a plugin. Plugins are located in the `islandora_bagger/src/Plugin` directory, and must implement an `execute()` method. Within that method, you have access to the Bag object, the Bag temporary directory, the node's ID, the node's JSON representation from Drupal. You also have access to all values in the configuratin file via the `$this->settings` associative array.
 
 To use a custom plugin, simply register its class name in the `plugins` list in your configuation file.
-
-## REST interface usage
-
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged, and then fetches the files and other data from the Islandora instance. The request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
-
-Assuming you have run Riprap with the "sample_db_config.yml" configuration file, you can see the API in action by running:
-
-1. Copy your configuration file to `/tmp/sample_config.yml`.
-1. `php bin/console server:start`
-1. `curl -v -X POST -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`
-
-Currently, configuration data is not included in the REST PUT request; Islandora Bagger reads it from a static file at `/tmp/sample_config.yml`. Work is underway to address this.
 
 ## To do
 
