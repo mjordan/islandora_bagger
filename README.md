@@ -112,15 +112,15 @@ The resulting Bag would look like this:
 
 ## REST interface usage (experimental)
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header, and then fetches the files and other data from the Islandora instance. Creation of the Bag is asyncronous to the request, since the request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface. Note that this feature is in very early development.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a PUT request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header, and then fetches the files and other data from the Islandora instance. The request does not contain any payload files, it just instructs Islandora Bagger to create the Bag much like it would if invoked via its command-line interface, but the Bag is created asyncronously to the inital request.
 
 To use the REST API
 
-1. Create a configuration file as described above and copy your configuration file to `/tmp/sample_config.yml`.
-1. `php bin/console server:start`
-1. `curl -v -X POST -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`
+1. Create a configuration file as described above and copy your configuration file to `/tmp/sample_config.yml`
+1. Run `php bin/console server:start`
+1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`
 
-Currently, configuration data is not included in the REST PUT request; Islandora Bagger reads it from a static file at `/tmp/sample_config.yml`. Work is underway to address this. Also, the only HTTP method supported in `PUT`. This API is in its earliest stages and will change substantially before it is ready for production use.
+Currently, configuration data is not included in the REST `PUT` request; Islandora Bagger reads its configuration from a static file at `/tmp/sample_config.yml`. Work is underway to address this. Also, the only HTTP method supported is `PUT`. This API is in its earliest stages of development and will change substantially before it is ready for production use.
 
 ## Customizing the Bags
 
