@@ -27,7 +27,7 @@ bag-info:
 # Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
 
-# Optional. Which has algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
+# Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
 # hash_algorithm: md5
 
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
