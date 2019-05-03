@@ -86,7 +86,7 @@ drupal_media_tags: ['/taxonomy/term/15']
 # Used by the 'AddMedia' plugin. Indicates whether the Bag should contain a file
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
 # name corresponding to the 'drupal_media_tags' list. Default is false.
-include_media_use_list: true.
+include_media_use_list: true
 ```
 
 The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:

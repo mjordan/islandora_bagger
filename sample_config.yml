@@ -62,4 +62,4 @@ drupal_media_tags: ['/taxonomy/term/15']
 # Used by the 'AddMedia' plugin. Indicates whether the Bag should contain a file
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
 # name corresponding to the 'drupal_media_tags' list. Default is false.
-include_media_use_list: true.
+include_media_use_list: true
