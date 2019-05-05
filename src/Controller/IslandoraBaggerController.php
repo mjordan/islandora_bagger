@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
@@ -16,18 +16,39 @@ class IslandoraBaggerController extends AbstractController
 {
     public function create(Request $request, LoggerInterface $logger)
     {
+        $this->application_directory = dirname(__DIR__, 2);
+
         $nid = $request->headers->get('Islandora-Node-ID');
 
-        $settings = Yaml::parseFile('/tmp/sample_config.yml');
+        // Get POSTed YAML from request body.
+        $body = $request->getContent();
+        $yaml_path = $this->application_directory . '/var/islandora_bagger.' . $nid . '.yaml';
+        file_put_contents($yaml_path, $body);
 
-        $islandora_bagger = new IslandoraBagger($settings, $logger);
-        $bag_dir = $islandora_bagger->createBag($nid);
+        // If we create the Bag here, we risk timeouts. Add request to the queue.
+        $this->write_to_queue($nid, $yaml_path);
 
-        // Dummy data.
+        // @todo: what do we want in the response data?
         $data = array(
-            'Bag created for ' . $nid,
+            'Entry for node ' . $nid . ' using configuration at ' . $yaml_path . ' added to queue.'
         );
         $response = new JsonResponse($data);
         return $response;
+    }
+
+    private function write_to_queue($nid, $yaml_path)
+    {
+        // $now_iso8601 = date(\DateTime::ISO8601);
+
+        // Write the request to the queue.
+        $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "wr+");
+        if (flock($fp, LOCK_EX)) {
+            // nid\tpath_to_yaml\tbag_created_timestamp\n
+            fwrite($fp, "$nid\t$yaml_path\t\n");
+            fflush($fp);
+            flock($fp, LOCK_UN);
+            return true;
+        }
+        fclose($fp);
     }
 }
