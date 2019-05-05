@@ -27,6 +27,9 @@ bag-info:
     Source-Organization: Simon Fraser University
     Foo: Bar
 
+# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
+# include_payload_oxum: false
+
 # Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
 # hash_algorithm: md5
 
@@ -40,8 +43,9 @@ bag-info:
 # and the remote website. Use at your own risk.
 # verify_ca: false
 
-# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
-# include_payload_oxum: false
+# Optional. Whether or not to delete the settings file upon successful creation of
+# the Bag. Default is false.
+# delete_settings_file: true
 
 ############################
 # Plugin-specific settings #

@@ -42,7 +42,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $this->settings = Yaml::parseFile($settings_path);
 
         $islandora_bagger = new IslandoraBagger($this->settings, $this->logger);
-        $bag_dir = $islandora_bagger->createBag($nid);
+        $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
 
         if ($bag_dir) {
             $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid . " at " . $bag_dir);

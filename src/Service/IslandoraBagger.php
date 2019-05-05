@@ -21,7 +21,18 @@ class IslandoraBagger
         $this->logger = $logger;
     }
 
-    public function createBag($nid)
+    /**
+     * Create a Bag for the current node.
+     *
+     * @param string $nid
+     *   The node ID.
+     * @param string $settings_path
+     *   The path to the settings YAML file passed in from the Create Bag command.
+     *
+     * @return string|bool
+     *   The path to the Bag if successful, false if unsuccessful.
+     */
+    public function createBag($nid, $settings_path)
     {
         // Set some configuration defaults.
         $this->settings['http_timeout'] = (!isset($this->settings['http_timeout'])) ?
@@ -32,6 +43,8 @@ class IslandoraBagger
             'sha1' : $this->settings['hash_algorithm'];
         $this->settings['include_payload_oxum'] = (!isset($this->settings['include_payload_oxum'])) ?
             true : $this->settings['include_payload_oxum'];
+        $this->settings['delete_settings_file'] = (!isset($this->settings['delete_settings_file'])) ?
+            false : $this->settings['delete_settings_file'];
 
         if (!file_exists($this->settings['output_dir'])) {
             mkdir($this->settings['output_dir']);
@@ -107,6 +120,10 @@ class IslandoraBagger
                     'Bag name' => $bag_name
                 )
             );
+        }
+
+        if ($this->settings['delete_settings_file']) {
+          unlink(realpath($settings_path));
         }
 
         // @todo: Return Bag directory path on success or false failure to command here.

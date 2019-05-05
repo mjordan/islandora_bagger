@@ -26,6 +26,7 @@ class IslandoraBaggerController extends AbstractController
         file_put_contents($yaml_path, $body);
 
         // If we create the Bag here, we risk timeouts. Add request to the queue.
+        // @todo: If this method fails (returned false), log that.
         $this->write_to_queue($nid, $yaml_path);
 
         // @todo: what do we want in the response data?
@@ -39,7 +40,7 @@ class IslandoraBaggerController extends AbstractController
     private function write_to_queue($nid, $yaml_path)
     {
         // Write the request to the queue.
-        $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "wr+");
+        $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "a+");
         if (flock($fp, LOCK_EX)) {
             // nid\tpath_to_yaml\n
             fwrite($fp, "$nid\t$yaml_path\n");

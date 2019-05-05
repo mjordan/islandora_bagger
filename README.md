@@ -51,6 +51,9 @@ bag-info:
     Source-Organization: Simon Fraser University
     Foo: Bar
 
+# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
+# include_payload_oxum: false
+
 # Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
 # hash_algorithm: md5
 
@@ -64,8 +67,9 @@ bag-info:
 # and the remote website. Use at your own risk.
 # verify_ca: false
 
-# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
-# include_payload_oxum: false
+# Optional. Whether or not to delete the settings file upon successful creation of
+# the Bag. Default is false.
+# delete_settings_file: true
 
 ############################
 # Plugin-specific settings #
@@ -124,18 +128,6 @@ To use the REST API
 
 This API is in its earliest stages of development and will change substantially before it is ready for production use.
 
-## Customizing the Bags
-
-Customizing the generated Bags is done via values in the configuration file and via plugins.
-
-### Configuration file
-
-Items in the "General Configuration" section provide some simple options for customizing Bags, e.g.:
-
-* whether the Bag is named using the node's ID or its UUID
-* whether the Bag is serialized (i.e., zipped)
-* what tags are included in the `bag-info.txt` file. Tags specified in general settings' `bag-info` option are static in that they are simple strings. In order to include tags that are dynamically generated, you must use a plugin.
-
 ## The queue
 
 Islandora Bagger can use a simple queue of jobs, which is used mainly as the source for REST requests to generate Bags.
@@ -149,6 +141,19 @@ To process the queue, run the following command:
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
 Typically, this command would be executed from within a scheduled job, e.g, `cron`.
+
+
+## Customizing the Bags
+
+Customizing the generated Bags is done via values in the configuration file and via plugins.
+
+### Configuration file
+
+Items in the "General Configuration" section provide some simple options for customizing Bags, e.g.:
+
+* whether the Bag is named using the node's ID or its UUID
+* whether the Bag is serialized (i.e., zipped)
+* what tags are included in the `bag-info.txt` file. Tags specified in general settings' `bag-info` option are static in that they are simple strings. In order to include tags that are dynamically generated, you must use a plugin.
 
 ### Plugins
 
