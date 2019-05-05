@@ -136,6 +136,20 @@ Items in the "General Configuration" section provide some simple options for cus
 * whether the Bag is serialized (i.e., zipped)
 * what tags are included in the `bag-info.txt` file. Tags specified in general settings' `bag-info` option are static in that they are simple strings. In order to include tags that are dynamically generated, you must use a plugin.
 
+## The queue
+
+Islandora Bagger can use a simple queue of jobs, which is used mainly as the source for REST requests to generate Bags.
+
+They queue is a simple tab-delimited text file that contains one entry per line. The three fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
+
+`100       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.100.yaml`
+
+To process the queue, run the following command:
+
+`./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
+
+Typically, this command would be executed from within a scheduled job, e.g, `cron`.
+
 ### Plugins
 
 Apart from the static tags mentioned in the previous section, all file content and additional tags are added to the Bag using plugins. Plugins are registerd in the `plugins` section of the configuration file.
@@ -164,7 +178,6 @@ To use a custom plugin, simply register its class name in the `plugins` list in 
 * Add more error and exception handling.
 * Add more logging.
 * Add CONTRIBUTING.md.
-* Figure out best way to include configuration data in REST requests.
 * Add tests.
 
 ## Current maintainer

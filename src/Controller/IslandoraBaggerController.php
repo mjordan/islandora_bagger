@@ -38,13 +38,11 @@ class IslandoraBaggerController extends AbstractController
 
     private function write_to_queue($nid, $yaml_path)
     {
-        // $now_iso8601 = date(\DateTime::ISO8601);
-
         // Write the request to the queue.
         $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "wr+");
         if (flock($fp, LOCK_EX)) {
-            // nid\tpath_to_yaml\tbag_created_timestamp\n
-            fwrite($fp, "$nid\t$yaml_path\t\n");
+            // nid\tpath_to_yaml\n
+            fwrite($fp, "$nid\t$yaml_path\n");
             fflush($fp);
             flock($fp, LOCK_UN);
             return true;
