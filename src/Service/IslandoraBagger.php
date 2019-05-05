@@ -126,7 +126,7 @@ class IslandoraBagger
           unlink(realpath($settings_path));
         }
 
-        // @todo: Return Bag directory path on success or false failure to command here.
+        // @todo: Return Bag directory path on success or false failure.
         return $bag_dir;
     }
 

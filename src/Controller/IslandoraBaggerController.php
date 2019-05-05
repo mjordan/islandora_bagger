@@ -22,12 +22,12 @@ class IslandoraBaggerController extends AbstractController
 
         // Get POSTed YAML from request body.
         $body = $request->getContent();
-        $yaml_path = $this->application_directory . '/var/islandora_bagger.' . $nid . '.yaml';
+        $yaml_path = $this->application_directory . '/var/islandora_bagger.' . $nid . '.yml';
         file_put_contents($yaml_path, $body);
 
         // If we create the Bag here, we risk timeouts. Add request to the queue.
         // @todo: If this method fails (returned false), log that.
-        $this->write_to_queue($nid, $yaml_path);
+        $this->writeToQueue($nid, $yaml_path);
 
         // @todo: what do we want in the response data?
         $data = array(
@@ -37,7 +37,7 @@ class IslandoraBaggerController extends AbstractController
         return $response;
     }
 
-    private function write_to_queue($nid, $yaml_path)
+    private function writeToQueue($nid, $yaml_path)
     {
         // Write the request to the queue.
         $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "a+");

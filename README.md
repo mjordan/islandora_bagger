@@ -130,9 +130,9 @@ This API is in its earliest stages of development and will change substantially 
 
 ## The queue
 
-Islandora Bagger can use a simple queue of jobs, which is used mainly as the source for REST requests to generate Bags.
+Islandora Bagger can use a simple queue of jobs, which is used mainly as the source for REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.).
 
-They queue is a simple tab-delimited text file that contains one entry per line. The three fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
+They queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
 
 `100       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.100.yaml`
 
@@ -141,7 +141,6 @@ To process the queue, run the following command:
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
 Typically, this command would be executed from within a scheduled job, e.g, `cron`.
-
 
 ## Customizing the Bags
 
