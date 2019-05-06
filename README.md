@@ -116,9 +116,9 @@ The resulting Bag would look like this:
 
 ## REST interface usage (experimental)
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue, from where the Bag is created in a scheduled job.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below).
 
-During this scheduled job, Islandora Bagger processes the queue. For each entry in the queue, it fetches the files and other data from the Islandora instance.
+Islandora Bagger processes the queue by inspecting each entry and fetching the files and other data from the Islandora instance required to create the object's Bag.
 
 To use the REST API
 
@@ -126,11 +126,14 @@ To use the REST API
 1. Run `php bin/console server:start`
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
-This API is in its earliest stages of development and will change substantially before it is ready for production use. `PUT` is the only method currently available. Also, the API lacks credential-based authentication. Using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+This API is in its earliest stages of development and will change before it is ready for production use. For example,
+
+* `PUT` is the only method currently available.
+* The API lacks credential-based authentication. Using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 
 ## The queue
 
-Islandora Bagger can use a simple queue of jobs, which is used mainly as the source for REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.).
+Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.).
 
 The queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
 
@@ -140,7 +143,7 @@ To process the queue, run the following command:
 
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
-Typically, this command would be executed from within a scheduled job, e.g, `cron`.
+Typically, this command would be executed from within a scheduled job managed by `cron`. This command iterates through the queue in fist-in, first-out order. Once processed, the entry is removed from the queue.
 
 ## Customizing the Bags
 
