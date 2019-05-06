@@ -116,7 +116,7 @@ The resulting Bag would look like this:
 
 ## REST interface usage (experimental)
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue, from where the Bag is created in a scheduled job.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue, from where the Bag is created in a scheduled job.
 
 During this scheduled job, Islandora Bagger processes the queue. For each entry in the queue, it fetches the files and other data from the Islandora instance.
 
@@ -126,7 +126,7 @@ To use the REST API
 1. Run `php bin/console server:start`
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
-This API is in its earliest stages of development and will change substantially before it is ready for production use.
+This API is in its earliest stages of development and will change substantially before it is ready for production use. `PUT` is the only method currently available. Also, the API lacks credential-based authentication. Using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 
 ## The queue
 
