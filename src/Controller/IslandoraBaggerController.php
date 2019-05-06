@@ -37,12 +37,22 @@ class IslandoraBaggerController extends AbstractController
         return $response;
     }
 
+    /**
+     * Writes a tab-delmited entry to the queue file.
+     *
+     * @param $nid string
+     *   The node ID of the Islandora object to Bag.
+     * @param $yaml_path string
+     *   The full path to the YAML settings file.
+     *
+     * @return bool
+     *   Whether or not the queue file was written.
+     */
     private function writeToQueue($nid, $yaml_path)
     {
         // Write the request to the queue.
         $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "a+");
         if (flock($fp, LOCK_EX)) {
-            // nid\tpath_to_yaml\n
             fwrite($fp, "$nid\t$yaml_path\n");
             fflush($fp);
             flock($fp, LOCK_UN);
