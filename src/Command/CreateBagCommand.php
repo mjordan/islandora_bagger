@@ -52,10 +52,11 @@ class CreateBagCommand extends ContainerAwareCommand
         $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
 
         if ($bag_dir) {
-            $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid . " at " . $bag_dir);
-        }
-        else {
-            $io->error("Bag not created for " . $this->settings['drupal_base_url'] . '/node/' . $nid . " at " . $bag_dir);
+            $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
+                . " at " . $bag_dir);
+        } else {
+            $io->error("Bag not created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
+                . " at " . $bag_dir);
         }
     }
 }

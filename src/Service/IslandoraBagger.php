@@ -130,7 +130,7 @@ class IslandoraBagger
         }
 
         if ($this->settings['delete_settings_file']) {
-          unlink(realpath($settings_path));
+            unlink(realpath($settings_path));
         }
 
         // @todo: Return Bag directory path on success or false failure.
@@ -142,18 +142,18 @@ class IslandoraBagger
      *  The Bag object.
      *
      * @return string
-     *   The Payload-Oxum value. 
+     *   The Payload-Oxum value.
      */
-     protected function generateOctetstreamSum($bag)
-     {
-         $file_counter = 0;
-         $filesize_sum = 0;
-         foreach ($bag->getBagContents() as $file_path) {
+    protected function generateOctetstreamSum($bag)
+    {
+        $file_counter = 0;
+        $filesize_sum = 0;
+        foreach ($bag->getBagContents() as $file_path) {
              $file_counter++;
              $filesize_sum = filesize($file_path) + $filesize_sum;
-         }
-         return $filesize_sum . '.' . $file_counter;
-     }
+        }
+        return $filesize_sum . '.' . $file_counter;
+    }
 
     /**
      * @param string $nid
@@ -162,8 +162,8 @@ class IslandoraBagger
      * @return bool
      *   Whether or not the location was logged.
      */
-     protected function logBagLocation($nid, $directory, $bag_name)
-     {
+    protected function logBagLocation($nid, $directory, $bag_name)
+    {
         $location_log_path = $this->params->get('app.location.log.path');
         $now_iso8601 = date(\DateTime::ISO8601);
         $bag_location = $this->params->get('app.bag.download.prefix') . $bag_name;
@@ -173,7 +173,7 @@ class IslandoraBagger
         } else {
             return false;
         }
-     }
+    }
 
     /**
      * Deletes a directory and all of its contents.

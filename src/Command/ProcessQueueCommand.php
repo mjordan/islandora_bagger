@@ -54,7 +54,6 @@ class ProcessQueueCommand extends ContainerAwareCommand
             // Update the queue file after each entry is processed.
             $this->updateQueue($entries);
         }
-
     }
 
     /**
@@ -104,5 +103,4 @@ class ProcessQueueCommand extends ContainerAwareCommand
             $this->logger->warning("Queue entry processed with warning", $details);
         }
     }
-
 }

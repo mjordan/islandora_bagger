@@ -46,8 +46,8 @@ class AddMedia extends AbstractIbPlugin
         $json_data = $media_list;
         $media_list = json_decode($media_list, true);
 
-        // Loop through all the media and pick the ones that are tagged with terms in $this->settings['drupal_media_tags'].
-        // If that list is empty, add all media to the Bag.
+        // Loop through all the media and pick the ones that are tagged with terms in
+        // $this->settings['drupal_media_tags']. If that list is empty, add all media to the Bag.
         if ($this->settings['include_media_use_list']) {
             $file_use_list = '';
         }
