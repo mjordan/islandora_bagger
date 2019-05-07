@@ -19,6 +19,8 @@ class IslandoraBagger
     {
         $this->settings = $settings;
         $this->logger = $logger;
+
+        $this->application_directory = dirname(__DIR__, 2);
     }
 
     /**
@@ -45,6 +47,8 @@ class IslandoraBagger
             true : $this->settings['include_payload_oxum'];
         $this->settings['delete_settings_file'] = (!isset($this->settings['delete_settings_file'])) ?
             false : $this->settings['delete_settings_file'];
+        $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
+            false : $this->settings['log_bag_location'];
 
         if (!file_exists($this->settings['output_dir'])) {
             mkdir($this->settings['output_dir']);
@@ -108,6 +112,9 @@ class IslandoraBagger
             $bag->package($bag_dir, $package);
             $this->removeDir($bag_dir);
             $bag_name = $bag_name . '.' . $package;
+            if ($this->settings['log_bag_location']) {
+                $this->logBagLocation($nid, $this->settings['output_dir'], $bag_name);
+            }
         }
 
         if ($this->settings['log_bag_creation']) {
@@ -146,6 +153,26 @@ class IslandoraBagger
              $filesize_sum = filesize($file_path) + $filesize_sum;
          }
          return $filesize_sum . '.' . $file_counter;
+     }
+
+    /**
+     * @param string $nid
+     *  The node ID of the Islanodra object.
+     *
+     * @return bool
+     *   Whether or not the location was logged.
+     */
+     protected function logBagLocation($nid, $directory, $bag_name)
+     {
+        $location_log_path = $this->application_directory . '/var/islandora_bagger.locations.txt';
+        $now_iso8601 = date(\DateTime::ISO8601);
+        $bag_path = $directory . DIRECTORY_SEPARATOR . $bag_name;
+        $data = $nid . "\t" . $bag_path . "\t" . $now_iso8601 . PHP_EOL;
+        if (file_put_contents($location_log_path, $data, FILE_APPEND)) {
+            return true;
+        } else {
+            return false;
+        }
      }
 
     /**

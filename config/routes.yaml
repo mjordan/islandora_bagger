@@ -3,3 +3,7 @@ app_islandora_bagger_create_bag:
     path: /api/createbag
     controller: App\Controller\IslandoraBaggerController::create
     methods: [POST]
+app_islandora_bagger_get_bag_location:
+    path: /api/createbag
+    controller: App\Controller\IslandoraBaggerController::getLocation
+    methods: [GET]

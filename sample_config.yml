@@ -14,7 +14,7 @@ temp_dir: /tmp/islandora_bagger_temp
 output_dir: /tmp
 
 # Required. Whether or not to zip up the Bag. One of 'false', 'zip', or 'tgz'.
-serialize: false
+serialize: zip
 
 # Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
@@ -43,9 +43,13 @@ bag-info:
 # and the remote website. Use at your own risk.
 # verify_ca: false
 
-# Optional. Whether or not to delete the settings file upon successful creation of
-# the Bag. Default is false.
+# Optional. Whether or not to delete the settings file upon successful creation
+# of the Bag. Default is false.
 # delete_settings_file: true
+
+# Optional. Whether or not to log the serialized Bag's location so Islandora can
+# retrieve the Bag's download URL. Default is false.
+log_bag_location: true
 
 ############################
 # Plugin-specific settings #

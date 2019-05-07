@@ -37,6 +37,30 @@ class IslandoraBaggerController extends AbstractController
         return $response;
     }
 
+    public function getLocation(Request $request, LoggerInterface $logger)
+    {
+        $this->application_directory = dirname(__DIR__, 2);
+        $location_log_path = $this->application_directory . '/var/islandora_bagger.locations.txt';
+
+        $nid = $request->headers->get('Islandora-Node-ID');
+
+        // @todo: Read log file, get the current node's Bag's location.
+        $locations = file($location_log_path, FILE_IGNORE_NEW_LINES);
+        foreach ($locations as $location) {
+            if (preg_match('/^' . $nid . '\t/', $location)) {
+                list($throwaway_nid, $bag_path, $timestamp) = explode('	', $location);
+                break;
+            }
+        }
+
+        $data = array(
+            'nid' => $nid,
+            'location' => $bag_path
+        );
+        $response = new JsonResponse($data);
+        return $response;
+    }
+
     /**
      * Writes a tab-delmited entry to the queue file.
      *

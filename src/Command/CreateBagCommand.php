@@ -41,6 +41,9 @@ class CreateBagCommand extends ContainerAwareCommand
         $settings_path = $input->getOption('settings');
         $this->settings = Yaml::parseFile($settings_path);
 
+        $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
+            false : $this->settings['log_bag_location'];
+
         $islandora_bagger = new IslandoraBagger($this->settings, $this->logger);
         $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
 

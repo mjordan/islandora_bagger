@@ -38,7 +38,7 @@ temp_dir: /tmp/islandora_bagger_temp
 output_dir: /tmp
 
 # Required. Whether or not to zip up the Bag. One of 'false', 'zip', or 'tgz'.
-serialize: false
+serialize: zip
 
 # Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
@@ -67,9 +67,13 @@ bag-info:
 # and the remote website. Use at your own risk.
 # verify_ca: false
 
-# Optional. Whether or not to delete the settings file upon successful creation of
-# the Bag. Default is false.
+# Optional. Whether or not to delete the settings file upon successful creation
+# of the Bag. Default is false.
 # delete_settings_file: true
+
+# Optional. Whether or not to log the serialized Bag's location so Islandora can
+# retrieve the Bag's download URL. Default is false.
+log_bag_location: true
 
 ############################
 # Plugin-specific settings #
@@ -116,20 +120,27 @@ The resulting Bag would look like this:
 
 ## REST interface usage (experimental)
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below).
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below). The REST interface also provides the ability to `GET` a Bag's location.
 
 Islandora Bagger processes the queue by inspecting each entry and fetching the files and other data from the Islandora instance required to create the object's Bag.
 
-To use the REST API
+To use the REST API to add a Bag-creation job to the queue:
 
 1. Create a configuration file as described above and copy your configuration file to `/tmp/sample_config.yml`
 1. Run `php bin/console server:start`
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
-This API is in its earliest stages of development and will change before it is ready for production use. For example,
+This API is in its earliest stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 
-* `PUT` is the only method currently available.
-* The API lacks credential-based authentication. Using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+To use the REST API to get a serialized Bag's location for download:
+
+1. Create a Bag.
+1. Start the web server, as above, if not already started.
+1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID and the Bag's location, e.g.:
+
+```javascript
+{"nid":"4","location":"\/tmp\/4.zip"}
+```
 
 ## The queue
 
@@ -143,7 +154,7 @@ To process the queue, run the following command:
 
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
-Typically, this command would be executed from within a scheduled job managed by `cron`. This command iterates through the queue in fist-in, first-out order. Once processed, the entry is removed from the queue.
+Typically, this command would be executed from within a scheduled job managed by `cron`. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue.
 
 ## Customizing the Bags
 
