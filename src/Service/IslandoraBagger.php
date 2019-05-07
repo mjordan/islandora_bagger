@@ -166,8 +166,8 @@ class IslandoraBagger
      {
         $location_log_path = $this->params->get('app.location.log.path');
         $now_iso8601 = date(\DateTime::ISO8601);
-        $bag_path = $directory . DIRECTORY_SEPARATOR . $bag_name;
-        $data = $nid . "\t" . $bag_path . "\t" . $now_iso8601 . PHP_EOL;
+        $bag_location = $this->params->get('app.bag.download.prefix') . $bag_name;
+        $data = $nid . "\t" . $bag_location . "\t" . $now_iso8601 . PHP_EOL;
         if (file_put_contents($location_log_path, $data, FILE_APPEND)) {
             return true;
         } else {

@@ -1,8 +1,13 @@
-# You may need to set the following application parameters.
+# You may need to set the first two application parameters, but you will want to change
+# app.bag.download.prefix.
 
 parameters:
     app.queue.path: '%kernel.project_dir%/var/islandora_bagger.queue'
     app.location.log.path: '%kernel.project_dir%/var/islandora_bagger.locations'
+    # The hostname/path to where users can download serialized bags. This string
+    # will be appended to the Bag's filename.
+    app.bag.download.prefix: 'http://example.com/bags/'
+
 
 # You should not modify anything below this line.
 

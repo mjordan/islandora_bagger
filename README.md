@@ -17,7 +17,7 @@ This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.
 
 ## Configuration
 
-Even though each Bag is created using options defined in a configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. Currently, the only two application-wide settings are the paths to the queue file and to the Bag locations log file. You probably don't need to change these parameters.
+Even though each Bag is created using options defined in its own configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files, but if you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename.
 
 ## Command-line usage
 
@@ -139,9 +139,25 @@ To use the REST API to get a serialized Bag's location for download:
 
 1. Create a Bag using the command-line or via a REST `PUT` request. The `serialize` setting must be either "zip" or "tgz", and the `log_bag_creation` setting must be `true`.
 1. Start the web server, as above, if not already started.
-1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g. `{"nid":"4","location":"\/tmp\/4.zip,"created":"2019-05-06T19:31:33-0700"}`
+1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g. `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
 
 This API is in its earliest stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+
+## Making Bags downloadable
+
+If you want to provide a way for Islanodora users to download Bags they have created, you can configure Islandora Bagger like this:
+
+* In the Bag-specific configuration file 
+  1. Make sure the `serialize` option is set to `zip` or `tgz` (only serialized Bags can be downloaded).
+  1. Make sure the `log_bag_location` option is set to `true`.
+  1. Make sure the directory specified in the `output_dir` settings file is exposed to the web.
+* In `config/services.yml`
+  1. make sure the `app.bag.download.prefix` parameter contains the hostname/path leading to the directory specified in the settings file's `output_dir` option.
+
+`GET` requests to the REST API will now return `location` values that contain URLs that combine the path specified in ``app.bag.download.prefix` with the serialized Bag's filename.
+
+This is obviously insecure, since anyone with access to the directory where the Bags are stored for download will have access to them. Please join the discussion at #17 if you have a suggestion on implementing more robust security on Bag downloads.
+
 
 ## The queue
 
