@@ -17,7 +17,7 @@ This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.
 
 ## Configuration
 
-Even though each Bag is created using options defined in a configuration file, Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. 
+Even though each Bag is created using options defined in a configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. Currently, the only two application-wide settings are the paths to the queue file and to the Bag locations log file. You probably don't need to change these parameters.
 
 ## Command-line usage
 
@@ -76,7 +76,8 @@ bag-info:
 # delete_settings_file: true
 
 # Optional. Whether or not to log the serialized Bag's location so Islandora can
-# retrieve the Bag's download URL. Default is false.
+# retrieve the Bag's download URL via REST. This has nothing to do with the Monolog
+# logger (which is controlled by the log_bag_creation setting above). Default is false.
 log_bag_location: true
 
 ############################
