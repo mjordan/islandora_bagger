@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Tool to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
+Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, a REST interface allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
 This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -17,7 +17,9 @@ This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.
 
 ## Configuration
 
-Even though each Bag is created using options defined in its own configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files, but if you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename.
+Even though each Bag is created using options defined in its own configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files.
+
+If you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename as described in the "Making Bags downloadable" section below.
 
 ## Command-line usage
 
@@ -127,7 +129,7 @@ The resulting Bag would look like this:
 
 Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below). The REST interface also provides the ability to `GET` a Bag's download URL.
 
-Islandora Bagger processes the queue by inspecting each entry and fetching the files and other data from the Islandora instance required to create the object's Bag.
+Note that requests to the REST interface do not generate Bags directly, they only populate a queue as described below.
 
 To use the REST API to add a Bag-creation job to the queue:
 
@@ -160,7 +162,7 @@ This is obviously insecure, since anyone who knows the location of the directory
 
 ## The queue
 
-Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.).
+Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in-first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which fetches the files and other data from the Islandora instance required to create the object's Bag.
 
 The queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
 
