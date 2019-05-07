@@ -55,7 +55,8 @@ class IslandoraBaggerController extends AbstractController
 
         $data = array(
             'nid' => $nid,
-            'location' => $bag_path
+            'location' => $bag_path,
+            'created' => $timestamp
         );
         $response = new JsonResponse($data);
         return $response;

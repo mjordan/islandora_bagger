@@ -134,12 +134,9 @@ This API is in its earliest stages of development and will change before it is r
 
 To use the REST API to get a serialized Bag's location for download:
 
-1. Create a Bag.
+1. Create a Bag using the command-line or via a REST `PUT` request. The `serialize` setting must be either "zip" or "tgz", and the `log_bag_creation` setting must be `true`.
 1. Start the web server, as above, if not already started.
-1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID and the Bag's location, e.g.:
-
-```javascript
-{"nid":"4","location":"\/tmp\/4.zip"}
+1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g. `{"nid":"4","location":"\/tmp\/4.zip,"created":"2019-05-06T19:31:33-0700"}`
 ```
 
 ## The queue
