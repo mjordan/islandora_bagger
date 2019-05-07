@@ -123,9 +123,9 @@ The resulting Bag would look like this:
 └── tagmanifest-sha1.txt
 ```
 
-## REST interface usage (experimental)
+## REST interface usage
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below). The REST interface also provides the ability to `GET` a Bag's location.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below). The REST interface also provides the ability to `GET` a Bag's download URL.
 
 Islandora Bagger processes the queue by inspecting each entry and fetching the files and other data from the Islandora instance required to create the object's Bag.
 
@@ -141,23 +141,22 @@ To use the REST API to get a serialized Bag's location for download:
 1. Start the web server, as above, if not already started.
 1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g. `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
 
-This API is in its earliest stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+This API is in its early stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 
-## Making Bags downloadable
+### Making Bags downloadable
 
-If you want to provide a way for Islanodora users to download Bags they have created, you can configure Islandora Bagger like this:
+As described in the previous section, the location of each Bag is available via Islandora Bagger's REST interface. If you want to use this information to provide a way to download Bags from Islandora Bagger, follow these steps:
 
 * In the Bag-specific configuration file 
   1. Make sure the `serialize` option is set to `zip` or `tgz` (only serialized Bags can be downloaded).
   1. Make sure the `log_bag_location` option is set to `true`.
-  1. Make sure the directory specified in the `output_dir` settings file is exposed to the web.
-* In `config/services.yml`
-  1. make sure the `app.bag.download.prefix` parameter contains the hostname/path leading to the directory specified in the settings file's `output_dir` option.
+  1. Make sure the directory specified in the `output_dir` option is exposed to the web.
+* In Islandora Bagger's `config/services.yml` file
+  1. make sure the `app.bag.download.prefix` parameter contains the hostname/path leading to the directory specified in the configuration file's `output_dir` option.
 
-`GET` requests to the REST API will now return `location` values that contain URLs that combine the path specified in ``app.bag.download.prefix` with the serialized Bag's filename.
+`GET` requests to the REST API will now return `location` values that contain URLs that combine the path specified in `app.bag.download.prefix` with the serialized Bag's filename.
 
-This is obviously insecure, since anyone with access to the directory where the Bags are stored for download will have access to them. Please join the discussion at #17 if you have a suggestion on implementing more robust security on Bag downloads.
-
+This is obviously insecure, since anyone who knows the location of the directory where the Bags are exposed for download will have access to them. Please join the discussion at [this issue](https://github.com/mjordan/islandora_bagger/issues/17) if you have a suggestion on implementing more robust security on Bag downloads.
 
 ## The queue
 
