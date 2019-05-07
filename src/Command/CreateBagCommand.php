@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
@@ -16,8 +17,11 @@ class CreateBagCommand extends ContainerAwareCommand
 {
     private $params;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
+        // Set in the parameters section of config/services.yaml.
+        $this->params = $params;
+
         // Set log output path in config/packages/{environment}/monolog.yaml
         $this->logger = $logger;
 
@@ -44,7 +48,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
             false : $this->settings['log_bag_location'];
 
-        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger);
+        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params);
         $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
 
         if ($bag_dir) {

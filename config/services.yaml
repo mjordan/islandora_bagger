@@ -1,6 +1,10 @@
-# Do not modify this file.
+# You may need to set the following application parameters.
 
 parameters:
+    app.queue.path: '%kernel.project_dir%/var/islandora_bagger.queue'
+    app.location.log.path: '%kernel.project_dir%/var/islandora_bagger.locations'
+
+# You should not modify anything below this line.
 
 services:
     # Default configuration for services in *this* file

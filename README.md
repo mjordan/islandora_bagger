@@ -15,6 +15,10 @@ This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.
 1. `cd islandora_bagger`
 1. `php composer.phar install` (or equivalent on your system, e.g., `./composer install`)
 
+## Configuration
+
+Even though each Bag is created using options defined in a configuration file, Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. 
+
 ## Command-line usage
 
 ### The configuration file

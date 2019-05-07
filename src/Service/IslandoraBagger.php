@@ -13,10 +13,10 @@ require 'bagit.php';
 
 class IslandoraBagger
 {
-    private $params;
-
-    public function __construct($settings, $logger)
+    public function __construct($settings, $logger, $params)
     {
+        $this->params = $params;
+
         $this->settings = $settings;
         $this->logger = $logger;
 
@@ -157,14 +157,14 @@ class IslandoraBagger
 
     /**
      * @param string $nid
-     *  The node ID of the Islanodra object.
+     *  The node ID of the Islandora object.
      *
      * @return bool
      *   Whether or not the location was logged.
      */
      protected function logBagLocation($nid, $directory, $bag_name)
      {
-        $location_log_path = $this->application_directory . '/var/islandora_bagger.locations.txt';
+        $location_log_path = $this->params->get('app.location.log.path');
         $now_iso8601 = date(\DateTime::ISO8601);
         $bag_path = $directory . DIRECTORY_SEPARATOR . $bag_name;
         $data = $nid . "\t" . $bag_path . "\t" . $now_iso8601 . PHP_EOL;

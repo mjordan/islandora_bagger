@@ -7,13 +7,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 use Psr\Log\LoggerInterface;
 
 class ProcessQueueCommand extends ContainerAwareCommand
 {
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
+        // Set in the parameters section of config/services.yaml.
+        $this->params = $params;
+
         // Set log output path in config/packages/{environment}/monolog.yaml
         $this->logger = $logger;
 

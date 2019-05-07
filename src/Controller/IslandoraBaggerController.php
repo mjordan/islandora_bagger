@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
@@ -37,10 +38,12 @@ class IslandoraBaggerController extends AbstractController
         return $response;
     }
 
-    public function getLocation(Request $request, LoggerInterface $logger)
+    public function getLocation(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
-        $this->application_directory = dirname(__DIR__, 2);
-        $location_log_path = $this->application_directory . '/var/islandora_bagger.locations.txt';
+        // Set in the parameters section of config/services.yaml.
+        $this->params = $params;
+
+        $location_log_path = $this->params->get('app.location.log.path');
 
         $nid = $request->headers->get('Islandora-Node-ID');
 
