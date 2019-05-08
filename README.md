@@ -38,7 +38,7 @@ Islandora Bagger requires a configuration file in YAML format:
 
 # Required.
 drupal_base_url: 'http://localhost:8000'
-drupal_media_auth: ['admin', 'islandora']
+drupal_basic_auth: ['admin', 'islandora']
 
 # Required. How to name the Bag directory (or file if serialized). One of 'nid' or 'uuid'.
 bag_name: nid
