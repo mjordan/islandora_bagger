@@ -76,13 +76,16 @@ class IslandoraBagger
 
         // Create directories.
         $bag_dir = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
-        if (!file_exists($bag_dir)) {
-            mkdir($bag_dir);
+        if (file_exists($bag_dir)) {
+            $this->removeDir($bag_dir);
         }
+        mkdir($bag_dir);
+
         $bag_temp_dir = $this->settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
-        if (!file_exists($bag_temp_dir)) {
-            mkdir($bag_temp_dir);
+        if (file_exists($bag_temp_dir)) {
+            $this->removeDir($bag_temp_dir);
         }
+        mkdir($bag_temp_dir);
 
         // Create the Bag.
         $bag_info = array();
@@ -110,11 +113,14 @@ class IslandoraBagger
 
         $package = isset($this->settings['serialize']) ? $this->settings['serialize'] : false;
         if ($package) {
+            $bag_file_path = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name  . '.' . $package;
+            if (file_exists($bag_file_path)) {
+                @unlink($bag_file_path);
+            }
             $bag->package($bag_dir, $package);
             $this->removeDir($bag_dir);
-            $bag_name = $bag_name . '.' . $package;
             if ($this->settings['log_bag_location']) {
-                $this->logBagLocation($nid, $this->settings['output_dir'], $bag_name);
+                $this->logBagLocation($nid, $bag_name . '.' . $package);
             }
         }
 
@@ -136,7 +142,7 @@ class IslandoraBagger
 
         // @todo: Return Bag directory path on success or false failure.
         if ($package) {
-            return $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
+            return $bag_file_path;
         } else {
             return $bag_dir;
         }
@@ -167,7 +173,7 @@ class IslandoraBagger
      * @return bool
      *   Whether or not the location was logged.
      */
-    protected function logBagLocation($nid, $directory, $bag_name)
+    protected function logBagLocation($nid, $bag_name)
     {
         $location_log_path = $this->params->get('app.location.log.path');
         $now_iso8601 = date(\DateTime::ISO8601);
@@ -188,11 +194,17 @@ class IslandoraBagger
      *
      * @return bool
      *   True if the directory was deleted, false if not.
-     *
      */
     protected function removeDir($dir)
     {
-        // @todo: Add list here of invalid $dir values, e.g., /, /tmp.
+        $invalid_dirs = array('/', '/tmp');
+        if (in_array($dir, $invalid_dirs)) {
+            $this->logger->warning(
+                "Directory is in list of directories to not remove.",
+                array('Directory' => $dir)
+            );
+            return false;
+        }
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
