@@ -1,8 +1,8 @@
 # Islandora Bagger
 
-Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, a REST interface allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
+Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, Islandora Bagger provides its own REST interface that allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification.
 
-This utility is for Islandora 8.x-1.x (CLAW). For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
+This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
 ## Requirements
 
@@ -105,6 +105,7 @@ include_media_use_list: true
 ####################
 # Post-Bag scripts #
 ####################
+
 # post_bag_scripts: ["php /tmp/test.php", "python /path/to/script.py"]
 ```
 
@@ -220,7 +221,7 @@ The `post_bag_scripts` option in the configuration file allows you to specify a 
 * the scripts are only executed if the Bag was successfully created
 * the scripts are executed in the order they appear in the list
 * all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if serialized, the path to the Bag file)
-* you should always include the scripts interpreter (php, python, etc.) and the full path to the script
+* you should always include the script's interpreter (php, python, etc.) and the full path to the script
 * the results of the script are logged, including their exit codes.
 
 ## To do

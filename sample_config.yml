@@ -75,4 +75,5 @@ include_media_use_list: true
 ####################
 # Post-Bag scripts #
 ####################
+
 # post_bag_scripts: ["php /tmp/test.php", "python /path/to/script.py"]
