@@ -47,6 +47,8 @@ class CreateBagCommand extends ContainerAwareCommand
 
         $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
             false : $this->settings['log_bag_location'];
+        $this->settings['post_bag_scripts'] = (!isset($this->settings['post_bag_scripts'])) ?
+            array() : $this->settings['post_bag_scripts'];
 
         $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params);
         $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
@@ -54,6 +56,25 @@ class CreateBagCommand extends ContainerAwareCommand
         if ($bag_dir) {
             $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
                 . " at " . $bag_dir);
+
+            if (count($this->settings['post_bag_scripts']) > 0) {
+                foreach ($this->settings['post_bag_scripts'] as $script) {
+                    $script = $script . " $nid $bag_dir";
+                    exec($script, $script_output, $script_return);
+                    $script_details = array(
+                        'node ID' => $nid,
+                        'script' => $script,
+                        'exit code' => $script_return
+                    );
+                    if ($this->logger) {
+                        if ($script_return == 0) {
+                            $this->logger->info("Post-Bag script ran successfully", $script_details);
+                        } else {
+                            $this->logger->warning("Post-Bag script encountered a problem", $script_details);
+                        }
+                    }
+                }
+            }
         } else {
             $io->error("Bag not created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
                 . " at " . $bag_dir);

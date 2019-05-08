@@ -71,3 +71,8 @@ drupal_media_tags: ['/taxonomy/term/15']
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
 # name corresponding to the 'drupal_media_tags' list. Default is false.
 include_media_use_list: true
+
+####################
+# Post-Bag scripts #
+####################
+# post_bag_scripts: ["php /tmp/test.php", "python /path/to/script.py"]

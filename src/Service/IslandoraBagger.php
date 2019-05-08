@@ -33,6 +33,7 @@ class IslandoraBagger
      *
      * @return string|bool
      *   The path to the Bag if successful, false if unsuccessful.
+     *   If Bag is serialized, path includes path and Bag filename.
      */
     public function createBag($nid, $settings_path)
     {
@@ -134,7 +135,11 @@ class IslandoraBagger
         }
 
         // @todo: Return Bag directory path on success or false failure.
-        return $bag_dir;
+        if ($package) {
+            return $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
+        } else {
+            return $bag_dir;
+        }
     }
 
     /**

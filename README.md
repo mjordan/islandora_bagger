@@ -78,8 +78,7 @@ bag-info:
 # delete_settings_file: true
 
 # Optional. Whether or not to log the serialized Bag's location so Islandora can
-# retrieve the Bag's download URL via REST. This has nothing to do with the Monolog
-# logger (which is controlled by the log_bag_creation setting above). Default is false.
+# retrieve the Bag's download URL. Default is false.
 log_bag_location: true
 
 ############################
@@ -102,6 +101,11 @@ drupal_media_tags: ['/taxonomy/term/15']
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
 # name corresponding to the 'drupal_media_tags' list. Default is false.
 include_media_use_list: true
+
+####################
+# Post-Bag scripts #
+####################
+# post_bag_scripts: ["php /tmp/test.php", "python /path/to/script.py"]
 ```
 
 The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
@@ -208,6 +212,16 @@ The following plugins are bundled with Islandora Bagger:
 Each plugin is a PHP class that extends the base `AbstractIbPlugin` class. The `Sample.php` plugin illustrates what you can (and must) do within a plugin. Plugins are located in the `islandora_bagger/src/Plugin` directory, and must implement an `execute()` method. Within that method, you have access to the Bag object, the Bag temporary directory, the node's ID, the node's JSON representation from Drupal. You also have access to all values in the configuratin file via the `$this->settings` associative array.
 
 To use a custom plugin, simply register its class name in the `plugins` list in your configuation file.
+
+## Post-Bag scripts
+
+The `post_bag_scripts` option in the configuration file allows you to specify a list of scripts to run after the Bag has been successfully created. These scripts can send email messages, copy Bag files to alternate locations, and other tasks. You can include any script, in any language, with the following constraints:
+
+* the scripts are only executed if the Bag was successfully created
+* the scripts are executed in the order they appear in the list
+* all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if serialized, the path to the Bag file)
+* you should always include the scripts interpreter (php, python, etc.) and the full path to the script
+* the results of the script are logged, including their exit codes.
 
 ## To do
 
