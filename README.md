@@ -17,11 +17,15 @@ This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use 
 
 ## Configuration
 
-Even though each Bag is created using options defined in its own configuration file (see next section), Islandora Bagger uses some application-wide configuration paramters defined in the `parameters` section of `config/services.yaml`. You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files.
+Even though each Bag is created using options defined in its own configuration file (see next section), Islandora Bagger uses several application-wide configuration options defined in the `parameters` section of `config/services.yaml`.
 
-If you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename as described in the "Making Bags downloadable" section below.
+You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files. However, if you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename as described in the "Making Bags downloadable" section below.
 
 ## Command-line usage
+
+The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
+
+`./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
 
 ### The configuration file
 
@@ -109,10 +113,6 @@ include_media_use_list: true
 # post_bag_scripts: ["php /tmp/test.php", "python /path/to/script.py"]
 ```
 
-The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the above configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
-
-`./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
-
 The resulting Bag would look like this:
 
 ```
@@ -132,27 +132,29 @@ The resulting Bag would look like this:
 
 ## REST interface usage
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and by receiving a YAML configuration file as the body of the request. Using this information, it adds the request to a queue (see below). The REST interface also provides the ability to `GET` a Bag's download URL.
+Islandora Bagger can also create Bags via a simple REST interface. It does this by 1) receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and 2) receiving a YAML configuration file as the body of the request. Using this data, it adds the request to a queue (see below), which is then processed at a later time. The REST interface also provides the ability to `GET` a Bag's download URL.
 
 Note that requests to the REST interface do not generate Bags directly, they only populate a queue as described below.
 
 To use the REST API to add a Bag-creation job to the queue:
 
-1. Create a configuration file as described above and copy your configuration file to `/tmp/sample_config.yml`
+1. Prepare a YAML configuration file for posting to the REST API.
 1. Run `php bin/console server:start`
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
 To use the REST API to get a serialized Bag's location for download:
 
-1. Create a Bag using the command-line or via a REST `PUT` request. The `serialize` setting must be either "zip" or "tgz", and the `log_bag_creation` setting must be `true`.
+1. Create a Bag using the command-line or via a REST `PUT` request. The configuration file's `serialize` setting must be either "zip" or "tgz", and the `log_bag_creation` setting must be `true`.
 1. Start the web server, as above, if not already started.
-1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g. `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
+1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g.:
+
+ `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
 
 This API is in its early stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 
 ### Making Bags downloadable
 
-As described in the previous section, the location of each Bag is available via Islandora Bagger's REST interface. If you want to use this information to provide a way to download Bags from Islandora Bagger, follow these steps:
+As described in the previous section, the location of each Bag is available via a `GET` request to Islandora Bagger's REST interface. If you want to use this information to provide a way to download Bags from Islandora Bagger, follow these steps:
 
 * In the Bag-specific configuration file 
   1. Make sure the `serialize` option is set to `zip` or `tgz` (only serialized Bags can be downloaded).
@@ -167,7 +169,7 @@ This is obviously insecure, since anyone who knows the location of the directory
 
 ## The queue
 
-Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in-first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which fetches the files and other data from the Islandora instance required to create the object's Bag.
+Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in, first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which creates the Bag by fetching the files and other data from the Islandora instance.
 
 The queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
 
@@ -177,7 +179,7 @@ To process the queue, run the following command:
 
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
-Typically, this command would be executed from within a scheduled job managed by `cron`. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue.
+where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue.
 
 ## Customizing the Bags
 
@@ -218,10 +220,11 @@ To use a custom plugin, simply register its class name in the `plugins` list in 
 
 The `post_bag_scripts` option in the configuration file allows you to specify a list of scripts to run after the Bag has been successfully created. These scripts can send email messages, copy Bag files to alternate locations, and other tasks. You can include any script, in any language, with the following constraints:
 
+* the scripts must exist on the same system where Islandora Bagger is running, and must be executable by the user running the `app:islandora_bagger:create_bag` command
+* you should always include the script's interpreter (php, python, etc.) and the full path to the script
 * the scripts are only executed if the Bag was successfully created
 * the scripts are executed in the order they appear in the list
 * all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if serialized, the path to the Bag file)
-* you should always include the script's interpreter (php, python, etc.) and the full path to the script
 * the results of the script are logged, including their exit codes.
 
 ## To do
