@@ -179,7 +179,7 @@ To process the queue, run the following command:
 
 `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
 
-where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue.
+where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue --entries 100`
 
 ## Customizing the Bags
 

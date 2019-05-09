@@ -31,14 +31,25 @@ class ProcessQueueCommand extends ContainerAwareCommand
         $this
             ->setName('app:islandora_bagger:process_queue')
             ->setDescription('Console tool for processing items in the Islandora Bagger queue.')
-            ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'Absolute path to Islandora Bagger queue file.');
+            ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'Absolute path to Islandora Bagger queue file.')
+            ->addOption('entries', null, InputOption::VALUE_OPTIONAL, 'Number of queue entries to process. ' .
+                'If omitted, all entries will be processed.', 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->queue_path = $input->getOption('queue');
+        $num_entries_to_process = $input->getOption('entries');
         $entries = file($this->queue_path, FILE_IGNORE_NEW_LINES);
-        foreach ($entries as $entry) {
+        $num_entries_in_queue = count($entries);
+        if ($num_entries_to_process === 0) {
+            $num_entries_to_process = $num_entries_in_queue;
+        }
+        // In case someone enters a negative value.
+        if ($num_entries_to_process < 0) {
+            $num_entries_to_process = 0;
+        }
+        for ($i = 1; $i <= $num_entries_to_process; $i++) {
             $current = array_shift($entries);
             list($nid, $path_to_yaml) = explode('	', $current);
 
