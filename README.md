@@ -83,7 +83,7 @@ bag-info:
 
 # Optional. Whether or not to log the serialized Bag's location so Islandora can
 # retrieve the Bag's download URL. Default is false.
-log_bag_location: true
+# log_bag_location: true
 
 ############################
 # Plugin-specific settings #
@@ -177,9 +177,9 @@ The queue is a simple tab-delimited text file that contains one entry per line. 
 
 To process the queue, run the following command:
 
-`./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue`
+`./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue`
 
-where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue var/islandora_bagger.queue --entries 100`
+where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue --entries=100`
 
 ## Customizing the Bags
 
@@ -224,7 +224,7 @@ The `post_bag_scripts` option in the configuration file allows you to specify a 
 * you should always include the script's interpreter (php, python, etc.) and the full path to the script
 * the scripts are only executed if the Bag was successfully created
 * the scripts are executed in the order they appear in the list
-* all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if serialized, the path to the Bag file)
+* all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if the Bag was serialized, the path to the Bag file)
 * the results of the script are logged, including their exit codes.
 
 ## To do

@@ -49,7 +49,7 @@ bag-info:
 
 # Optional. Whether or not to log the serialized Bag's location so Islandora can
 # retrieve the Bag's download URL. Default is false.
-log_bag_location: true
+# log_bag_location: true
 
 ############################
 # Plugin-specific settings #
