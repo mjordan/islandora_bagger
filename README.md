@@ -172,17 +172,17 @@ Another approach is to use a post-Bag script (see below) to copy the Bag to a lo
 
 ## The queue
 
-Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in, first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which creates the Bag by fetching the files and other data from the Islandora instance.
+Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in, first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which creates the Bag by fetching the files and other data from the Islandora instance as defined in that entry's configuration file.
 
 The queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
 
-`100       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.100.yaml`
+`2073       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.2073.yaml`
 
 To process the queue, run the following command:
 
 `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue`
 
-where the value of the `--queue` option is the path to the queue file. Typically, this command would be executed from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue --entries=100`
+where the value of the `--queue` option is the path to the queue file. This command is then executed as needed, or from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue --entries=100`
 
 ## Customizing the Bags
 
