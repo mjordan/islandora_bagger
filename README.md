@@ -138,13 +138,14 @@ Note that requests to the REST interface do not generate Bags directly, they onl
 
 To use the REST API to add a Bag-creation job to the queue:
 
-1. Prepare a YAML configuration file for posting to the REST API.
 1. Run `php bin/console server:start`
+1. Prepare a YAML configuration file for posting to the REST API.
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
 To use the REST API to get a serialized Bag's location for download:
 
-1. Create a Bag using the command-line or via a REST `PUT` request. The configuration file's `serialize` setting must be either "zip" or "tgz", and the `log_bag_creation` setting must be `true`.
+1. Make sure your configuration file's `serialize` setting is either "zip" or "tgz", and the `log_bag_creation` setting is `true`.
+1. Create a Bag using the command-line or via a REST `PUT` request.
 1. Start the web server, as above, if not already started.
 1. Run `curl -v -H "Islandora-Node-ID: 4" http://127.0.0.1:8001/api/createbag`. Your response will be a JSON string containing the node ID, the Bag's location, and an ISO8601 timestamp of when the Bag was created, e.g.:
 
@@ -165,7 +166,9 @@ As described in the previous section, the location of each Bag is available via 
 
 `GET` requests to the REST API will now return `location` values that contain URLs that combine the path specified in `app.bag.download.prefix` with the serialized Bag's filename.
 
-This is obviously insecure, since anyone who knows the location of the directory where the Bags are exposed for download will have access to them. Please join the discussion at [this issue](https://github.com/mjordan/islandora_bagger/issues/17) if you have a suggestion on implementing more robust security on Bag downloads.
+This is insecure, since anyone who can guess the path to a Bags will have access to it. Please join the discussion at [this issue](https://github.com/mjordan/islandora_bagger/issues/17) if you have a suggestion on implementing more robust security on Bag downloads.
+
+Another approach is to use a post-Bag script (see below) to copy the Bag to a location from where it can be downloaded, and to email the user with the location.
 
 ## The queue
 
@@ -224,8 +227,21 @@ The `post_bag_scripts` option in the configuration file allows you to specify a 
 * you should always include the script's interpreter (php, python, etc.) and the full path to the script
 * the scripts are only executed if the Bag was successfully created
 * the scripts are executed in the order they appear in the list
-* all scripts are passed two arguments, 1) the current node ID and 2) the Bag's output directory (or if the Bag was serialized, the path to the Bag file)
-* the results of the script are logged, including their exit codes.
+* all scripts are passed three arguments, 1) the current node ID, 2) the Bag's output directory (or if the Bag was serialized, the path to the Bag file), and 3) the path to the YAML configuration file
+* the results of the script are logged, including their exit codes
+
+In the YAML configuration file, you can define any options needed by your scripts, for example, an email address to send a message to. For example, if your script `/opt/utils/send_bag_notice.py` requires an email address to send its notice to, you can include that value in your configuration file:
+
+```
+####################
+# Post-Bag scripts #
+####################
+
+post_bag_scripts: ["python /opt/utils/send_bag_notice.py"]
+recipient_email: preservation@example.ca
+```
+
+Then within your script, you would have access to the value of `recipient_email`. You can reuse any values used by Islandora Bagger's `app:islandora_bagger:create_bag` command, or define any other values you need as long as they don't have the same key names as existing values.
 
 ## To do
 

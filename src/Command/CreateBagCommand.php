@@ -59,7 +59,7 @@ class CreateBagCommand extends ContainerAwareCommand
 
             if (count($this->settings['post_bag_scripts']) > 0) {
                 foreach ($this->settings['post_bag_scripts'] as $script) {
-                    $script = $script . " $nid $bag_dir";
+                    $script = $script . " $nid $bag_dir $settings_path";
                     exec($script, $script_output, $script_return);
                     $script_details = array(
                         'node ID' => $nid,
