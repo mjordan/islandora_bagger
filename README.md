@@ -247,12 +247,15 @@ Then within your script, you would have access to the value of `recipient_email`
 
 * Add more error and exception handling.
 * Add more logging.
-* Add CONTRIBUTING.md.
 * Add tests.
 
 ## Current maintainer
 
 * [Mark Jordan](https://github.com/mjordan)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
