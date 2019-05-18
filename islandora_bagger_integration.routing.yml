@@ -1,0 +1,7 @@
+islandora_bagger_integration.settings:
+  path: '/admin/config/islandora_bagger_integration/settings'
+  defaults:
+    _form: '\Drupal\islandora_bagger_integration\Plugin\Form\IslandoraBaggerIntegrationSettingsForm'
+    _title: 'Islandora Bagger Integration'
+  requirements:
+    _permission: 'administer site configuration'

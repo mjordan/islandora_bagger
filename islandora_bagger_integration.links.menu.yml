@@ -1,0 +1,5 @@
+system.islandora_bagger_integration_settings:
+  title: 'Islandora Bagger Integration Settings'
+  parent: system.admin_config_islandora
+  route_name: islandora_bagger_integration.settings
+  description: 'Confgure Islandora Bagger Integration settings.'
