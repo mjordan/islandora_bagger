@@ -17,7 +17,6 @@ class IslandoraBaggerForm extends FormBase {
     return 'islandora_bagger_form';
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -42,13 +41,35 @@ class IslandoraBaggerForm extends FormBase {
 
       $config = \Drupal::config('islandora_bagger_integration.settings');
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
-      // @todo: Add asyncronous Guzzle request here.
 
-      \Drupal::logger('islandora_bagger_integration')->notice('Request to generate Bag submitted.');
-      $this->messenger()->addStatus(
-        $this->t('Request to create Bag for "@title" (node @nid) submitted.',
-        ['@title' => $title, '@nid' => $nid])
+      // For now, we use a sample config file.
+      $sample_config_file_path = drupal_get_path('module', 'islandora_bagger_integration') .
+        '/assets/sample_islandora_bagger_config.yml';
+      $sample_config_file_contents = fopen($sample_config_file_path, 'r');
+
+      $headers = array('Islandora-Node-ID' => $nid);
+      $response = \Drupal::httpClient()->post(
+        $endpoint,
+        array('headers' => $headers, 'body' => $sample_config_file_contents)
       );
+      $http_code = $response->getStatusCode();
+      if ($http_code == 200) {
+        $messanger_level = 'addStatus';
+        $logger_level = 'notice';
+        $message = $this->t('Request to create Bag for "@title" (node @nid) submitted.',
+          ['@title' => $title, '@nid' => $nid]
+        );
+      }
+      else {
+        $messanger_level = 'addWarning';
+        $logger_level = 'warning';
+        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with status code @http.',
+          ['@title' => $title, '@nid' => $nid, '@http' => $http_code]
+        );
+      }
+
+      \Drupal::logger('islandora_bagger_integration')->{$logger_level}($message);
+      $this->messenger()->{$messanger_level}($message);
     }
   }
 
