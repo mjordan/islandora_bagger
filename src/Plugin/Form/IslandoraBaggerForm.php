@@ -42,6 +42,11 @@ class IslandoraBaggerForm extends FormBase {
       $config = \Drupal::config('islandora_bagger_integration.settings');
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
 
+      $context_manager = \Drupal::service('context.manager');
+      foreach ($context_manager->getActiveReactions('islandora_bagger_integration_config_file_paths') as $reaction) {
+        $islandora_bagger_config_file_path = $reaction->execute();
+      }
+
       // For now, we use a sample config file.
       $sample_config_file_path = drupal_get_path('module', 'islandora_bagger_integration') .
         '/assets/sample_islandora_bagger_config.yml';
