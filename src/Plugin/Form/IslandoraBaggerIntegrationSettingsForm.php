@@ -37,6 +37,13 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Do not include the trailing /.'),
       '#default_value' => $config->get('islandora_bagger_rest_endpoint') ? $config->get('islandora_bagger_rest_endpoint') : 'http://localhost:8000/api/createbag',
     );
+    $form['islandora_bagger_default_config_file_path'] = array(
+      '#type' => 'textfield',
+      '#maxlength' => 256,
+      '#title' => $this->t('Absolute path to default Islandora Bagger microservice config file'),
+      '#description' => $this->t('This file must exist on your Drupal server. You can use other config files via Context.'),
+      '#default_value' => $config->get('islandora_bagger_default_config_file_path') ? $config->get('islandora_bagger_default_config_file_path') : '/tmp/path_to_default_config.yml',
+    );
 
     return parent::buildForm($form, $form_state);
   }
@@ -46,6 +53,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
        $this->configFactory->getEditable('islandora_bagger_integration.settings')
+      ->set('islandora_bagger_default_config_file_path', $form_state->getValue('islandora_bagger_default_config_file_path'))
       ->set('islandora_bagger_rest_endpoint', $form_state->getValue('islandora_bagger_rest_endpoint'))
       ->save();
 

@@ -12,7 +12,7 @@ use Drupal\context\ContextReactionPluginBase;
  *
  * @ContextReaction(
  *   id = "islandora_bagger_integration_config_file_paths",
- *   label = @Translation("Islandora Bagger config files")
+ *   label = @Translation("Islandora Bagger config file")
  * )
  */
 class IslandoraBaggerConfigurationFileReaction extends ContextReactionPluginBase {
@@ -49,6 +49,7 @@ class IslandoraBaggerConfigurationFileReaction extends ContextReactionPluginBase
     $form['bagger_config_file_path'] = [
       '#title' => $this->t('Islandora Bagger config file path'),
       '#type' => 'textfield',
+      '#maxlength' => 256,
       '#description' => $this->t('Absolute path on the Drupal server to the Islandora Bagger config file to use.'),
       '#default_value' => isset($config['bagger_config_file_path']) ? $config['bagger_config_file_path'] : '',
     ];
