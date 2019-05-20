@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Module that allows users to create Bags using an [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice. Provides a block that contains a form to request the creation of a Bag for the curent object.
+Drupa 8 Module that allows users to create Bags using an [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice. Provides a block that contains a form to request the creation of a Bag for the curent node/object.
 
 ## Requirements
 
