@@ -3,9 +3,7 @@
 namespace Drupal\islandora_bagger_integration\Plugin\ContextReaction;
 
 use Drupal\Core\Form\FormStateInterface;
-// use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\context\ContextReactionPluginBase;
-// use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provide paths to Islandora Bagger config files.
