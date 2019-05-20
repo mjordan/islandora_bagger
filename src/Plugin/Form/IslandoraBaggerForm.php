@@ -65,10 +65,12 @@ class IslandoraBaggerForm extends FormBase {
       $config = \Drupal::config('islandora_bagger_integration.settings');
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
 
-      $context_manager = \Drupal::service('context.manager');
-      // If there are multiple contexts that provide a path to a config file, it's OK to use the last one.
-      foreach ($context_manager->getActiveReactions('islandora_bagger_integration_config_file_paths') as $reaction) {
-        $islandora_bagger_config_file_path_from_context = $reaction->execute();
+      if (\Drupal::moduleHandler()->moduleExists('context')) {
+        $context_manager = \Drupal::service('context.manager');
+        // If there are multiple contexts that provide a path to a config file, it's OK to use the last one.
+        foreach ($context_manager->getActiveReactions('islandora_bagger_integration_config_file_paths') as $reaction) {
+          $islandora_bagger_config_file_path_from_context = $reaction->execute();
+        }
       }
 
       if (isset($islandora_bagger_config_file_path_from_context) && strlen($islandora_bagger_config_file_path_from_context)) {
