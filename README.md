@@ -17,7 +17,10 @@ Module that allows users to create Bags using an [Islandora Bagger](https://gith
 
 ## Configuration
 
-The only admin setting provided by this module is the URL of the Islandora Bagger REST endpoint. If you are running Islandora in the CLAW Vagrant, and Islandora Bagger on the host machine (i.e., same machine that is hosing the Vagrant), use `10.0.2.2` as your endpoint IP address instead of `localhost`.
+The only admin settings provided by this module are:
+
+1. The URL of the Islandora Bagger REST endpoint. If you are running Islandora in the CLAW Vagrant, and Islandora Bagger on the host machine (i.e., same machine that is hosing the Vagrant), use `10.0.2.2` as your endpoint IP address instead of `localhost`.
+1. The absolute path to the default Islandora Bagger configuration file. This file is used if no Contexts are configured to use an alternative configuration file.
 
 ## Using Context to define which configuration file to use
 
