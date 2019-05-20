@@ -20,11 +20,11 @@ Module that allows users to create Bags using an [Islandora Bagger](https://gith
 The only admin settings provided by this module are:
 
 1. The URL of the Islandora Bagger REST endpoint. If you are running Islandora in the CLAW Vagrant, and Islandora Bagger on the host machine (i.e., same machine that is hosing the Vagrant), use `10.0.2.2` as your endpoint IP address instead of `localhost`.
-1. The absolute path to the default Islandora Bagger configuration file. This file is used if no Contexts are configured to use an alternative configuration file.
+1. The absolute path on your Drupal server to the default Islandora Bagger configuration file. This file is used if no Contexts are configured to use an alternative configuration file.
 
 ## Using Context to define which configuration file to use
 
-This module comes with a Context reaction that allows you to use alternative Islandora Bagger configuration file. To enable this, do the folowing:
+This module comes with a Context reaction that allows you to use Islandora Bagger configuration files other than the default. To enable this, do the folowing:
 
 1. Install Context and Context UI modules.
 1. Create a Context or edit an existing Context.
@@ -32,7 +32,7 @@ This module comes with a Context reaction that allows you to use alternative Isl
 1. Add the "Islandora Bagger Config File" reaction.
 1. Enter the absolute path on your Drupal server to the configuration file you want to use.
 
-There is no mechanism for uploading configuration files, so you will need access to the Drupal server's file system. Also, do not put configuration files in directories that are accessible via the web, since they contain credentials for accessing your Drupal's REST interface.
+This module provides no mechanism for uploading configuration files via Drupal's web interface, so you will need access to the Drupal server's file system. Also, do not put configuration files in directories that are accessible via the web, since they contain credentials for accessing your Drupal's REST interface.
 
 ## Usage
 
