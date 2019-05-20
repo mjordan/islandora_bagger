@@ -47,13 +47,25 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if (!file_exists(trim($form_state->getValue('islandora_bagger_default_config_file_path')))) {
+      $form_state->setErrorByName(
+        'islandora_bagger_default_config_file_path',
+        $this->t('Cannot find the Islandora Bagger config file at the path specified.')
+      );
+    }
+  }
+
   /** 
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
        $this->configFactory->getEditable('islandora_bagger_integration.settings')
-      ->set('islandora_bagger_default_config_file_path', $form_state->getValue('islandora_bagger_default_config_file_path'))
-      ->set('islandora_bagger_rest_endpoint', $form_state->getValue('islandora_bagger_rest_endpoint'))
+      ->set('islandora_bagger_default_config_file_path', trim($form_state->getValue('islandora_bagger_default_config_file_path')))
+      ->set('islandora_bagger_rest_endpoint', trim($form_state->getValue('islandora_bagger_rest_endpoint')))
       ->save();
 
     parent::submitForm($form, $form_state);

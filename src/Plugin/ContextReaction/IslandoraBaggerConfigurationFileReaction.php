@@ -57,9 +57,22 @@ class IslandoraBaggerConfigurationFileReaction extends ContextReactionPluginBase
   /**
    * {@inheritdoc}
    */
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    if (!file_exists($form_state->getValue('bagger_config_file_path'))) {
+      $form_state->setErrorByName(
+        'bagger_config_file_path',
+        $this->t('Cannot find the Islandora Bagger config file at the path specified.')
+      );
+    }
+    parent::validateConfigurationForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     $this->setConfiguration([
-      'bagger_config_file_path' => $form_state->getValue('bagger_config_file_path'),
+      'bagger_config_file_path' => trim($form_state->getValue('bagger_config_file_path')),
     ]);
   }
 
