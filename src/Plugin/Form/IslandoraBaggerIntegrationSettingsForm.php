@@ -3,7 +3,7 @@ namespace Drupal\islandora_bagger_integration\Plugin\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\Entity\NodeType;
+// use Drupal\node\Entity\NodeType;
 
 /**
  * Configure example settings for this site.
