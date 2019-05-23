@@ -21,47 +21,15 @@ Even though each Bag is created using options defined in its own configuration f
 
 You probably don't need to change `app.queue.path` and `app.location.log.path` since these specify default locations for some data files. However, if you are providing the ability for users to download serialized Bags, you will need to change the `app.bag.download.prefix` parameter to the hostname/path to append to each Bag's filename as described in the "Making Bags downloadable" section below.
 
-### Placing per-Bag configuration options in services.yml
-
-In some cases, you may want to define configuration options in `config/services.yml` that are normally defined in the per-Bag configuration file. The most common reasons to do this are 1) to keep sensitive data such as login credentials out of the per-Bag configuration files and 2) to centralize commonly used options in one place rather than repeat them in each per-Bag configuration file.
-
-To do this, define the options from the per-Bag configuration file in `config/services.yml` and append their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
-
-1) Comment them out or remove them from the per-Bag file:
-
-```
-# Required.
-# drupal_base_url: 'http://localhost:8000'
-# drupal_basic_auth: ['admin', 'islandora']
-```
-2) Define them in the `parameters` section of `config/services.yml` and append each option key with `app.`:
-
-```
-parameters:
-    app.queue.path: '%kernel.project_dir%/var/islandora_bagger.queue'
-    app.location.log.path: '%kernel.project_dir%/var/islandora_bagger.locations'
-    # The hostname/path to where users can download serialized bags. This string
-    # will be appended to the Bag's filename.
-    app.bag.download.prefix: 'http://example.com/bags/'
-    # These options are usually defined in the per-Bag config file.
-    app.drupal_base_url: 'http://localhost:8000'
-    app.drupal_basic_auth: ['admin', 'islandora']
-```
-
-A couple of things to note about this:
-
-* If the options are defined in both places (e.g. if the are not commented out in the per-Bag configuration file), the options in the per-Bag file override their counterparts in `config/services.yml`. This way, you can put most of your options in the `config/services.yml` but override them on a per-Bag basis.
-* Options defined in `services/config.yml` are not accessible to post-Bag scripts
-
 ## Command-line usage
 
 The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
 
-### The configuration file
+### The per-Bag configuration file
 
-Islandora Bagger requires a configuration file in YAML format:
+For each Bag it creates, Islandora Bagger requires a configuration file in YAML format:
 
 ```yaml
 ####################
@@ -162,9 +130,44 @@ The resulting Bag would look like this:
 └── tagmanifest-sha1.txt
 ```
 
+Since the Drupal node's ID is not included in the configuration file, the same file can be used for multiple Bags. It is called a 'per-Bag' configuration file because it is used each time Islandora Bagger creates a Bag.
+
+### Placing per-Bag configuration options in services.yml
+
+In some cases, you may want to define configuration options in `config/services.yml` that are normally defined in the per-Bag configuration file. The most common reasons to do this are 1) to keep sensitive data such as login credentials out of the per-Bag configuration files and 2) to centralize commonly used options in one place rather than repeat them in each per-Bag configuration file.
+
+To do this, define the options from the per-Bag configuration file in `config/services.yml` and append their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
+
+1) Comment them out or remove them from the per-Bag file:
+
+```yaml
+# Required.
+# drupal_base_url: 'http://localhost:8000'
+# drupal_basic_auth: ['admin', 'islandora']
+```
+2) Define them in the `parameters` section of `config/services.yml` and append each option key with `app.`:
+
+```yaml
+parameters:
+    app.queue.path: '%kernel.project_dir%/var/islandora_bagger.queue'
+    app.location.log.path: '%kernel.project_dir%/var/islandora_bagger.locations'
+    # The hostname/path to where users can download serialized bags. This string
+    # will be appended to the Bag's filename.
+    app.bag.download.prefix: 'http://example.com/bags/'
+
+    # These options are usually defined in the per-Bag config file.
+    app.drupal_base_url: 'http://localhost:8000'
+    app.drupal_basic_auth: ['admin', 'islandora']
+```
+
+A couple of things to note about this:
+
+* If the options are defined in both places, the options in the per-Bag file override their counterparts in `config/services.yml`. This way, you can define commonly used options in the `config/services.yml` but override them on a per-Bag basis.
+* Options defined in `services/config.yml` are not accessible to post-Bag scripts.
+
 ## REST interface usage
 
-Islandora Bagger can also create Bags via a simple REST interface. It does this by 1) receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and 2) receiving a YAML configuration file as the body of the request. Using this data, it adds the request to a queue (see below), which is then processed at a later time. The REST interface also provides the ability to `GET` a Bag's download URL.
+Islandora Bagger can also initiate the creation Bags via a simple REST interface. It does this by 1) receiving a `PUT` request containing the node ID of the Islandora object to be bagged in a "Islandora-Node-ID" header and 2) receiving a YAML configuration file as the body of the request. Using this data, it adds the request to a queue (see below), which is then processed at a later time. The REST interface also provides the ability to `GET` a Bag's download URL.
 
 Note that requests to the REST interface do not generate Bags directly, they only populate a queue as described below.
 
@@ -262,7 +265,7 @@ The `post_bag_scripts` option in the configuration file allows you to specify a 
 * all scripts are passed three arguments, 1) the current node ID, 2) the Bag's output directory (or if the Bag was serialized, the path to the Bag file), and 3) the path to the YAML configuration file
 * the results of the script are logged, including their exit codes
 
-In the YAML configuration file, you can define any options needed by your scripts, for example, an email address to send a message to. For example, if your script `/opt/utils/send_bag_notice.py` requires an email address to send its notice to, you can include that value in your configuration file, as long as the script can parse YAML files:
+In the YAML configuration file, you can define any options needed by your scripts, for example, an email address to send a message to. For example, if your script `/opt/utils/send_bag_notice.py` requires an email address to send its notice to, you can include that option's value in your configuration file, as long as the script can parse YAML files:
 
 ```
 ####################
@@ -273,7 +276,7 @@ post_bag_scripts: ["python /opt/utils/send_bag_notice.py"]
 recipient_email: preservation@example.ca
 ```
 
-Then within your script, you would have access to the value of `recipient_email`. You can reuse any values used by Islandora Bagger's `app:islandora_bagger:create_bag` command, or define any other values you need as long as they don't have the same key names as existing values.
+Then within your script, you would have access to the value of `recipient_email`. Within your scripts, you have access to all options used by Islandora Bagger's `app:islandora_bagger:create_bag` command, and you can define any additional options you need as long as they don't have the same key names as existing values.
 
 ## To do
 
