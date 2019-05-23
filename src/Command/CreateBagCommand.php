@@ -44,6 +44,22 @@ class CreateBagCommand extends ContainerAwareCommand
         $nid = $input->getOption('node');
         $settings_path = $input->getOption('settings');
         $this->settings = Yaml::parseFile($settings_path);
+        // Loop through $this->params and add each param to $this->settings with a
+        // key sans the 'app.' namespace.
+        $params_keys = array_keys($this->params->all());
+        foreach ($params_keys as $param_key) {
+            if (preg_match('/^app\./', $param_key)) {
+                $param_key_trimmed = preg_replace('/^app\./', '', $param_key);
+                // If the parameter defined in config/settings.yml doesn't exist in the
+                // per-Bag config file, add it to the settings array. We use this logic
+                // so we can add any parameter defined in config/services.yml to the
+                // settings array while stil being able to override parameters in
+                // config/services.yml in the per-Bag config file.
+                if (!array_key_exists($param_key_trimmed, $this->settings)) {
+                    $this->settings[$param_key_trimmed] = $this->params->get($param_key);
+                }
+            }
+        }
 
         $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
             false : $this->settings['log_bag_location'];
