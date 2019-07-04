@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Drupa 8 Module that allows users to create Bags using an [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice. Provides a block that contains a form to request the creation of a Bag for the curent node/object. Submitting this form does not directly generate the Bag; rather, it sends a request to the Islandora Bagger's REST interface that populates the processing queue with the node ID and the configuration file to use when that node's Bag is created.
+Drupal 8 Module that allows users to create Bags using an [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice. Provides a block that contains a form to request the creation of a Bag for the curent node/object. Submitting this form does not directly generate the Bag; rather, it sends a request to the Islandora Bagger's REST interface that populates the processing queue with the node ID and the configuration file to use when that node's Bag is created.
 
 ## Requirements
 
