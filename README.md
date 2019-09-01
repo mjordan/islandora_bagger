@@ -91,7 +91,7 @@ bag-info:
 
 # Required. Register plugins to populate bag-info.txt and the data directory.
 # Plugins are executed in the order they are listed here.
-plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
+plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFileFromTemplate', 'AddFedoraTurtle']
 
 # Used by the 'AddFedoraTurtle' plugin.
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
