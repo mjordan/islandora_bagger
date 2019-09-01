@@ -106,6 +106,13 @@ drupal_media_tags: ['/taxonomy/term/15']
 # name corresponding to the 'drupal_media_tags' list. Default is false.
 include_media_use_list: true
 
+# Used by the 'AddFileFromTemplate' plugin.
+# template_path can be absolute or relative to the Islandora Bagger directory.
+template_path: 'templates/mods.twig'
+# template_output_filename will be assigned to the file generated from the teamplate,
+# which will be added to the Bag's data directory.
+templated_output_filename: 'MODS.xml'
+
 ####################
 # Post-Bag scripts #
 ####################
@@ -246,6 +253,7 @@ The following plugins are bundled with Islandora Bagger:
 * AddMedia: Adds media files, such as the Original File, Preservation Master, etc., to the Bag. The specific files added are identified by the relevant tags from the "Islandora Media Use" vocabulary listed in the `drupal_media`tags` configuratoin option.
 * AddMediaJson: Adds the Drupal JSON representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=json`.
 * AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=jsonld`.
+* AddFileFromTemplate: Adds a file generated from a Twig template using data from the node's JSON. Within the template, the data is represented as a PHP array verion of that data. A simple sample MODS template is included.
 * Sample: A example plugin for developers.
 
 #### Writing custom plugins

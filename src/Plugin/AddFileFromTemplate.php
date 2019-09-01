@@ -33,7 +33,6 @@ class AddFileFromTemplate extends AbstractIbPlugin
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
         $metadata = json_decode($node_json, true);
-        var_dump($metadata);
 
         $loader = new \Twig_Loader_Filesystem(dirname($this->settings['template_path']));
         $twig = new \Twig_Environment($loader);

@@ -1,0 +1,24 @@
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <identifier type="uuid">{{ uuid[0]['value'] }}</identifier>
+
+  {% if field_identifier[0]|length %}
+    <identifier type="local">{{ field_identifier[0]['value'] }}</identifier>
+  {% endif %}
+
+  <titleInfo>
+    <title>{{ title[0]['value'] }}</title>
+  </titleInfo>
+
+  {% if field_resource_type[0]|length %}
+    <typeOfResource>{{ field_resource_type[0]['url'] }}</typeOfResource>
+  {% endif %}
+
+  {% if field_rights[0]|length %}
+    <accessCondition>{{ field_rights[0]['value'] }}</accessCondition>
+  {% endif %}
+
+  {% if field_description[0]|length %}
+    <note>{{ field_description[0]['value'] }}</note>
+  {% endif %}
+
+</mods>
