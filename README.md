@@ -133,6 +133,7 @@ The resulting Bag would look like this:
 │   ├── node.json
 │   ├── node.jsonld
 │   ├── MODS.xml
+│   ├── media_use_summary.tsv
 │   └── node.turtle.rdf
 ├── manifest-sha1.txt
 └── tagmanifest-sha1.txt
