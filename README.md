@@ -132,6 +132,7 @@ The resulting Bag would look like this:
 │   ├── media.jsonld
 │   ├── node.json
 │   ├── node.jsonld
+│   ├── MODS.xml
 │   └── node.turtle.rdf
 ├── manifest-sha1.txt
 └── tagmanifest-sha1.txt
