@@ -257,6 +257,7 @@ The following plugins are bundled with Islandora Bagger:
 * AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=jsonld`.
 * AddFileFromTemplate: Adds a file generated from a Twig template using data from the node's JSON. Within the template, the data is represented as a PHP array. A basic sample MODS template is included.
 * AddFile: Adds files listed in the the `files_to_add` configuration option, e.g., `files_to_add: ['/tmp/file1.txt', '/tmp/file2.txt']`.
+* AddFetch: Adds a `fetch.txt` file to the Bag, using URLs listed in the `fetch_urls` configuation option, e.g., `fetch_urls: ['http://example.com/path/to/file.htm', 'https://someother.url.com/about']`.
 * Sample: A example plugin for developers.
 
 #### Writing custom plugins

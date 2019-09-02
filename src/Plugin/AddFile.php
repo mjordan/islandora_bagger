@@ -7,8 +7,6 @@
 
 namespace App\Plugin;
 
-use \Twig\Twig;
-
 /**
  * Adds one or more files specified in the 'files_to_add' config option.
  */
