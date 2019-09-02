@@ -8,7 +8,7 @@ Drupal 8 Module that allows users to create Bags using an [Islandora Bagger](htt
 
 * An [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice
 * [Islandora 8](https://github.com/Islandora-CLAW/islandora)
-* [Context](https://www.drupal.org/project/context) if you want to define which Islandora Bagger configuration files to use other than the default file.
+* [Context](https://www.drupal.org/project/context) if you want to define which Islandora Bagger configuration files to use other than the default file. A requirement of Islandora so it should already be installed.
 
 ## Installation
 
@@ -21,6 +21,7 @@ The only admin settings provided by this module are:
 
 1. The URL of the Islandora Bagger REST endpoint. If you are running Islandora in the CLAW Vagrant, and Islandora Bagger on the host machine (i.e., same machine that is hosing the Vagrant), use `10.0.2.2` as your endpoint IP address instead of `localhost`.
 1. The absolute path on your Drupal server to the default Islandora Bagger configuration file. This file is used if no Contexts are configured to use an alternative configuration file.
+1. An option to add to the configuration file the email address of the user who requested the Bag be created. If checked, the user's email address will be added to the configuration file using the key `recipient_email`. In addition, if this option is checked, the message displayed to the user will indicate they will receive an email when their Bag is ready for download.
 
 ## Using Context to define which configuration file to use
 

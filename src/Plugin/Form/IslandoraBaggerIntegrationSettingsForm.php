@@ -43,6 +43,11 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       '#description' => $this->t('This file must exist on your Drupal server. You can use other config files via Context.'),
       '#default_value' => $config->get('islandora_bagger_default_config_file_path') ? $config->get('islandora_bagger_default_config_file_path') : '/tmp/path_to_default_config.yml',
     );
+    $form['islandora_bagger_integration_add_email_user'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t("Add user's email address to configuration file using the key 'recipient_email'."),
+      '#default_value' => $config->get('islandora_bagger_integration_add_email_user') ? $config->get('islandora_bagger_integration_add_email_user') : FALSE,
+    );
 
     return parent::buildForm($form, $form_state);
   }
@@ -66,6 +71,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
        $this->configFactory->getEditable('islandora_bagger_integration.settings')
       ->set('islandora_bagger_default_config_file_path', trim($form_state->getValue('islandora_bagger_default_config_file_path')))
       ->set('islandora_bagger_rest_endpoint', trim($form_state->getValue('islandora_bagger_rest_endpoint')))
+      ->set('islandora_bagger_integration_add_email_user', $form_state->getValue('islandora_bagger_integration_add_email_user'))
       ->save();
 
     parent::submitForm($form, $form_state);
