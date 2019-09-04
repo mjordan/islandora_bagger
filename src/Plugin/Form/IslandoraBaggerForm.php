@@ -34,6 +34,11 @@ class IslandoraBaggerForm extends FormBase {
         '#value' => $this->t('Create Bag'),
         '#button_type' => 'primary',
       ];
+      $form['info'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t('Clicking this button will request a Bag be created for this node.'),
+      );
       return $form;
     }
   }
