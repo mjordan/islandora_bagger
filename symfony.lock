@@ -23,6 +23,9 @@
     "guzzlehttp/psr7": {
         "version": "1.4.2"
     },
+    "league/csv": {
+        "version": "9.3.0"
+    },
     "monolog/monolog": {
         "version": "1.23.0"
     },

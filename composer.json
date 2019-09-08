@@ -14,6 +14,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "scholarslab/bagit": "~0.2",
         "twig/twig": "^2.0",
+        "league/csv":"^9.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/yaml": "*",

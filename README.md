@@ -91,7 +91,7 @@ bag-info:
 
 # Required. Register plugins to populate bag-info.txt and the data directory.
 # Plugins are executed in the order they are listed here.
-plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFileFromTemplate', 'AddFedoraTurtle']
+plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFileFromTemplate', 'AddFedoraTurtle', 'AddNodeCsv']
 
 # Used by the 'AddFedoraTurtle' plugin.
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
@@ -113,6 +113,12 @@ template_path: 'templates/mods.twig'
 # which will be added to the Bag's data directory.
 templated_output_filename: 'MODS.xml'
 
+# Used by the 'AddNodeCsv' plugin.
+# csv_output_filename will be assigned to the CSV file, which will be added to
+# the Bag's data directory.
+csv_output_filename: 'metadata.csv'
+
+
 ####################
 # Post-Bag scripts #
 ####################
@@ -133,6 +139,7 @@ The resulting Bag would look like this:
 │   ├── node.json
 │   ├── node.jsonld
 │   ├── MODS.xml
+│   ├── metadata.csv
 │   ├── media_use_summary.tsv
 │   └── node.turtle.rdf
 ├── manifest-sha1.txt
@@ -257,6 +264,7 @@ The following plugins are bundled with Islandora Bagger:
 * AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=jsonld`.
 * AddFileFromTemplate: Adds a file generated from a Twig template using data from the node's JSON. Within the template, the data is represented as a PHP array. A basic sample MODS template is included.
 * AddFile: Adds files listed in the the `files_to_add` configuration option, e.g., `files_to_add: ['/tmp/file1.txt', '/tmp/file2.txt']`.
+* AddNodeCsv: Adds a CSV file generated from node field data.
 * AddFetch: Adds a `fetch.txt` file to the Bag, using URLs listed in the `fetch_urls` configuation option, e.g., `fetch_urls: ['http://example.com/path/to/file.htm', 'https://someother.url.com/about']`.
 * Sample: A example plugin for developers.
 
