@@ -28,7 +28,8 @@ class AddNodeCsv extends AbstractIbPlugin
     }
 
     /**
-     * Adds CSV file created from node field data.
+     * Adds CSV file created from node field data. Multiple values are subdelimited
+     * by a semicolon.
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
@@ -47,26 +48,42 @@ class AddNodeCsv extends AbstractIbPlugin
         // its structure here to that of the other fields for processing below.
         $metadata['type'][0]['value'] = $metadata['type'][0]['target_id'];
 
+        // The Drupal user is a linked entity.
+        $metadata['uid'][0]['value'] = $metadata['uid'][0]['url'];
+
         $header = array_keys($metadata);
         $record = array();
         foreach ($metadata as $field_name => $field_values) {
+          $field_value_strings = array();
+          $field_value_string = '';
           if (count($field_values) > 0) {
             foreach ($field_values as $field_value) {
-              $field_value_string = '';
-
+              // For typed relation fields.
+              if (in_array('rel_type', array_keys($field_value))) {
+                $field_value_strings[] = $field_value['rel_type'] . ':' . trim($field_value['url']);
+              }
               // For string fields, etc.
-              if (in_array('value', array_keys($field_value))) {
-                $field_value_string .= ';' . trim($field_value['value']);
+              elseif (in_array('value', array_keys($field_value))) {
+                $field_value_strings[] = trim($field_value['value']);
               }
               // For taxonomies.
-              if (in_array('target_type', array_keys($field_value)) && $field_value['target_type'] == 'taxonomy_term') {
-                $field_value_string .= ';' . trim($field_value['url']);
+              elseif (!in_array('rel_type', array_keys($field_value)) &&
+                in_array('target_type', array_keys($field_value)) &&
+                  $field_value['target_type'] == 'taxonomy_term') {
+                  $field_value_strings[] = trim($field_value['url']
+                );
               }
- 
-              $field_value_string = trim($field_value_string);
-              $field_value_string = ltrim($field_value_string, ';');
-              $record[] = $field_value_string;
+              // For referenced node fields.
+              elseif (!in_array('rel_type', array_keys($field_value)) &&
+                in_array('target_type', array_keys($field_value)) &&
+                  $field_value['target_type'] == 'node') {
+                  $field_value_strings[] = trim($field_value['url']
+                );
+              }
             }
+            $field_value_string = implode(';', $field_value_strings);
+            $field_value_string = ltrim($field_value_string, ';');
+            $record[] = $field_value_string;            
           }
           else {
             $record[] = '';
