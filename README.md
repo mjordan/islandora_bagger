@@ -161,7 +161,7 @@ parameters:
     app.queue.path: '%kernel.project_dir%/var/islandora_bagger.queue'
     app.location.log.path: '%kernel.project_dir%/var/islandora_bagger.locations'
     # The hostname/path to where users can download serialized bags. This string
-    # will be appended to the Bag's filename.
+    # will be prepended to the Bag's filename.
     app.bag.download.prefix: 'http://example.com/bags/'
 
     # These options are usually defined in the per-Bag config file.
