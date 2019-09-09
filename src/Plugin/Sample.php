@@ -47,13 +47,16 @@ class Sample extends AbstractIbPlugin
         // to the Bag.
         $my_data = "This is a special file to include in the Bag.";
 
-        // All files you want to include in the Bag need to be
-        // written to $bag_temp_dir.
-        $my_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'my.data';
-        file_put_contents($my_data_file_path, $my_data);
+        // You can write content directly to a new file using the BagIt library's
+        // createFile() method, which adds the resulting file to the Bag.
+        // $bag->createFile($my_data, 'mydata.dat']);
 
+        // If you put other files into the Bag's $bag_temp_dir, they will be
+        // added to the Bag
+        $my_data_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'mydata.dat';
+        copy($some_external_file_path, $my_data_file_path);
         // Then you must call the $bag->addFile() method.
-        $bag->addFile($my_data_file_path, 'my.data');
+        $bag->addFile($my_data_file_path, 'mydata.dat');
 
         // You may want to add a custom bag-info.txt tag.
         $bag->setBagInfoData('My-Custom-Tag', "some value");
