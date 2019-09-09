@@ -33,6 +33,9 @@ class AddMedia extends AbstractIbPlugin
         $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
             false: $this->settings['include_media_use_list'];
 
+        $this->settings['media_file_directories'] = (!isset($this->settings['media_file_directories'])) ?
+            '': $this->settings['media_file_directories'];            
+
         // Get the media associated with this node using the Islandora-supplied Manage Media View.
         $media_client = new \GuzzleHttp\Client();
         $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
@@ -82,7 +85,7 @@ class AddMedia extends AbstractIbPlugin
                         while (!$file_body->eof()) {
                             file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
                         }
-                        $bag->addFile($temp_file_path, basename($temp_file_path));
+                        $bag->addFile($temp_file_path, $this->settings['media_file_directories'] . basename($temp_file_path));
                     }
                 }
             }

@@ -96,7 +96,6 @@ class AddNodeCsv extends AbstractIbPlugin
         $csv->insertOne($record);
         $csv_string = $csv->getContent();
 
-        // $csv_output_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $this->settings['csv_output_filename'];
         $bag->createFile($csv_string, $this->settings['csv_output_filename']);
 
         return $bag;

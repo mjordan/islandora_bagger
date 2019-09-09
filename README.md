@@ -106,12 +106,17 @@ drupal_media_tags: ['/taxonomy/term/15']
 # name corresponding to the 'drupal_media_tags' list. Default is false.
 include_media_use_list: true
 
+# Used by the 'AddMedia' plugin. Include this option save media files with the
+# specified subdirectories within the Bag's data directory. Include the trailing /.
+media_file_directories: 'foo/bar/baz/'
+
 # Used by the 'AddFileFromTemplate' plugin.
 # template_path can be absolute or relative to the Islandora Bagger directory.
 template_path: 'templates/mods.twig'
 # template_output_filename will be assigned to the file generated from the teamplate,
-# which will be added to the Bag's data directory.
-templated_output_filename: 'MODS.xml'
+# which will be added to the Bag's data directory. You may include a subdirectory
+# or subdirectories as part of the filename.
+templated_output_filename: 'metadata/MODS.xml'
 
 # Used by the 'AddNodeCsv' plugin.
 # csv_output_filename will be assigned to the CSV file, which will be added to
