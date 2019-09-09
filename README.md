@@ -108,7 +108,7 @@ include_media_use_list: true
 
 # Used by the 'AddMedia' plugin. Include this option save media files with the
 # specified subdirectories within the Bag's data directory. Include the trailing /.
-media_file_directories: 'foo/bar/baz/'
+# media_file_directories: 'foo/bar/baz/'
 
 # Used by the 'AddFileFromTemplate' plugin.
 # template_path can be absolute or relative to the Islandora Bagger directory.
