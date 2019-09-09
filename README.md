@@ -120,7 +120,9 @@ templated_output_filename: 'metadata/MODS.xml'
 
 # Used by the 'AddNodeCsv' plugin.
 # csv_output_filename will be assigned to the CSV file, which will be added to
-# the Bag's data directory.
+# the Bag's data directory. You may include a subdirectory or subdirectories
+# as part of the filename.
+
 csv_output_filename: 'metadata.csv'
 
 
