@@ -122,7 +122,6 @@ templated_output_filename: 'metadata/MODS.xml'
 # csv_output_filename will be assigned to the CSV file, which will be added to
 # the Bag's data directory. You may include a subdirectory or subdirectories
 # as part of the filename.
-
 csv_output_filename: 'metadata.csv'
 
 
@@ -145,7 +144,8 @@ The resulting Bag would look like this:
 │   ├── media.jsonld
 │   ├── node.json
 │   ├── node.jsonld
-│   ├── MODS.xml
+│   ├── metadata
+│   │   └── MODS.xml
 │   ├── metadata.csv
 │   ├── media_use_summary.tsv
 │   └── node.turtle.rdf
