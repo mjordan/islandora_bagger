@@ -42,9 +42,8 @@ class AddFedoraTurtle extends AbstractIbPlugin
         $client = new \GuzzleHttp\Client();
         $response = $client->get($fedora_url);
         $response_body = (string) $response->getBody();
-        $turtle_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'node.turtle.rdf';
-        file_put_contents($turtle_file_path, $response_body);
-        $bag->addFile($turtle_file_path, basename($turtle_file_path));
+
+        $bag->createFile($response_body, 'node.turtle.rdf');
 
         return $bag;
     }

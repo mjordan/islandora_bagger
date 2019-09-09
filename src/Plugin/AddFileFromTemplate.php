@@ -39,8 +39,7 @@ class AddFileFromTemplate extends AbstractIbPlugin
         $output_from_template = $twig->render(basename($this->settings['template_path']), (array) $metadata);
 
         $template_output_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $this->settings['templated_output_filename'];
-        file_put_contents($template_output_file_path, trim($output_from_template));
-        $bag->addFile($template_output_file_path, $this->settings['templated_output_filename']);
+        $bag->createFile($output_from_template, $this->settings['templated_output_filename']);
 
         return $bag;
     }

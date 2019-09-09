@@ -26,7 +26,7 @@ class AddMediaJson extends AbstractIbPlugin
     }
 
     /**
-     * Adds the JSON representation of the Islandora object's media to the Bag.
+
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
@@ -38,9 +38,8 @@ class AddMediaJson extends AbstractIbPlugin
             'query' => ['_format' => 'json']
         ]);
         $media_json = (string) $response->getBody();
-        $media_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.json';
-        file_put_contents($media_file_path, $media_json);
-        $bag->addFile($media_file_path, 'media.json');
+
+        $bag->createFile($media_json, 'media.json');
 
         return $bag;
     }

@@ -37,9 +37,7 @@ class AddNodeJsonld extends AbstractIbPlugin
             'query' => ['_format' => 'jsonld']
         ]);
         $node_jsonld = (string) $response->getBody();
-        $node_jsonld_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'node.jsonld';
-        file_put_contents($node_jsonld_file_path, $node_jsonld);
-        $bag->addFile($node_jsonld_file_path, 'node.jsonld');
+        $bag->createFile($node_jsonld, 'node.jsonld');
 
         return $bag;
     }

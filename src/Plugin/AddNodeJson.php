@@ -30,9 +30,7 @@ class AddNodeJson extends AbstractIbPlugin
      */
     public function execute($bag, $bag_temp_dir, $nid, $node_json)
     {
-        $node_json_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'node.json';
-        file_put_contents($node_json_file_path, $node_json);
-        $bag->addFile($node_json_file_path, 'node.json');
+        $bag->createFile($node_json, 'node.json');
 
         return $bag;
     }

@@ -37,10 +37,9 @@ class AddMediaJsonld extends AbstractIbPlugin
             'auth' => $this->settings['drupal_basic_auth'],
             'query' => ['_format' => 'jsonld']
         ]);
-        $media_json = (string) $response->getBody();
-        $media_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . 'media.jsonld';
-        file_put_contents($media_file_path, $media_json);
-        $bag->addFile($media_file_path, 'media.jsonld');
+        $media_jsonld = (string) $response->getBody();
+
+        $bag->createFile($media_jsonld, 'media.jsonld');
 
         return $bag;
     }
