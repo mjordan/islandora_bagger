@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Implements hook_requirements().
+ */
+function islandora_bagger_integration_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime') {
+    // Check whether Islandora Bagger's endpoint is available.
+    $config = \Drupal::config('islandora_bagger_integration.settings');
+    $bagger_endpoint = $config->get('islandora_bagger_rest_endpoint') ?: 'http://localhost:8000/api/createbag';
+
+    $bagger_response_code = 0;
+    try {
+      $client = \Drupal::httpClient();
+      // Assumes Islandora Bagger requires no authentication (e.g., it's behind the Symfony or other firewall).
+      $response = $client->request('GET', $bagger_endpoint);
+      $bagger_response_code = $response->getStatusCode();
+    }
+    catch (Exception $e) {
+      \Drupal::logger('islandora_bagger_integration')->error($e->getMessage());
+    }
+    finally {
+      if ($bagger_response_code == 200) {
+        $requirements['islandora_bagger_integration_microservice_available'] = [
+          'title' => t("Islandora Bagger Integration"),
+          'description' => t("Islandora Bagger is running at @endpoint", array('@endpoint' => $bagger_endpoint)),
+          'severity' => REQUIREMENT_INFO,
+        ];
+      }
+      else {
+        $requirements['islandora_bagger_integration_microservice_available'] = [
+          'title' => t("Islandora Bagger Integration"),
+          'description' => t("Islandora Bagger not found or is not running at @endpoint", array('@endpoint' => $bagger_endpoint)),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+    }
+  }
+
+  return $requirements;
+}
+
