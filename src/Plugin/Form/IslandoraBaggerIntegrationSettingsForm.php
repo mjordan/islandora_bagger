@@ -41,7 +41,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       '#maxlength' => 256,
       '#title' => $this->t('Absolute path to default Islandora Bagger microservice config file'),
       '#description' => $this->t('This file must exist on your Drupal server. You can use other config files via Context.'),
-      '#default_value' => $config->get('islandora_bagger_default_config_file_path') ? $config->get('islandora_bagger_default_config_file_path') : '/tmp/path_to_default_config.yml',
+      '#default_value' => $config->get('islandora_bagger_default_config_file_path') ? $config->get('islandora_bagger_default_config_file_path') : '/path/to_default_config.yml',
     );
     $form['islandora_bagger_integration_add_email_user'] = array(
       '#type' => 'checkbox',
