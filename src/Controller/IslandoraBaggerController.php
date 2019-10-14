@@ -45,6 +45,12 @@ class IslandoraBaggerController extends AbstractController
 
         $location_log_path = $this->params->get('app.location.log.path');
 
+        // If the log file doesn't exist, return an empty array.
+        if (!file_exists($location_log_path)) {
+          $response = new JsonResponse(array());
+          return $response;
+        }
+
         $nid = $request->headers->get('Islandora-Node-ID');
 
         // @todo: Read log file, get the current node's Bag's location.
