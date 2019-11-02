@@ -99,7 +99,7 @@ fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
 # Used by the 'AddMedia' plugin. These are the Drupal taxomony term IDs
 # from the "Islandora Media Use" vocabulary. Use an emply list (e.g., [])
 # to include all media.
-drupal_media_tags: ['/taxonomy/term/15']
+drupal_media_tags: ['/taxonomy/term/16']
 
 # Used by the 'AddMedia' plugin. Indicates whether the Bag should contain a file
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
