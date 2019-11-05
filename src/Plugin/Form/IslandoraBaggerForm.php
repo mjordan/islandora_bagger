@@ -97,7 +97,7 @@ class IslandoraBaggerForm extends FormBase {
       $headers = array('Islandora-Node-ID' => $nid);
       $response = \Drupal::httpClient()->post(
         $endpoint,
-        array('headers' => $headers, 'body' => $config_file_contents)
+        array('headers' => $headers, 'body' => $config_file_contents, 'allow_redirects' => ['strict' => true])
       );
       $http_code = $response->getStatusCode();
       if ($http_code == 200) {
