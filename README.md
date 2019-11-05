@@ -209,7 +209,9 @@ To use the REST API to get a serialized Bag's location for download:
 
  `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
 
-This API is in its early stages of development and will change before it is ready for production use. For example, the API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+A couple of things to note about this REST API:
+* The API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+* Islandora Bagger's REST interface accepts `POST` requests that contain a request body (in this case, the YAML configuration file). Some HTTP clients (Guzzle, for example) convert requests that are redirected (e.g., in respones to a 301, etc.) to `GET`. If this happens, the request body is lost and the resulting YAML configuration files will be empty. If you are running Islandora Bagger in a web server environment that returns HTTP response codes in the `3xx` range, such as inside an Apache `Alias` directive, your HTTP client will need to *not* redirect POST requests with GET requests. Guzzle's [documentation](http://docs.guzzlephp.org/en/stable/quickstart.html#redirects) on this behavior is useful.
 
 ### Making Bags downloadable
 
