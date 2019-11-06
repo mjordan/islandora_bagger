@@ -15,7 +15,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class IslandoraBaggerController extends AbstractController
 {
-    public function create(Request $request, LoggerInterface $logger)
+    public function create(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
         $this->application_directory = dirname(__DIR__, 2);
 
@@ -27,7 +27,7 @@ class IslandoraBaggerController extends AbstractController
         file_put_contents($yaml_path, $body);
 
         // @todo: If this method fails (returned false), log that.
-        $this->writeToQueue($nid, $yaml_path);
+        $this->writeToQueue($params, $nid, $yaml_path);
 
         $data = array(
             'Entry for node ' . $nid . ' using configuration at ' . $yaml_path . ' added to queue.'
@@ -75,6 +75,8 @@ class IslandoraBaggerController extends AbstractController
     /**
      * Writes a tab-delmited entry to the queue file.
      *
+     * @param $params ParameterBagInterface
+     *   Parameters section of config/services.yaml.
      * @param $nid string
      *   The node ID of the Islandora object to Bag.
      * @param $yaml_path string
@@ -83,16 +85,20 @@ class IslandoraBaggerController extends AbstractController
      * @return bool
      *   Whether or not the queue file was written.
      */
-    private function writeToQueue($nid, $yaml_path)
+    private function writeToQueue($params, $nid, $yaml_path)
     {
         // Write the request to the queue.
-        $fp = fopen($this->application_directory . '/var/islandora_bagger.queue', "a+");
+        $queue_path = $params->get('app.queue.path');
+        $fp = fopen($queue_path, "a+");
         if (flock($fp, LOCK_EX)) {
             fwrite($fp, "$nid\t$yaml_path\n");
             fflush($fp);
             flock($fp, LOCK_UN);
+            fclose($fp);
             return true;
         }
-        fclose($fp);
+        else {
+            return false;
+        }
     }
 }
