@@ -4,17 +4,20 @@ namespace Drupal\islandora_bagger_integration\Plugin\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Implements a form.
  */
-class IslandoraBaggerForm extends FormBase {
+class IslandoraBaggerLocalForm extends FormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'islandora_bagger_form';
+    return 'islandora_bagger_local_form';
   }
 
   /**
@@ -37,7 +40,7 @@ class IslandoraBaggerForm extends FormBase {
       $form['info'] = array(
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->t('Clicking this button will request a Bag be created for this node.'),
+        '#value' => $this->t('Clicking this button will create a Bag for this node.'),
       );
       return $form;
     }
@@ -85,39 +88,31 @@ class IslandoraBaggerForm extends FormBase {
         $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
       }
 
-      $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
+      $bagger_directory = '/home/vagrant/islandora_bagger';
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=/home/vagrant/local_sample_config.yml', '--node=' . $nid];
 
-      if ($config->get('islandora_bagger_integration_add_email_user')) {
-        $user = \Drupal::currentUser();
-        $user_email = $user->getEmail();
-        $user_email_yaml_string = "\n# Added by the Islandora Bagger Integration module\nrecipient_email: $user_email";
-        $config_file_contents = $config_file_contents . $user_email_yaml_string;
-      }
+      $process = new Process($bagger_cmd);
+      $process->setWorkingDirectory($bagger_directory);
+      $process->run();
+      $path_to_bag = preg_replace('/^.*\s+at\s+/', '', trim($process->getOutput()));
+      $bag_filename = pathinfo($path_to_bag, PATHINFO_BASENAME);
+      $path_to_bag = file_create_url('public://' . $bag_filename);
+      $url = Url::fromUri($path_to_bag);
+      $link = \Drupal::service('link_generator')->generate($this->t('here'), $url);
 
-      $headers = array('Islandora-Node-ID' => $nid);
-      $response = \Drupal::httpClient()->post(
-        $endpoint,
-        array('headers' => $headers, 'body' => $config_file_contents, 'allow_redirects' => ['strict' => true])
-      );
-      $http_code = $response->getStatusCode();
-      if ($http_code == 200) {
+      if ($process->isSuccessful()) {
         $messanger_level = 'addStatus';
         $logger_level = 'notice';
-        if ($config->get('islandora_bagger_integration_add_email_user')) {
-          $message = $this->t('Request to create Bag for "@title" (node @nid) submitted. You will receive an email at @email when the Bag is ready to download.',
-            ['@title' => $title, '@nid' => $nid, '@email' => $user_email]
-          );
-        } else {
-          $message = $this->t('Request to create Bag for "@title" (node @nid) submitted.',
-            ['@title' => $title, '@nid' => $nid]
-          );
-        }
+        $message = $this->t('Download your Bag @link.',
+          ['@link' => $link]
+        );
       }
       else {
+	throw new ProcessFailedException($process);
         $messanger_level = 'addWarning';
         $logger_level = 'warning';
-        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with status code @http.',
-          ['@title' => $title, '@nid' => $nid, '@http' => $http_code]
+        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code.',
+          ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code]
         );
       }
 
