@@ -26,11 +26,9 @@ class IslandoraBaggerController extends AbstractController
         $yaml_path = $this->application_directory . '/var/islandora_bagger.' . $nid . '.yml';
         file_put_contents($yaml_path, $body);
 
-        // If we create the Bag here, we risk timeouts. Add request to the queue.
         // @todo: If this method fails (returned false), log that.
         $this->writeToQueue($nid, $yaml_path);
 
-        // @todo: what do we want in the response data?
         $data = array(
             'Entry for node ' . $nid . ' using configuration at ' . $yaml_path . ' added to queue.'
         );
@@ -38,6 +36,9 @@ class IslandoraBaggerController extends AbstractController
         return $response;
     }
 
+    /**
+     * Get the location of the Bag in to add to a GET response.
+     */
     public function getLocation(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
         // Set in the parameters section of config/services.yaml.
@@ -53,7 +54,7 @@ class IslandoraBaggerController extends AbstractController
 
         $nid = $request->headers->get('Islandora-Node-ID');
 
-        // @todo: Read log file, get the current node's Bag's location.
+        // Read log file, get the current node's Bag's location.
         $locations = file($location_log_path, FILE_IGNORE_NEW_LINES);
         foreach ($locations as $location) {
             if (preg_match('/^' . $nid . '\t/', $location)) {
