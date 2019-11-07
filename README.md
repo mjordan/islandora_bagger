@@ -40,6 +40,12 @@ This module provides no mechanism for uploading configuration files via Drupal's
 1. Place the "BagIt Block" as you normally would any other block. You should restrict this block to the content types of your Islandora nodes, and to user roles who you want to be able to create Bags.
 1. The block provides a "Create Bag" button. When clicked on, this button sends a request to the Islandora Bagger microservice that populates the queue for generation of Nags. That's all this module does. All of the action happens in the microservice.
 
+## The "local" option
+
+It is possible to generate Bags withouth running Islandora Bagger as a microservice on a remote server. In this option, Islandora Bagger must be running on the same server as Drupal, and does not need its REST interface enabled. Instead, clicking on the "Create Bag" button executes the local copy of Islandora Bagger and the user is presented with a link to download the Bag.
+
+The advantages of this option are that it does not require a remote microservice, and the user is presented with a download link. The disadvantage is that requests to create for nodes that have very large files may time out.
+
 ## To do
 
 See issue list.
