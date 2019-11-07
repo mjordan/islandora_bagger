@@ -46,6 +46,8 @@ It is possible to generate Bags withouth running Islandora Bagger as a microserv
 
 The advantages of this option are that it does not require a remote microservice, and the user is presented with a download link. The disadvantage is that requests to create for nodes that have very large files may time out.
 
+To configure this option, enter the path to your local copy of Islandora Bagger in the "Absolute path to your local Islandora Bagger installation" field in the admin settings form, and enable the "BagIt block (local)" block for your users instead of the "BagIt block".
+
 ## To do
 
 See issue list.
