@@ -30,12 +30,6 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('islandora_bagger_integration.settings');
 
-    $form['islandora_bagger_rest_endpoint'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Islandora Bagger microservice REST endpoint'),
-      '#description' => $this->t('Do not include the trailing /.'),
-      '#default_value' => $config->get('islandora_bagger_rest_endpoint') ? $config->get('islandora_bagger_rest_endpoint') : 'http://localhost:8000/api/createbag',
-    );
     $form['islandora_bagger_default_config_file_path'] = array(
       '#type' => 'textfield',
       '#maxlength' => 256,
@@ -43,17 +37,23 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       '#description' => $this->t('This file must exist on your Drupal server. You can use other config files via Context.'),
       '#default_value' => $config->get('islandora_bagger_default_config_file_path') ? $config->get('islandora_bagger_default_config_file_path') : '/path/to_default_config.yml',
     );
-    $form['islandora_bagger_integration_add_email_user'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t("Add user's email address to configuration file using the key 'recipient_email'."),
-      '#default_value' => $config->get('islandora_bagger_integration_add_email_user') ? $config->get('islandora_bagger_integration_add_email_user') : FALSE,
+    $form['islandora_bagger_rest_endpoint'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Islandora Bagger microservice REST endpoint'),
+      '#description' => $this->t('Do not include the trailing /.'),
+      '#default_value' => $config->get('islandora_bagger_rest_endpoint') ? $config->get('islandora_bagger_rest_endpoint') : 'http://localhost:8000/api/createbag',
     );
     $form['islandora_bagger_local_bagger_directory'] = array(
       '#type' => 'textfield',
       '#maxlength' => 256,
       '#title' => $this->t('Absolute path to your local Islandora Bagger installation'),
-      '#description' => $this->t('Used only by the "local" Islandora Bagger block. Ignore if you are using Islandora Bagger as a microservice.'),
-      '#default_value' => $config->get('islandora_bagger_local_bagger_directory') ? $config->get('islandora_bagger_local_bagger_directory') : '/path/to/islandora_bagger',
+      '#description' => $this->t('For example, "/var/local/islandora_bagger". Used only by the "local" Islandora Bagger block. Ignore if you are using Islandora Bagger as a microservice.'),
+      '#default_value' => $config->get('islandora_bagger_local_bagger_directory') ? $config->get('islandora_bagger_local_bagger_directory') : '',
+    );
+    $form['islandora_bagger_integration_add_email_user'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t("Add user's email address to configuration file using the key 'recipient_email'."),
+      '#default_value' => $config->get('islandora_bagger_integration_add_email_user') ? $config->get('islandora_bagger_integration_add_email_user') : FALSE,
     );
 
     return parent::buildForm($form, $form_state);
@@ -68,6 +68,15 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
         'islandora_bagger_default_config_file_path',
         $this->t('Cannot find the Islandora Bagger config file at the path specified.')
       );
+    }
+
+    if (strlen(trim($form_state->getValue('islandora_bagger_local_bagger_directory')))) {
+      if (!file_exists(trim($form_state->getValue('islandora_bagger_local_bagger_directory')))) {
+        $form_state->setErrorByName(
+          'islandora_bagger_local_bagger_directory',
+          $this->t('Cannot find the Islandora Bagger installation directory at the path specified.')
+        );
+      }
     }
   }
 

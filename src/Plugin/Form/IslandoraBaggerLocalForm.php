@@ -88,8 +88,9 @@ class IslandoraBaggerLocalForm extends FormBase {
         $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
       }
 
+      $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
-      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=/home/vagrant/local_sample_config.yml', '--node=' . $nid];
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
 
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
