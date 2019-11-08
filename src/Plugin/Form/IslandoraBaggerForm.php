@@ -37,7 +37,7 @@ class IslandoraBaggerForm extends FormBase {
       $form['info'] = array(
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->t('Clicking this button will request a Bag be created for this node.'),
+        '#value' => $this->t('Clicking this button will request a Bag be created for this object.'),
       );
       return $form;
     }
@@ -70,20 +70,9 @@ class IslandoraBaggerForm extends FormBase {
       $config = \Drupal::config('islandora_bagger_integration.settings');
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
 
-      if (\Drupal::moduleHandler()->moduleExists('context')) {
-        $context_manager = \Drupal::service('context.manager');
-        // If there are multiple contexts that provide a path to a config file, it's OK to use the last one.
-        foreach ($context_manager->getActiveReactions('islandora_bagger_integration_config_file_paths') as $reaction) {
-          $islandora_bagger_config_file_path_from_context = $reaction->execute();
-        }
-      }
-
-      if (isset($islandora_bagger_config_file_path_from_context) && strlen($islandora_bagger_config_file_path_from_context)) {
-        $islandora_bagger_config_file_path = $islandora_bagger_config_file_path_from_context;
-      }
-      else {
-        $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
-      }
+      $utils = \Drupal::service('islandora_bagger_integration.utils');
+      // @Todo: if fhis is FALSE, report error.
+      $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
 

@@ -56,7 +56,7 @@ class IslandoraBaggerLocalForm extends FormBase {
     $access = $node->access('view', $user);
     if (FALSE == $access) {
       $form_state->setErrorByName('submit',
-        t("Sorry, you do not have sufficient permission to create a Bag for this node.")
+        t("Sorry, you do not have sufficient permission to create a Bag for this object.")
       );
     }
   }
@@ -71,30 +71,18 @@ class IslandoraBaggerLocalForm extends FormBase {
       $title = $node->getTitle();
 
       $config = \Drupal::config('islandora_bagger_integration.settings');
-      $endpoint = $config->get('islandora_bagger_rest_endpoint');
+      // @Todo: if fhis is FALSE, report error.
+      $utils = \Drupal::service('islandora_bagger_integration.utils');
 
-      if (\Drupal::moduleHandler()->moduleExists('context')) {
-        $context_manager = \Drupal::service('context.manager');
-        // If there are multiple contexts that provide a path to a config file, it's OK to use the last one.
-        foreach ($context_manager->getActiveReactions('islandora_bagger_integration_config_file_paths') as $reaction) {
-          $islandora_bagger_config_file_path_from_context = $reaction->execute();
-        }
-      }
+      $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
-      if (isset($islandora_bagger_config_file_path_from_context) && strlen($islandora_bagger_config_file_path_from_context)) {
-        $islandora_bagger_config_file_path = $islandora_bagger_config_file_path_from_context;
-      }
-      else {
-        $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
-      }
-
-      $islandora_bagger_config_file_path = $config->get('islandora_bagger_default_config_file_path');
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
       $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
 
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
       $process->run();
+
       $path_to_bag = preg_replace('/^.*\s+at\s+/', '', trim($process->getOutput()));
       $bag_filename = pathinfo($path_to_bag, PATHINFO_BASENAME);
       $path_to_bag = file_create_url('public://' . $bag_filename);
