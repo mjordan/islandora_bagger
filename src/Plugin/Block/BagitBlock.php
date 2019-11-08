@@ -10,8 +10,8 @@ use Drupal\Core\Form\FormInterface;
  *
  * @Block(
  *   id = "islandora_bagger_block",
- *   admin_label = @Translation("BagIt block"),
- *   category = @Translation("Create a Bag for a node")
+ *   admin_label = @Translation("Islandora Bagger block"),
+ *   category = @Translation("Create a Bag for an object")
  * )
  */
 class BagitBlock extends BlockBase {
