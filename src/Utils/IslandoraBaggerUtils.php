@@ -42,5 +42,26 @@ class IslandoraBaggerUtils {
     }
   }
 
+  /**
+   * Checks to see if the Islandora Bagger config file exists and is readable.
+   *
+   * @param string $path
+   *   Path to the file to test.
+   *
+   * @return bool
+   *   TRUE if it is, FALSE if not.
+   */
+  public function configFileIsReadable($path = NULL) {
+    if (is_null($path)) {
+      $path = $this->getConfigFilePath();
+    }
+
+    if (is_readable($path)) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
 }
 

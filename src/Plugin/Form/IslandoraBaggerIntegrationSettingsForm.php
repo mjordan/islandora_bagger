@@ -89,7 +89,8 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (!file_exists(trim($form_state->getValue('islandora_bagger_default_config_file_path')))) {
+    $utils = \Drupal::service('islandora_bagger_integration.utils');
+    if (!$utils->configFileIsReadable(trim($form_state->getValue('islandora_bagger_default_config_file_path')))) {
       $form_state->setErrorByName(
         'islandora_bagger_default_config_file_path',
         $this->t('Cannot find the Islandora Bagger config file at the path specified.')

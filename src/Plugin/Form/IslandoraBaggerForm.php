@@ -56,9 +56,18 @@ class IslandoraBaggerForm extends FormBase {
     $access = $node->access('view', $user);
     if (FALSE == $access) {
       $form_state->setErrorByName('submit',
-        t("Sorry, you do not have sufficient permission to create a Bag for this node.")
+        $this->t("Sorry, you do not have sufficient permission to create a Bag for this Islandora object.")
       );
     }
+
+    $config = \Drupal::config('islandora_bagger_integration.settings');
+    $utils = \Drupal::service('islandora_bagger_integration.utils');
+    if (!$utils->configFileIsReadable()) {
+      $message = $this->t("Sorry, the Bagger configuration file at @file is not readable.",
+	  ['@file' => $config->get('islandora_bagger_default_config_file_path')]);
+      $form_state->setErrorByName('submit', $message);
+      \Drupal::logger('islandora_bagger_integration')->{'error'}($message);
+    }    
   }
 
   /**
@@ -76,7 +85,6 @@ class IslandoraBaggerForm extends FormBase {
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
 
       $utils = \Drupal::service('islandora_bagger_integration.utils');
-      // @Todo: if fhis is FALSE, report error.
       $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
