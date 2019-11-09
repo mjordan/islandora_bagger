@@ -32,7 +32,7 @@ After you configure the admin setting, place the "Islandora Bagger Block" as you
 
 This module's interaction with Islanodra Bagger can be configured in two ways:
 
-1. Using Islandora Bagger as a remote microservicev ("remote" mode)
+1. Using Islandora Bagger as a remote microservice ("remote" mode)
    * In this mode, submitting the "Create Bag" form does not directly generate the Bag; rather, it sends a request to the remote Islandora Bagger's REST interface, which in turn populates its processing queue with the node ID and the configuration file to use when that node's Bag is created.
    * In remote mode, this Drupal module does not notify the user when their Bag is ready; you will need to configure Islandora Bagger to send an email to the user indicating where they can get the Bag.
 1. Using Islandora Bagger as command-line utility ("local" mode)
