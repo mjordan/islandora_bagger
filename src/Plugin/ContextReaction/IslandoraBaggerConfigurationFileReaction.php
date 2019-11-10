@@ -58,13 +58,43 @@ class IslandoraBaggerConfigurationFileReaction extends ContextReactionPluginBase
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    $module_config = \Drupal::config('islandora_bagger_integration.settings');
+    $mode = $module_config->get('islandora_bagger_mode');
+
     $utils = \Drupal::service('islandora_bagger_integration.utils');
+    $bagger_settings = $utils->getIslandoraBaggerConfig(trim($form_state->getValue('bagger_config_file_path')));
+
     if (!$utils->configFileIsReadable(trim($form_state->getValue('bagger_config_file_path')))) {
       $form_state->setErrorByName(
         'bagger_config_file_path',
-        $this->t('Cannot find or read the Islandora Bagger config file at the path specified.')
+	$this->t('Cannot find or read the Islandora Bagger config file at @path.',
+	  ['@path' => $form_state->getValue('bagger_config_file_path')])
       );
     }
+
+    if ($mode == 'local' && $utils->configFileIsReadable(trim($form_state->getValue('bagger_config_file_path')))) {
+      if (!is_writable($bagger_settings['output_dir'])) {
+        $form_state->setErrorByName(
+          'bagger_config_file_path',
+          $this->t('@dir identified in the "output_dir" setting in @path is not writable.',
+          ['@dir' => $bagger_settings['output_dir'],
+          '@path' => ($form_state->getValue('bagger_config_file_path'))])
+        );
+      }
+    }
+
+    if ($mode == 'local' && $utils->configFileIsReadable(trim($form_state->getValue('bagger_config_file_path')))) {
+      $allowed_serializations = array('zip', 'tgz');
+      if (!in_array($bagger_settings['serialize'], $allowed_serializations)) {
+        $form_state->setErrorByName(
+          'bagger_config_file_path',
+          $this->t('The "serialize" setting in @path is "@serialization". It must be either "zip" or "tgz".',
+          ['@path' => $form_state->getValue('bagger_config_file_path'),
+          '@serialization' => $bagger_settings['serialize']])
+        );
+      }
+    }
+
     parent::validateConfigurationForm($form, $form_state);
   }
 
