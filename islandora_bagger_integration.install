@@ -7,14 +7,12 @@ function islandora_bagger_integration_requirements($phase) {
   $requirements = [];
 
   if ($phase == 'runtime') {
-    // $config = \Drupal::config('islandora_bagger_integration.settings');
-    $config = \Drupal::configFactory()->getEditable('islandora_bagger_integration.settings');
-    $mode = $config->get('islandora_bagger_integration_mode');
+    $config = \Drupal::config('islandora_bagger_integration.settings');
+    $mode = $config->get('islandora_bagger_mode');
 
-    // dsm($config);
     // If in remote mode, check whether Islandora Bagger's endpoint is available.
     if ($mode == 'remote') {
-      $bagger_endpoint = $config->get('islandora_bagger_rest_endpoint') ?: 'http://localhost:8000/api/createbag';
+      $bagger_endpoint = $config->get('islandora_bagger_rest_endpoint');
       $bagger_response_code = 0;
       try {
         $client = \Drupal::httpClient();
@@ -45,7 +43,7 @@ function islandora_bagger_integration_requirements($phase) {
 
     // If in local mode, check whether Islandora Bagger's installation directory exists.
     if ($mode == 'local') {
-      $bagger_directory = $config->get('islandora_bagger_local_bagger_directory') ? $config->get('islandora_bagger_local_bagger_directory') : '';
+      $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
       if (file_exists($bagger_directory)) {
           $requirements['islandora_bagger_integration_directory_exists'] = [
             'title' => t("Islandora Bagger Integration"),
@@ -61,7 +59,7 @@ function islandora_bagger_integration_requirements($phase) {
         ];
       }
     }
-    return $requirements;
   }
+  return $requirements;
 }
 
