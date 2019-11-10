@@ -2,8 +2,10 @@
 
 namespace Drupal\islandora_bagger_integration\Utils;
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
- * Utilitie methods.
+ * Utility methods.
  */
 class IslandoraBaggerUtils {
 
@@ -63,5 +65,26 @@ class IslandoraBaggerUtils {
       return FALSE;
     }
   }
+
+  /**
+   * Gets the configuration file values.
+   *
+   * @param string $path
+   *   Path to the config file.
+   *
+   * @return array|bool
+   *   The configuration values, or FALSE if there was a problem.
+   */
+  public function getIslandoraBaggerConfig($path) {
+    if (!$this->configFileIsReadable($path)) {
+      return FALSE;
+    }
+
+    // Use a static cache to avoid reading the config file multiple times.
+    static $settings;
+    $settings = Yaml::parseFile($path);
+    return $settings;
+  }
+
 }
 

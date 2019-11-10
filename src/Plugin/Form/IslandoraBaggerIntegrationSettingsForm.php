@@ -5,7 +5,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Configure example settings for this site.
+ * Admin settings form.
  */
 class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
   /** 
@@ -95,6 +95,29 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
         'islandora_bagger_default_config_file_path',
         $this->t('Cannot find the Islandora Bagger config file at the path specified.')
       );
+    }
+
+    $bagger_settings = $utils->getIslandoraBaggerConfig(trim($form_state->getValue('islandora_bagger_default_config_file_path')));
+
+    if ($form_state->getValue('islandora_bagger_mode') == 'local' && !is_writable($bagger_settings['output_dir'])) {
+      $form_state->setErrorByName(
+        'islandora_bagger_default_config_file_path',
+	$this->t('@dir identified in the "output_dir" setting in @path is not writable.',
+	['@dir' => $bagger_settings['output_dir'],
+	'@path' => ($form_state->getValue('islandora_bagger_default_config_file_path'))])
+      );
+    }
+
+    if ($form_state->getValue('islandora_bagger_mode') == 'local') {
+      $allowed_serializations = array('zip', 'tgz');
+      if (!in_array($bagger_settings['serialize'], $allowed_serializations)) {
+        $form_state->setErrorByName(
+          'islandora_bagger_default_config_file_path',
+	  $this->t('The "serialize" setting in @path is "@serialization". It must be either "zip" or "tgz".',
+	  ['@path' => $form_state->getValue('islandora_bagger_default_config_file_path'),
+	  '@serialization.' => $bagger_settings['serialize']])
+        );
+      }
     }
 
     if ($form_state->getValue('islandora_bagger_mode') == 'local') {
