@@ -56,6 +56,10 @@ This module comes with a Context reaction that allows you to use Islandora Bagge
 
 This module provides no mechanism for uploading configuration files via Drupal's web interface, so you will need access to the Drupal server's file system. Also, do not put configuration files in directories that are accessible via the web, since they contain credentials for accessing your Drupal's REST interface.
 
+## Modifying the Islandora Bagger configuration from other modules
+
+This module defines a hook that allows other modules to modify the Islandora Bagger configration, in both remote and local modes. See `islandora_bagger_integration.api.php` for details.
+
 ## To do
 
 See issue list.

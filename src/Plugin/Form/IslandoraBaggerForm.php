@@ -87,6 +87,7 @@ class IslandoraBaggerForm extends FormBase {
       $utils = \Drupal::service('islandora_bagger_integration.utils');
       $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
+      // Allow other modules to modify $config_file_contents before it is POSTed to the microservice.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
       \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
 
