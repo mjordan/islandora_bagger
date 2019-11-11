@@ -44,9 +44,13 @@ The advantage of local mode is that the user is presented with the download link
 
 The advantage of the remote mode is that generating a Bag will never time out because clicking on the "Create Bag" button sends a simple REST request to the remote Islandora Bagger microservice, which then add the request to a queue to be processed later. This is also a disadvantage, since the user doesn't get to download the Bag until later.
 
-## Using Context to define which configuration file to use
+## Using Context
 
-This module comes with a Context reaction that allows you to use Islandora Bagger configuration files other than the default. To enable this, do the folowing:
+This module comes with two Context reactions that provide control over the Islandora Bagger configuration.
+
+### Using Context to define which configuration file to use
+
+One of those Reactions allows you to use Islandora Bagger configuration files other than the default. To enable this, do the folowing:
 
 1. Install Context and Context UI modules (requirements for Islandora, so will already be done).
 1. Create a Context or edit an existing Context.
@@ -55,6 +59,22 @@ This module comes with a Context reaction that allows you to use Islandora Bagge
 1. Enter the absolute path on your Drupal server to the configuration file you want to use.
 
 This module provides no mechanism for uploading configuration files via Drupal's web interface, so you will need access to the Drupal server's file system. Also, do not put configuration files in directories that are accessible via the web, since they contain credentials for accessing your Drupal's REST interface.
+
+### Using Context to add or modify Islandora Bagger config settings
+
+The other of Reaction allows you to use add or modify options to the Islandora Bagger configuration file. To enable this, do the folowing:
+
+1. Install Context and Context UI modules (requirements for Islandora, so will already be done).
+1. Create a Context or edit an existing Context.
+1. Define your Conditions.
+1. Add the "Islandora Bagger Config Options" reaction.
+1. Enter the options you want to add or modify. Add one option per line, using YAML syntax. For example:
+
+```
+serialize: tgz
+output_dir: /my/alternative/output/path
+```
+If the option's key exists in the file, that option will be updated with the new value. If the option's key doesn't exist in the file, it will be added.
 
 ## Modifying the Islandora Bagger configuration from other modules
 
