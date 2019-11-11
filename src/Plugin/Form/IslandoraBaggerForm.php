@@ -134,15 +134,20 @@ class IslandoraBaggerForm extends FormBase {
       $title = $node->getTitle();
 
       $config = \Drupal::config('islandora_bagger_integration.settings');
-      // @Todo: if fhis is FALSE, report error.
+      // @Todo: if this is FALSE, report error.
       $utils = \Drupal::service('islandora_bagger_integration.utils');
 
       $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
-      // See https://github.com/mjordan/islandora_bagger_integration/issues/16.
-      // @todo: write out modified config file contents and modify $islandora_bagger_config_file_path to point to the modified file.
+      // Allow other modules to modify the Islandor Bagger config file. Write out modified config
+      // file contents and modify $islandora_bagger_config_file_path to point to the modified file.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
       \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
+      $tmp_dir = file_directory_temp();
+      $tmp_islandora_bagger_config_file_path = $tmp_dir . DIRECTORY_SEPARATOR .
+	      pathinfo($islandora_bagger_config_file_path, PATHINFO_BASENAME) . '.islandora_bagger.' . $nid . '.tmp.yml';
+      file_put_contents($tmp_islandora_bagger_config_file_path, $config_file_contents);
+      $islandora_bagger_config_file_path = $tmp_islandora_bagger_config_file_path;
 
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
       $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
@@ -163,6 +168,7 @@ class IslandoraBaggerForm extends FormBase {
         $message = $this->t('Download your Bag @link.',
           ['@link' => $link]
         );
+	@unlink($tmp_islandora_bagger_config_file_path);
       }
       else {
 	throw new ProcessFailedException($process);
