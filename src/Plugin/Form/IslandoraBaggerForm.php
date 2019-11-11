@@ -89,7 +89,7 @@ class IslandoraBaggerForm extends FormBase {
 
       // Allow other modules to modify $config_file_contents before it is POSTed to the microservice.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
-      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
+      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [$nid, &$config_file_contents]);
 
       if ($config->get('islandora_bagger_integration_add_email_user')) {
         $user = \Drupal::currentUser();
@@ -143,7 +143,7 @@ class IslandoraBaggerForm extends FormBase {
       // Allow other modules to modify the Islandor Bagger config file. Write out modified config
       // file contents and modify $islandora_bagger_config_file_path to point to the modified file.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
-      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
+      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [$nid, &$config_file_contents]);
       $tmp_dir = file_directory_temp();
       $tmp_islandora_bagger_config_file_path = $tmp_dir . DIRECTORY_SEPARATOR .
 	      pathinfo($islandora_bagger_config_file_path, PATHINFO_BASENAME) . '.islandora_bagger.' . $nid . '.tmp.yml';
