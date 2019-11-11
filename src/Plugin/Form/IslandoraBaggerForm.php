@@ -88,6 +88,7 @@ class IslandoraBaggerForm extends FormBase {
       $islandora_bagger_config_file_path = $utils->getConfigFilePath();
 
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
+      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
 
       if ($config->get('islandora_bagger_integration_add_email_user')) {
         $user = \Drupal::currentUser();
@@ -137,6 +138,11 @@ class IslandoraBaggerForm extends FormBase {
       $utils = \Drupal::service('islandora_bagger_integration.utils');
 
       $islandora_bagger_config_file_path = $utils->getConfigFilePath();
+
+      // See https://github.com/mjordan/islandora_bagger_integration/issues/16.
+      // @todo: write out modified config file contents and modify $islandora_bagger_config_file_path to point to the modified file.
+      $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
+      \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [&$config_file_contents]);
 
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
       $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
