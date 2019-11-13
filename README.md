@@ -62,7 +62,7 @@ This module provides no mechanism for uploading configuration files via Drupal's
 
 ### Using Context to add or modify Islandora Bagger config settings
 
-The other of Reaction allows you to use add or modify options to the Islandora Bagger configuration file. To enable this, do the folowing:
+The other Reaction allows you to add options to the Islandora Bagger configuration file or override existing options. To enable this, do the folowing:
 
 1. Install Context and Context UI modules (requirements for Islandora, so will already be done).
 1. Create a Context or edit an existing Context.
@@ -72,9 +72,13 @@ The other of Reaction allows you to use add or modify options to the Islandora B
 
 ```
 serialize: tgz
-output_dir: /my/alternative/output/path
+bag-info: Contact-Email: admin@example.com | Custom-Tag: Some value.
+plugins: AddBasicTags | AddMedia | AddFedoraTurtle
 ```
-If the option's key exists in the file, that option will be updated with the new value. If the option's key doesn't exist in the file, it will be added.
+
+`bag-info`,`drupal_basic_auth`,`drupal_media_tags`, `plugins`, and `post_bag_scripts` are pipe-separated lists. For `bag-info`, each member of the list is a tag:value pair (separated by a colon). The other list options takes a pipe-separated list of values.
+
+If the option's key exists in the configuration file, that option will be updated with the new value. If the option's key doesn't exist in the configuration file, it will be added. The only exception is `bag-info`: for this option, its values provided in the Context Reaction will be merged with any existing values from the configuration file.
 
 ## Modifying the Islandora Bagger configuration from other modules
 

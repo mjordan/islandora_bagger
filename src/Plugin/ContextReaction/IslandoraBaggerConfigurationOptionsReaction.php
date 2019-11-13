@@ -48,7 +48,7 @@ class IslandoraBaggerConfigurationOptionsReaction extends ContextReactionPluginB
     $form['bagger_config_options'] = [
       '#title' => $this->t('Islandora Bagger config options'),
       '#type' => 'textarea',
-      '#description' => $this->t('Key: value pairs of options to add/modify. One pair per line. Must be valid YAML.'),
+      '#description' => $this->t("Key:value pairs of options to add/modify. One pair per line. See module's README file for examples."),
       '#default_value' => isset($config['bagger_config_options']) ? $config['bagger_config_options'] : '',
     ];
     return $form;

@@ -86,5 +86,59 @@ class IslandoraBaggerUtils {
     return $settings;
   }
 
+
+  /**
+   * Incorporates bag-info tags from the Context "IslandoraBaggerConfigurationOptionsReaction" Reaction into the existing YAML config data.
+   *
+   * New tags are added, and existing tags are overwritten with new values.
+   *
+   * @param array $existing_config
+   *    The YAML from the config file template.
+   * @param string $bag_info_tags_from_context
+   *    The pipe-separated bag-info tags from the Context configuration.
+   *
+   * @return array
+   *    The modified YAML configuration data as an associative array.
+   */
+  public function addBagInfoTags($existing_config, $bag_info_tags_from_context) {
+    $bag_info_tags_from_context = explode('|', $bag_info_tags_from_context);
+    foreach ($bag_info_tags_from_context as $tag_from_context) {
+      list($context_tag_key, $context_tag_value) = explode(':', $tag_from_context, 2);
+      $context_tag_key = trim($context_tag_key);
+      $context_tag_value = trim($context_tag_value);
+      // If the tag exists, replace it with the corresponding value from the Context;
+      // if it doesn't, add it using the value from the Context.
+     $existing_config['bag-info'][$context_tag_key] = $context_tag_value;
+  }
+
+    return $existing_config;
+  }
+
+  /**
+   * Incorporates list values from the Context "IslandoraBaggerConfigurationOptionsReaction" Reaction into the existing YAML config data.
+   *
+   * New tags are added, and existing tags are overwritten with new values.
+   *
+   * @param array $existing_config
+   *    The YAML from the config file template.
+   * @param string $key
+   *    The YAML key to update.
+   * @param string $list_from_context
+   *    The pip-separate list of values from the Context configuration.
+   *
+   * @return array
+   *    The modified YAML configuration data as an associative array.
+   */
+  public function addListConfigOptions($existing_config, $key, $list_from_context) {
+    $list_from_context = explode('|', $list_from_context);
+    foreach ($list_from_context as &$member) {
+      $member = trim($member);
+      // If the key exists, replace it with the corresponding list value from the Context;
+      // if it doesn't, add it using the list value from the Context.
+      $existing_config[$key] = $list_from_context;
+     }
+
+    return $existing_config;
+  }
 }
 
