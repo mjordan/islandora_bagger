@@ -46,7 +46,7 @@ The advantage of the remote mode is that generating a Bag will never time out be
 
 ## Using Context
 
-This module comes with two Context reactions that provide control over the Islandora Bagger configuration.
+This module comes with two Context Reactions that provide control over the Islandora Bagger configuration.
 
 ### Using Context to define which configuration file to use
 
@@ -55,7 +55,7 @@ One of those Reactions allows you to use Islandora Bagger configuration files ot
 1. Install Context and Context UI modules (requirements for Islandora, so will already be done).
 1. Create a Context or edit an existing Context.
 1. Define your Conditions.
-1. Add the "Islandora Bagger Config File" reaction.
+1. Add the "Islandora Bagger Config File" Reaction.
 1. Enter the absolute path on your Drupal server to the configuration file you want to use.
 
 This module provides no mechanism for uploading configuration files via Drupal's web interface, so you will need access to the Drupal server's file system. Also, do not put configuration files in directories that are accessible via the web, since they contain credentials for accessing your Drupal's REST interface.
@@ -67,7 +67,7 @@ The other Reaction allows you to add options to the Islandora Bagger configurati
 1. Install Context and Context UI modules (requirements for Islandora, so will already be done).
 1. Create a Context or edit an existing Context.
 1. Define your Conditions.
-1. Add the "Islandora Bagger Config Options" reaction.
+1. Add the "Islandora Bagger Config Options" Reaction.
 1. Enter the options you want to add or modify. Add one option per line, using YAML syntax. For example:
 
 ```
@@ -78,7 +78,7 @@ plugins: AddBasicTags | AddMedia | AddFedoraTurtle
 
 `bag-info`,`drupal_basic_auth`,`drupal_media_tags`, `plugins`, and `post_bag_scripts` are pipe-separated lists. For `bag-info`, each member of the list is a tag:value pair (separated by a colon). The other list options takes a pipe-separated list of values.
 
-If the option's key exists in the configuration file, that option will be updated with the new value. If the option's key doesn't exist in the configuration file, it will be added. The only exception is `bag-info`: for this option, its values provided in the Context Reaction will be merged with any existing values from the configuration file.
+If the option's key exists in the configuration file, that option will be updated with the new value. If the option's key doesn't exist in the configuration file, it will be added. The only exception is `bag-info`: for this option, its values provided in the Context Reaction will be merged with any existing values from the configuration file. For example, if the Reaction contains a tag "Contact-Email: admin@example.com", and the configuration file contains a "Contact-Email" tag, the existing one will be replaced by the one from the Reaction. If the Reaction contains a tag that does not exist in the configuration file, it will be added as a new tag.
 
 ## Modifying the Islandora Bagger configuration from other modules
 
