@@ -1,5 +1,5 @@
 islandora_bagger_mode: local
 islandora_bagger_default_config_file_path: /path/to/sample_config.yml
 islandora_bagger_rest_endpoint: 'http://localhost/api/createbag'
-islandora_bagger_integration_add_email_user: 0
+islandora_bagger_add_email_user: 0
 islandora_bagger_local_bagger_directory: /path/to/islandora_bagger

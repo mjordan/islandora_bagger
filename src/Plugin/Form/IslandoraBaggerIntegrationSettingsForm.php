@@ -59,10 +59,10 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
         ],
       ],
     );
-    $form['islandora_bagger_integration_add_email_user'] = array(
+    $form['islandora_bagger_add_email_user'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t("Add user's email address to configuration file using the key 'recipient_email'."),
-      '#default_value' => $config->get('islandora_bagger_integration_add_email_user'),
+      '#default_value' => $config->get('islandora_bagger_add_email_user'),
       '#states' => [
         'visible' => [
           ':input[id="bagger_location"]' => ['value' => 'remote'],
@@ -74,7 +74,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#maxlength' => 256,
       '#title' => $this->t('Absolute path to your local Islandora Bagger installation'),
-      '#description' => $this->t('For example, "/var/local/islandora_bagger". Used only by the "local" Islandora Bagger block. Ignore if you are using Islandora Bagger as a microservice.'),
+      '#description' => $this->t('For example, "/var/local/islandora_bagger". Used only when running in "local" mode. Ignore if you are using Islandora Bagger as a microservice.'),
       '#default_value' => $config->get('islandora_bagger_local_bagger_directory'),
       '#states' => [
         'visible' => [
@@ -138,7 +138,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       ->set('islandora_bagger_mode', $form_state->getValue('islandora_bagger_mode'))
       ->set('islandora_bagger_default_config_file_path', trim($form_state->getValue('islandora_bagger_default_config_file_path')))
       ->set('islandora_bagger_rest_endpoint', trim($form_state->getValue('islandora_bagger_rest_endpoint')))
-      ->set('islandora_bagger_integration_add_email_user', $form_state->getValue('islandora_bagger_integration_add_email_user'))
+      ->set('islandora_bagger_add_email_user', $form_state->getValue('islandora_bagger_add_email_user'))
       ->set('islandora_bagger_local_bagger_directory', trim($form_state->getValue('islandora_bagger_local_bagger_directory')))
       ->save();
 
