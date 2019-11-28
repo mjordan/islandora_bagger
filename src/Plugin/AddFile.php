@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds one or more files specified in the 'files_to_add' config option.
  */
@@ -26,9 +28,11 @@ class AddFile extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds file listed in the config setting 'files_to_add'.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         // @todo: Log if this setting doesn't exist.
         if (array_key_exists('files_to_add', $this->settings)) {

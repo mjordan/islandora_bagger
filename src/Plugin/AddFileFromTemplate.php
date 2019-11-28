@@ -8,6 +8,7 @@
 namespace App\Plugin;
 
 use \Twig\Twig;
+use whikloj\BagItTools\Bag;
 
 /**
  * Adds a file created from a Twig template.
@@ -28,9 +29,11 @@ class AddFileFromTemplate extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds file created from a Twig template, with values from a specified source.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $metadata = json_decode($node_json, true);
 

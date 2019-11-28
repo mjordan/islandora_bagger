@@ -8,6 +8,7 @@
 namespace App\Plugin;
 
 use \League\Csv\Writer;
+use whikloj\BagItTools\Bag;
 
 /**
  * Adds a CSV file created from node fields.
@@ -28,10 +29,12 @@ class AddNodeCsv extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds CSV file created from node field data. Multiple values are subdelimited
      * by a semicolon.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $metadata = json_decode($node_json, true);
 
@@ -83,7 +86,7 @@ class AddNodeCsv extends AbstractIbPlugin
             }
             $field_value_string = implode(';', $field_value_strings);
             $field_value_string = ltrim($field_value_string, ';');
-            $record[] = $field_value_string;            
+            $record[] = $field_value_string;
           }
           else {
             $record[] = '';

@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Abstract class for Islandora Bagger plugins.
  */
@@ -31,7 +33,7 @@ abstract class AbstractIbPlugin
      *
      * All plugins must implement this method.
      *
-     * @param object $bag
+     * @param Bag $bag
      *    The Bag object.
      * @param string $bag_temp_dir
      *    The absolute path to the directory where content files, etc. are to be downloaded.
@@ -40,7 +42,7 @@ abstract class AbstractIbPlugin
      * @param string $node_json
      *    The node's JSON representation.
      *
-     * @return The modified Bag.
+     * @return Bag The modified Bag.
      */
-    abstract public function execute($bag, $bag_temp_dir, $nid, $node_json);
+    abstract public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json);
 }

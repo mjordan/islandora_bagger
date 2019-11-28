@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds the JSON representation of the Islandora object's media to the Bag.
  */
@@ -26,9 +28,9 @@ class AddMediaJson extends AbstractIbPlugin
     }
 
     /**
-
+     * {@inheritdoc}
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $client = new \GuzzleHttp\Client();
         $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';

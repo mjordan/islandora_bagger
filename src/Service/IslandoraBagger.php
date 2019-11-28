@@ -3,13 +3,8 @@
 namespace App\Service;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use whikloj\BagItTools\Bag;
 
-// We need the first set_include_path() for the console command, and the second
-// for the REST API.
-set_include_path(get_include_path() . PATH_SEPARATOR . 'vendor/scholarslab/bagit/lib/');
-set_include_path(get_include_path() . PATH_SEPARATOR . '../vendor/scholarslab/bagit/lib/');
-require 'bagit.php';
 
 class IslandoraBagger
 {
@@ -34,6 +29,9 @@ class IslandoraBagger
      * @return string|bool
      *   The path to the Bag if successful, false if unsuccessful.
      *   If Bag is serialized, path includes path and Bag filename.
+     *
+     * @throws \whikloj\BagItTools\BagItException
+     *   Problems creating the bag, adding files or writing to disk.
      */
     public function createBag($nid, $settings_path)
     {
@@ -58,7 +56,7 @@ class IslandoraBagger
             mkdir($this->settings['temp_dir']);
         }
 
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
 
         // Get the node's UUID from Drupal.
         $drupal_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '?_format=json';
@@ -74,12 +72,11 @@ class IslandoraBagger
             $bag_name = $nid;
         }
 
-        // Create directories.
+        // Ensure bag directories don't exist. They are created by the Bag library.
         $bag_dir = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         if (file_exists($bag_dir)) {
             $this->removeDir($bag_dir);
         }
-        mkdir($bag_dir);
 
         $bag_temp_dir = $this->settings['temp_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         if (file_exists($bag_temp_dir)) {
@@ -88,13 +85,13 @@ class IslandoraBagger
         mkdir($bag_temp_dir);
 
         // Create the Bag.
-        $bag_info = array();
-        $bag = new \BagIt($bag_dir, true, true, true, $bag_info);
-        $bag->setHashEncoding($this->settings['hash_algorithm']);
+        $bag = Bag::create($bag_dir);
+        $bag->setExtended(true);
+        $bag->setAlgorithm($this->settings['hash_algorithm']);
 
         // Add tags registered in the config file.
         foreach ($this->settings['bag-info'] as $key => $value) {
-            $bag->setBagInfoData($key, $value);
+            $bag->addBagInfoTag($key, $value);
         }
 
         // Execute registered plugins.
@@ -102,10 +99,6 @@ class IslandoraBagger
             $plugin_name = 'App\Plugin\\' . $plugin;
             $bag_plugin = new $plugin_name($this->settings, $this->logger);
             $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json);
-        }
-
-        if ($this->settings['include_payload_oxum']) {
-            $bag->setBagInfoData('Payload-Oxum', $this->generateOctetstreamSum($bag));
         }
 
         $bag->update();
@@ -117,11 +110,14 @@ class IslandoraBagger
             if (file_exists($bag_file_path)) {
                 @unlink($bag_file_path);
             }
-            $bag->package($bag_dir, $package);
+            $bag->package($bag_file_path);
             $this->removeDir($bag_dir);
             if ($this->settings['log_bag_location']) {
                 $this->logBagLocation($nid, $bag_name . '.' . $package);
             }
+        } else {
+          // If we don't package we should finalize.
+          $bag->finalize();
         }
 
         if ($this->settings['log_bag_creation']) {

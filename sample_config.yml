@@ -13,7 +13,8 @@ bag_name: nid
 temp_dir: /tmp/islandora_bagger_temp
 output_dir: /tmp
 
-# Required. Whether or not to zip up the Bag. One of 'false', 'zip', or 'tgz'.
+# Required. Whether or not to zip up the Bag. This is the file extension to append as well as the archive type.
+# One of 'false', 'zip', 'tar, 'tar.gz' ('tgz' also supported) or 'tar.bz2'.
 serialize: zip
 
 # Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
@@ -27,11 +28,10 @@ bag-info:
     Source-Organization: Simon Fraser University
     Foo: Bar
 
-# Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
-# include_payload_oxum: false
-
-# Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
-# hash_algorithm: md5
+# Optional. Which hash algorithm to use.
+# One of 'md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512', 'sha3224', 'sha3256', 'sha3384', 'sha3512'
+# Default is sha512.
+# hash_algorithm: sha512
 
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
 # http_timeout: 120

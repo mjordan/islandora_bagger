@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds entries to fetch.txt.
  */
@@ -26,13 +28,15 @@ class AddFetch extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds URLs listed in the config setting 'fetch_urls'.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         if (array_key_exists('fetch_urls', $this->settings)) {
           foreach ($this->settings['fetch_urls'] as $url_to_add) {
-            $bag->fetch->add($url_to_add, basename($url_to_add));
+            $bag->addFetchFile($url_to_add, basename($url_to_add));
           }
         }
         return $bag;

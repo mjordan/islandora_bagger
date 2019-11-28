@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds Drupal's JSON-LD representation of the Islandora object to the Bag.
  */
@@ -26,9 +28,11 @@ class AddNodeJsonld extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds Drupal's JSON-LD representation of the Islandora object to the Bag.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $client = new \GuzzleHttp\Client();
         $url = $this->settings['drupal_base_url'] . '/node/' . $nid;

@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds Fedora's Turtle representation of the Islandora object to the Bag.
  */
@@ -26,9 +28,11 @@ class AddFedoraTurtle extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds Fedora's Turtle representation of the Islandora object to the Bag.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $node_data = json_decode($node_json, true);
         $uuid = $node_data['uuid'][0]['value'];
