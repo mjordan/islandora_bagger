@@ -62,9 +62,6 @@
     "ralouphie/getallheaders": {
         "version": "2.0.5"
     },
-    "scholarslab/bagit": {
-        "version": "0.3.0"
-    },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
         "recipe": {
@@ -269,5 +266,8 @@
     },
     "twig/twig": {
         "version": "v2.9.0"
+    },
+    "whikloj/bagittools": {
+        "version": "1.0.0"
     }
 }
