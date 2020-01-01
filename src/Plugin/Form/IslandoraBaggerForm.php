@@ -112,7 +112,7 @@ class IslandoraBaggerForm extends FormBase {
       $link = \Drupal::service('link_generator')->generate($this->t('here'), $url);
 
       if ($process->isSuccessful()) {
-        $messanger_level = 'addStatus';
+        $messenger_level = 'addStatus';
         $logger_level = 'notice';
         $message = $this->t('Download your Bag @link.',
           ['@link' => $link]
@@ -121,7 +121,7 @@ class IslandoraBaggerForm extends FormBase {
       }
       else {
 	throw new ProcessFailedException($process);
-        $messanger_level = 'addWarning';
+        $messenger_level = 'addWarning';
         $logger_level = 'warning';
         $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code.',
           ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code]
@@ -129,7 +129,7 @@ class IslandoraBaggerForm extends FormBase {
       }
 
       \Drupal::logger('islandora_bagger_integration')->{$logger_level}($message);
-      $this->messenger()->{$messanger_level}($message);
+      $this->messenger()->{$messenger_level}($message);
     }
 
     if (\Drupal::routeMatch()->getParameter('node') && $mode == 'remote') {
@@ -160,7 +160,7 @@ class IslandoraBaggerForm extends FormBase {
       );
       $http_code = $response->getStatusCode();
       if ($http_code == 200) {
-        $messanger_level = 'addStatus';
+        $messenger_level = 'addStatus';
         $logger_level = 'notice';
         if ($config->get('islandora_bagger_add_email_user')) {
           $message = $this->t('Request to create Bag for "@title" (node @nid) submitted. You will receive an email at @email when the Bag is ready to download.',
@@ -173,7 +173,7 @@ class IslandoraBaggerForm extends FormBase {
         }
       }
       else {
-        $messanger_level = 'addWarning';
+        $messenger_level = 'addWarning';
         $logger_level = 'warning';
         $message = $this->t('Request to create Bag for "@title" (node @nid) failed with status code @http.',
           ['@title' => $title, '@nid' => $nid, '@http' => $http_code]
@@ -181,7 +181,7 @@ class IslandoraBaggerForm extends FormBase {
       }
 
       \Drupal::logger('islandora_bagger_integration')->{$logger_level}($message);
-      $this->messenger()->{$messanger_level}($message);
+      $this->messenger()->{$messenger_level}($message);
     }
   }
 }
