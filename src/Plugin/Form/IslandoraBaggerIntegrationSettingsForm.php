@@ -111,7 +111,7 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $utils = \Drupal::service('islandora_bagger_integration.utils');
     try {
-      $bagger_settings = $utils->getIslandoraBaggerConfig(trim($form_state->getValue('islandora_bagger_default_config_file_path')));
+      $bagger_settings = Yaml::parse(trim($form_state->getValue('current_setup')));
     }
     catch (\Exception $e) {
       $form_state->setErrorByName(
