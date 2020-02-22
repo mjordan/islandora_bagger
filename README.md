@@ -27,6 +27,8 @@ The command to generate a Bag takes two required parameters, `--settings` and `-
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
 
+A third parameter, `--extra`, is explained below.
+
 ### The per-Bag configuration file
 
 For each Bag it creates, Islandora Bagger requires a configuration file in YAML format:
@@ -187,6 +189,14 @@ A couple of things to note about this:
 
 * If the options are defined in both places, the options in the per-Bag file override their counterparts in `config/services.yml`. This way, you can define commonly used options in the `config/services.yml` but override them on a per-Bag basis.
 * Options defined in `services/config.yml` are not accessible to post-Bag scripts.
+
+### Passing settings via the command line
+
+You can pass settings to Islandora Bagger on the command line using the optional `--extra` parameter:
+
+`./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112 --extra='{"serialize": "tar", "hash_algorithm": "md5"}'`
+
+The value of this parameter is a serialized JSON object containing key:value pairs of settings. Settings passed in this way will override settings in the config file and in 'config/services.yml'.
 
 ## REST interface usage
 
