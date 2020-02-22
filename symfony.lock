@@ -44,6 +44,9 @@
     "pear/pear_exception": {
         "version": "v1.0.0"
     },
+    "php": {
+        "version": "7.2"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
