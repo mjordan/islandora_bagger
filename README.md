@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, Islandora Bagger provides its own REST interface that allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification. If you want to allow your Islandora users to initiate the creation of Bags, install the [Islandora Bagger Integration](https://github.com/mjordan/islandora_bagger_integration) module.
+Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, Islandora Bagger provides its own REST interface that allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 1.0 of the BagIt specification. If you want to allow your Islandora users to initiate the creation of Bags, install the [Islandora Bagger Integration](https://github.com/mjordan/islandora_bagger_integration) module.
 
 This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -159,7 +159,7 @@ Since the Drupal node's ID is not included in the configuration file, the same f
 
 In some cases, you may want to define configuration options in `config/services.yml` that are normally defined in the per-Bag configuration file. The most common reasons to do this are 1) to keep sensitive data such as login credentials out of the per-Bag configuration files and 2) to centralize commonly used options in one place rather than repeat them in each per-Bag configuration file.
 
-To do this, define the options from the per-Bag configuration file in `config/services.yml` and append their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
+To do this, define the options from the per-Bag configuration file in `config/services.yml` and prepend their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
 
 1) Comment them out or remove them from the per-Bag file:
 
