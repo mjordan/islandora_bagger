@@ -24,8 +24,6 @@
         "symfony/framework-bundle": "*",
         "symfony/monolog-bundle": "*",
         "symfony/security-bundle": "*",
-        "symfony/http-foundation": "^4.1",
-        "symfony/cache": "^4.1",
         "symfony/stopwatch": "*"
     },
     "require-dev": {
@@ -77,7 +75,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.1.*"
+            "require": "4.4.*"
         }
     }
 }
