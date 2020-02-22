@@ -24,6 +24,8 @@
         "symfony/framework-bundle": "*",
         "symfony/monolog-bundle": "*",
         "symfony/security-bundle": "*",
+        "symfony/http-foundation": "^4.1",
+        "symfony/cache": "^4.1",
         "symfony/stopwatch": "*"
     },
     "require-dev": {
