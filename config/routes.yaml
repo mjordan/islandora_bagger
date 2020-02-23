@@ -7,3 +7,7 @@ app_islandora_bagger_get_bag_location:
     path: /api/createbag
     controller: App\Controller\IslandoraBaggerController::getLocation
     methods: [GET, HEAD]
+app_islandora_bagger_get_queue:
+    path: /api/queue
+    controller: App\Controller\IslandoraBaggerController::getQueue
+    methods: [GET]

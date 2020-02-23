@@ -254,6 +254,15 @@ To process the queue, run the following command:
 
 where the value of the `--queue` option is the path to the queue file. This command is then executed as needed, or from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue --entries=100`
 
+### Inspecting the queue
+
+Since the queue file is just a plain tab-separated value file, looking at its contents can be done in a variety of ways (openning it in a text editor, using `cat`, etc.). Islandora Bagger offers two other ways of inspecting the queue:
+
+1. via the console command `app:islandora_bagger:get_queue` (e.g. `./bin/console app:islandora_bagger:get_queue --queue=var/islandora_bagger.queue --output_format=json`)
+1. via the REST interface (e.g. `curl -v http://127.0.0.1:8000/api/queue`)
+
+In both cases, the output is a serialized JSON object containing each item in the queue. The console command can also print the raw queue if the `--output_format` option has a value of "csv").
+
 ## Customizing the Bags
 
 Customizing the generated Bags is done via values in the configuration file and via plugins.
