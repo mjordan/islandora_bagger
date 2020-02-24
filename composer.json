@@ -11,20 +11,20 @@
     ],
     "require": {
         "php": "^7.1.3",
-        "guzzlehttp/guzzle": "~6.0",
-        "whikloj/bagittools": "^1.1",
-        "twig/twig": "^2.0",
-        "league/csv":"^9.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "symfony/yaml": "*",
-        "symfony/maker-bundle": "*",
+        "guzzlehttp/guzzle": "~6.0",
+        "league/csv": "^9.3",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
+        "symfony/maker-bundle": "*",
         "symfony/monolog-bundle": "*",
         "symfony/security-bundle": "*",
-        "symfony/stopwatch": "*"
+        "symfony/stopwatch": "*",
+        "symfony/yaml": "*",
+        "twig/twig": "^2.0",
+        "whikloj/bagittools": "^1.2"
     },
     "require-dev": {
         "symfony/dotenv": "*",
