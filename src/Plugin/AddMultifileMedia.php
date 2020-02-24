@@ -39,11 +39,6 @@ class AddMultifileMedia extends AbstractIbPlugin {
     // Get the media associated with this node using the Islandora-supplied Manage Media View.
     $media_client = new \GuzzleHttp\Client();
     $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
-
-    $options = [
-      'http_errors' => false,
-      'headers' => ['Authorization' => $this->settings['auth']],
-    ];
     $media_response = $media_client->request('GET', $media_url, [
       'http_errors' => FALSE,
       'headers' => ['Authorization' => $this->settings['auth']],
