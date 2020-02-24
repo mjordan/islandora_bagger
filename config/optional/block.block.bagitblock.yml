@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - islandora
+    - islandora_bagger_integration
+  theme:
+    - carapace
+id: bagitblock
+theme: carapace
+region: sidebar_second
+weight: 0
+provider: null
+plugin: islandora_bagger_block
+settings:
+  id: islandora_bagger_block
+  label: 'BagIt block'
+  provider: islandora_bagger_integration
+  label_display: visible
+visibility:
+  entity_bundle:
+    id: entity_bundle
+    bundles:
+      data_management_plan: data_management_plan
+      islandora_object: islandora_object
+      islandora_rdm_dataset: islandora_rdm_dataset
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

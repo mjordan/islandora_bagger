@@ -120,6 +120,9 @@ class IslandoraBaggerIntegrationSettingsForm extends ConfigFormBase {
       );
       return;
     }
+    if (!is_array($bagger_settings)) {
+      return;
+    }
     if (!$utils->configFileIsReadable(trim($form_state->getValue('islandora_bagger_default_config_file_path')))) {
       $form_state->setErrorByName(
         'islandora_bagger_default_config_file_path',

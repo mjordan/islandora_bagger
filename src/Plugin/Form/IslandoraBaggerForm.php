@@ -2,6 +2,7 @@
 
 namespace Drupal\islandora_bagger_integration\Plugin\Form;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -67,7 +68,7 @@ class IslandoraBaggerForm extends FormBase {
 	  ['@file' => $config->get('islandora_bagger_default_config_file_path')]);
       $form_state->setErrorByName('submit', $message);
       \Drupal::logger('islandora_bagger_integration')->{'error'}($message);
-    }    
+    }
   }
 
   /**
@@ -97,10 +98,12 @@ class IslandoraBaggerForm extends FormBase {
 	      pathinfo($islandora_bagger_config_file_path, PATHINFO_BASENAME) . '.islandora_bagger.' . $nid . '.tmp.yml';
       file_put_contents($tmp_islandora_bagger_config_file_path, $config_file_contents);
       $islandora_bagger_config_file_path = $tmp_islandora_bagger_config_file_path;
-
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
-      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
-
+      $container = \Drupal::getContainer();
+      $jwt = $container->get('jwt.authentication.jwt');
+      $auth = 'Bearer ' . $jwt->generateToken();
+      $extras = Json::encode(["auth" => $auth]);
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid, "--extra={$extras}"];
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
       $process->run();

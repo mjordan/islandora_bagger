@@ -5,8 +5,10 @@ namespace Drupal\islandora_bagger_integration\Plugin\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\Tests\Compiler\J;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Drupal\Component\Serialization\Json;
 
 /**
  * Implements a form.
@@ -72,7 +74,6 @@ class IslandoraBaggerLocalForm extends FormBase {
 
       $config = \Drupal::config('islandora_bagger_integration.settings');
       $endpoint = $config->get('islandora_bagger_rest_endpoint');
-
       if (\Drupal::moduleHandler()->moduleExists('context')) {
         $context_manager = \Drupal::service('context.manager');
         // If there are multiple contexts that provide a path to a config file, it's OK to use the last one.
@@ -89,7 +90,11 @@ class IslandoraBaggerLocalForm extends FormBase {
       }
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
       $actual_path = \Drupal::service('file_system')->realpath($islandora_bagger_config_file_path);
-      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', "--settings=$actual_path", '--node=' . $nid];
+      $container = \Drupal::getContainer();
+      $jwt = $container->get('jwt.authentication.jwt');
+      $auth = 'Bearer ' . $jwt->generateToken();
+      $extras = Json::encode(["auth" => $auth]);
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', "--settings=$actual_path", '--node=' . $nid, "--extra={$extras}"];
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
       $process->run();
@@ -114,7 +119,6 @@ class IslandoraBaggerLocalForm extends FormBase {
           ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code]
         );
       }
-
       \Drupal::logger('islandora_bagger_integration')->{$logger_level}($message);
       $this->messenger()->{$messanger_level}($message);
     }
