@@ -6,6 +6,7 @@
  */
 
 namespace App\Plugin;
+use whikloj\BagItTools\Bag;
 
 /**
  * Adds a node's media to the Bag.
@@ -26,7 +27,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
   /**
    * Adds a node's media to the Bag.
    */
-  public function execute($bag, $bag_temp_dir, $nid, $node_json) {
+  public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json) {
     $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
       FALSE : $this->settings['include_media_use_list'];
 
@@ -40,11 +41,10 @@ class AddMultifileMedia extends AbstractIbPlugin {
     $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
     $media_response = $media_client->request('GET', $media_url, [
       'http_errors' => FALSE,
-      'auth' => $this->settings['auth'],
+      'headers' => ['Authorization' => $this->settings['auth']],
       'query' => ['_format' => 'json'],
     ]);
     $media_list = (string) $media_response->getBody();
-    $json_data = $media_list;
     $media_list = json_decode($media_list, TRUE);
 
     // Loop through all the media and pick the ones that are tagged with terms in
@@ -54,6 +54,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
     }
     foreach ($media_list as $media) {
       $file_fields = [];
+
       foreach ($media as $key => $field) {
         if (isset($field[0]['target_type']) && $field[0]['target_type'] == 'file') {
           $file_fields[$key] = $field;

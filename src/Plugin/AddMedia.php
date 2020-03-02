@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Adds a node's media to the Bag.
  */
@@ -26,15 +28,17 @@ class AddMedia extends AbstractIbPlugin
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Adds a node's media to the Bag.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
             false: $this->settings['include_media_use_list'];
 
         $this->settings['media_file_directories'] = (!isset($this->settings['media_file_directories'])) ?
-            '': $this->settings['media_file_directories'];            
+            '': $this->settings['media_file_directories'];
 
         // Get the media associated with this node using the Islandora-supplied Manage Media View.
         $media_client = new \GuzzleHttp\Client();

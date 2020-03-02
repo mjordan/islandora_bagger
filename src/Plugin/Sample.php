@@ -7,6 +7,8 @@
 
 namespace App\Plugin;
 
+use whikloj\BagItTools\Bag;
+
 /**
  * Sample Islandora Bagger plugin.
  */
@@ -30,7 +32,7 @@ class Sample extends AbstractIbPlugin
      *
      * All plugins must implement an execute() method.
      *
-     * @param object $bag
+     * @param Bag $bag
      *    The Bag object.
      * @param string $bag_temp_dir
      *    The absolute path to the directory where content files, etc. are to be downloaded.
@@ -39,9 +41,13 @@ class Sample extends AbstractIbPlugin
      * @param string $node_json
      *    The node's JSON representation.
      *
-     * @return The modified Bag.
+     * @return Bag
+     *    The modified Bag.
+     *
+     * @throws \whikloj\BagItTools\BagItException
+     *    Problems creating or modifying the bag.
      */
-    public function execute($bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
     {
         // Assemble, fetch, or copy data from somewhere to add
         // to the Bag.
@@ -59,7 +65,7 @@ class Sample extends AbstractIbPlugin
         $bag->addFile($my_data_file_path, 'mydata.dat');
 
         // You may want to add a custom bag-info.txt tag.
-        $bag->setBagInfoData('My-Custom-Tag', "some value");
+        $bag->addBagInfoTag('My-Custom-Tag', "some value");
 
         // And you probaby should log something, for example, a value from the configuration file.
         $this->logger->info(
