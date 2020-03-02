@@ -41,7 +41,7 @@ class AddMedia extends AbstractIbPlugin
         $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
         $media_response = $media_client->request('GET', $media_url, [
             'http_errors' => false,
-            'auth' => $this->settings['drupal_basic_auth'],
+            'auth' => $this->settings['auth'],
             'query' => ['_format' => 'json']
         ]);
         $media_status_code = $media_response->getStatusCode();
@@ -111,7 +111,7 @@ class AddMedia extends AbstractIbPlugin
         $url = $this->settings['drupal_base_url'] . $term;
         $response = $client->request('GET', $url, [
             'http_errors' => false,
-            'auth' => $this->settings['drupal_basic_auth'],
+            'auth' => $this->settings['auth'],
             'query' => ['_format' => 'json']
         ]);
         $body = (string) $response->getBody();
