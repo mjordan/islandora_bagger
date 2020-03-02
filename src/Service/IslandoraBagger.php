@@ -9,10 +9,8 @@ use whikloj\BagItTools\Bag;
 class IslandoraBagger {
   public function __construct($settings, $logger, $params) {
     $this->params = $params;
-
     $this->settings = $settings;
     $this->logger = $logger;
-
     $this->application_directory = dirname(__DIR__, 2);
   }
 
@@ -54,13 +52,14 @@ class IslandoraBagger {
     }
 
     $client = new Client();
-    $headers = [
-      'Authorization' => $this->settings['auth'],
-    ];
-
     // Get the node's UUID from Drupal.
-    $drupal_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '?_format=json';
-    $response = $client->get($drupal_url, $headers);
+    $drupal_url = $this->settings['drupal_base_url'] . '/node/' . $nid;
+    $response = $client->request('GET', $drupal_url, [
+      'http_errors' => FALSE,
+      'headers' => ['Authorization' => $this->settings['auth']],
+      'query' => ['_format' => 'json'],
+    ]);
+
     $response_body = (string) $response->getBody();
     $node_json = $response_body;
     $body_array = json_decode($response_body, TRUE);
