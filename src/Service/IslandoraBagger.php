@@ -56,7 +56,6 @@ class IslandoraBagger {
     $client = new Client();
     $headers = [
       'Authorization' => $this->settings['auth'],
-      'Accept' => 'application/json',
     ];
 
     // Get the node's UUID from Drupal.
