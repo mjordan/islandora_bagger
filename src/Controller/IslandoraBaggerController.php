@@ -101,4 +101,20 @@ class IslandoraBaggerController extends AbstractController
             return false;
         }
     }
+
+    /**
+     * Reads the queue file and returns it to the client.
+     */
+    public function getQueue(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
+    {
+        $queue_path = $params->get('app.queue.path');
+        if ($entries = @file($queue_path)) {
+            $response = new JsonResponse($entries);
+        } else {
+            $response = new JsonResponse(array('message' => 'Queue file not found at ' . $queue_path));
+        }
+
+        return $response;
+    }
+
 }

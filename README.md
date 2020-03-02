@@ -1,6 +1,6 @@
 # Islandora Bagger
 
-Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, Islandora Bagger provides its own REST interface that allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 0.96 of the BagIt specification. If you want to allow your Islandora users to initiate the creation of Bags, install the [Islandora Bagger Integration](https://github.com/mjordan/islandora_bagger_integration) module.
+Utility to generate [Bags](https://en.wikipedia.org/wiki/BagIt) for objects using Islandora's REST interface using either a command-line tool or via a batch-oriented queue. In addition, Islandora Bagger provides its own REST interface that allows population of the queue. Specific content is added to the Bag's `data` directory and `bag-info.txt` file using plugins. Bags are compliant with version 1.0 of the BagIt specification. If you want to allow your Islandora users to initiate the creation of Bags, install the [Islandora Bagger Integration](https://github.com/mjordan/islandora_bagger_integration) module.
 
 This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use [Islandora Fetch Bags](https://github.com/mjordan/islandora_fetch_bags).
 
@@ -26,6 +26,8 @@ You probably don't need to change `app.queue.path` and `app.location.log.path` s
 The command to generate a Bag takes two required parameters, `--settings` and `--node`. Assuming the configuration file is named `sample_config.yml`, and the Drupal node ID you want to generate a Bag from is 112, the command would look like this:
 
 `./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112`
+
+A third parameter, `--extra`, is explained in the "Passing settings via the command line" section below.
 
 ### The per-Bag configuration file
 
@@ -159,7 +161,7 @@ Since the Drupal node's ID is not included in the configuration file, the same f
 
 In some cases, you may want to define configuration options in `config/services.yml` that are normally defined in the per-Bag configuration file. The most common reasons to do this are 1) to keep sensitive data such as login credentials out of the per-Bag configuration files and 2) to centralize commonly used options in one place rather than repeat them in each per-Bag configuration file.
 
-To do this, define the options from the per-Bag configuration file in `config/services.yml` and append their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
+To do this, define the options from the per-Bag configuration file in `config/services.yml` and prepend their keys with `app.`. For example, to define `drupal_base_url` and `drupal_basic_auth` in `config/services.yml`, do the following:
 
 1) Comment them out or remove them from the per-Bag file:
 
@@ -187,6 +189,14 @@ A couple of things to note about this:
 
 * If the options are defined in both places, the options in the per-Bag file override their counterparts in `config/services.yml`. This way, you can define commonly used options in the `config/services.yml` but override them on a per-Bag basis.
 * Options defined in `services/config.yml` are not accessible to post-Bag scripts.
+
+### Passing settings via the command line
+
+You can pass settings to Islandora Bagger on the command line using the optional `--extra` parameter:
+
+`./bin/console app:islandora_bagger:create_bag --settings=sample_config.yml --node=112 --extra='{"serialize": "tar", "hash_algorithm": "md5"}'`
+
+The value of this parameter is a serialized JSON object containing key:value pairs of settings. Key:value pairs passed in this way will be added to the config settings and will also override settings in the config file and in 'config/services.yml'.
 
 ## REST interface usage
 
@@ -243,6 +253,15 @@ To process the queue, run the following command:
 `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue`
 
 where the value of the `--queue` option is the path to the queue file. This command is then executed as needed, or from within a scheduled job managed by cron. This command iterates through the queue in first-in, first-out order. Once processed, the entry is removed from the queue. You can also optionally specify how many queue entries to process by including the `--entries` option, e.g., `./bin/console app:islandora_bagger:process_queue --queue=var/islandora_bagger.queue --entries=100`
+
+### Inspecting the queue
+
+Since the queue file is just a plain tab-separated value file, looking at its contents can be done in a variety of ways (openning it in a text editor, using `cat`, etc.). Islandora Bagger offers two other ways of inspecting the queue:
+
+1. via the console command `app:islandora_bagger:get_queue` (e.g. `./bin/console app:islandora_bagger:get_queue --queue=var/islandora_bagger.queue --output_format=json`)
+1. via the REST interface (e.g. `curl -v http://127.0.0.1:8000/api/queue`)
+
+In both cases, the output is a serialized JSON object containing each item in the queue. The console command can also print the raw queue if the `--output_format` option has a value of "csv").
 
 ## Customizing the Bags
 

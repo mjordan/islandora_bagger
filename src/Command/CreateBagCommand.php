@@ -34,7 +34,8 @@ class CreateBagCommand extends ContainerAwareCommand
             ->setName('app:islandora_bagger:create_bag')
             ->setDescription('Console tool for generating Bags from Islandora content.')
             ->addOption('node', null, InputOption::VALUE_REQUIRED, 'Drupal node ID to create Bag from.')
-            ->addOption('settings', null, InputOption::VALUE_REQUIRED, 'Absolute path to YAML settings file.');
+            ->addOption('settings', null, InputOption::VALUE_REQUIRED, 'Absolute path to YAML settings file.')
+            ->addOption('extra', null, InputOption::VALUE_OPTIONAL, 'Serialized JSON object containing key:value settings.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -58,6 +59,14 @@ class CreateBagCommand extends ContainerAwareCommand
                 if (!array_key_exists($param_key_trimmed, $this->settings)) {
                     $this->settings[$param_key_trimmed] = $this->params->get($param_key);
                 }
+            }
+        }
+
+        // Add or override config settings via the command line.
+        if (!is_null($input->getOption('extra'))) {
+            $extra = json_decode($input->getOption('extra'), true);
+            foreach ($extra as $extra_setting_key  => $extra_setting_value) {
+                $this->settings[$extra_setting_key] = $extra_setting_value;
             }
         }
 
