@@ -132,7 +132,6 @@ class IslandoraBagger {
         ]
       );
     }
-
     if ($this->settings['delete_settings_file']) {
       unlink(realpath($settings_path));
     }

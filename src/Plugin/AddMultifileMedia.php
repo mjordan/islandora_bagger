@@ -69,6 +69,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
           // @todo: Determine what to do if the file already exists.
           $file_client = new \GuzzleHttp\Client();
           $file_response = $file_client->get($file_url, ['stream' => TRUE,
+            'headers' => ['Authorization' => $this->settings['auth']],
             'timeout' => $this->settings['http_timeout'],
             'connect_timeout' => $this->settings['http_timeout'],
             'verify' => $this->settings['verify_ca'],
