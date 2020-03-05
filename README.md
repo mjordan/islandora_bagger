@@ -6,7 +6,7 @@ This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use 
 
 ## Requirements
 
-* PHP 7.1.3 or higher
+* PHP 7.2 or higher
 * [composer](https://getcomposer.org/)
 
 ## Installation
