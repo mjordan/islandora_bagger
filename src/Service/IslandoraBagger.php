@@ -43,6 +43,8 @@ class IslandoraBagger {
       FALSE : $this->settings['delete_settings_file'];
     $this->settings['log_bag_location'] = (!isset($this->settings['log_bag_location'])) ?
       FALSE : $this->settings['log_bag_location'];
+    $this->settings['auth'] = (!isset($this->settings['auth'])) ?
+      '' : $this->settings['auth'];
 
     if (!file_exists($this->settings['output_dir'])) {
       mkdir($this->settings['output_dir']);
