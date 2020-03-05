@@ -80,8 +80,6 @@ class IslandoraBaggerUtils {
       return FALSE;
     }
 
-    // Use a static cache to avoid reading the config file multiple times.
-    //static $settings;
     $settings = Yaml::parseFile($path);
     return $settings;
   }
