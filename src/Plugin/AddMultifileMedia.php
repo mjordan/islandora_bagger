@@ -101,7 +101,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
     $url = $this->settings['drupal_base_url'] . $term;
     $response = $client->request('GET', $url, [
       'http_errors' => FALSE,
-      'auth' => $this->settings['auth'],
+      'headers' => ['Authorization' => $this->settings['auth']],
       'query' => ['_format' => 'json'],
     ]);
     $body = (string) $response->getBody();

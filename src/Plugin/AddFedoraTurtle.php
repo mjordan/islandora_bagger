@@ -43,7 +43,7 @@ class AddFedoraTurtle extends AbstractIbPlugin {
     $client = new \GuzzleHttp\Client();
     $response = $client->request('GET', $fedora_url, [
       'http_errors' => FALSE,
-      'auth' => $this->settings['auth'],
+      'headers' => ['Authorization' => $this->settings['auth']],
     ]);
     $response_body = (string) $response->getBody();
 

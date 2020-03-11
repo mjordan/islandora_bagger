@@ -34,7 +34,7 @@ class AddDataciteXML extends AbstractIbPlugin {
     $client = new \GuzzleHttp\Client();
     $response = $client->request('GET', $drupal_url, [
       'http_errors' => FALSE,
-      'auth' => $this->settings['auth'],
+      'headers' => ['Authorization' => $this->settings['auth']],
       'query' => ['_format' => 'jsonld'],
     ]);
     $response_body = (string) $response->getBody();
