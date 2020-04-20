@@ -35,7 +35,7 @@ class IslandoraBaggerForm extends FormBase {
       );
       $form['actions']['submit'] = [
         '#type' => 'submit',
-        '#value' => $this->t('Create Bag'),
+        '#value' => $this->t('Create Archive'),
         '#button_type' => 'primary',
       ];
       $form['info'] = array(
