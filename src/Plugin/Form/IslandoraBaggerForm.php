@@ -41,7 +41,7 @@ class IslandoraBaggerForm extends FormBase {
       $form['info'] = array(
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->t('Clicking this button will request a Bag be created for this object.'),
+        '#value' => $this->t('Clicking this button will request a downloadable archive be created for this object.'),
       );
       return $form;
     }
