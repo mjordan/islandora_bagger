@@ -14,6 +14,7 @@ This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use 
 1. Clone this git repository.
 1. `cd islandora_bagger`
 1. `php composer.phar install` (or equivalent on your system, e.g., `./composer install`)
+1. If you want to try Riprap's REST interface, you can install the [Symfony Local Web Server](https://symfony.com/doc/current/setup/symfony_server.html). Note that this server is part of the [Symfony binary](https://symfony.com/download), which is not required by Riprap itself. 
 
 ## Configuration
 
@@ -206,7 +207,7 @@ Note that requests to the REST interface do not generate Bags directly, they onl
 
 To use the REST API to add a Bag-creation job to the queue:
 
-1. Run `php bin/console server:start`
+1. Run `symfony server:start`
 1. Prepare a YAML configuration file for posting to the REST API.
 1. Run `curl -v -X POST -H "Islandora-Node-ID: 4" --data-binary "@sample_config.yml" http://127.0.0.1:8001/api/createbag`
 
@@ -220,7 +221,7 @@ To use the REST API to get a serialized Bag's location for download:
  `{"nid":"4","location":"http:\/\/example.com\/bags\/4.zip","created":"2019-05-06T19:31:33-0700"}`
 
 A couple of things to note about this REST API:
-* The API lacks credential-based authentication. In the meantime, using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
+* The API lacks credential-based authentication. Using Symfony's firewall to provide IP-based access to the API should provide sufficient security.
 * Islandora Bagger's REST interface accepts `POST` requests that contain a request body (in this case, the YAML configuration file). Some HTTP clients (Guzzle, for example) convert requests that are redirected (e.g., in respones to a 301, etc.) to `GET`. If this happens, the request body is lost and the resulting YAML configuration files will be empty. If you are running Islandora Bagger in a web server environment that returns HTTP response codes in the `3xx` range, such as inside an Apache `Alias` directive, your HTTP client will need to *not* redirect POST requests with GET requests. Guzzle's [documentation](http://docs.guzzlephp.org/en/stable/quickstart.html#redirects) on this behavior is useful.
 
 ### Making Bags downloadable

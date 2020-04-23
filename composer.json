@@ -29,7 +29,6 @@
     "require-dev": {
         "symfony/dotenv": "*",
         "symfony/phpunit-bridge": "*",
-        "symfony/web-server-bundle": "*",
         "symfony/debug-pack": "*",
         "squizlabs/php_codesniffer":"*"
     },
