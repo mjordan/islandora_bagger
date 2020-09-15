@@ -91,7 +91,7 @@ class IslandoraBaggerController extends AbstractController
         $queue_path = $params->get('app.queue.path');
         $fp = fopen($queue_path, "a+");
         if (flock($fp, LOCK_EX)) {
-            fwrite($fp, "$nid\t$yaml_path\n");
+            fwrite($fp, "$nid\t$yaml_path\t" . date(\DateTime::ISO8601) . "\n");
             fflush($fp);
             flock($fp, LOCK_UN);
             fclose($fp);

@@ -51,7 +51,7 @@ class ProcessQueueCommand extends ContainerAwareCommand
         }
         for ($i = 1; $i <= $num_entries_to_process; $i++) {
             $current = array_shift($entries);
-            list($nid, $path_to_yaml) = explode('	', $current);
+            list($nid, $path_to_yaml, $timestamp) = explode('	', $current);
 
             $command = $this->getApplication()->find('app:islandora_bagger:create_bag');
             $options = [
@@ -60,7 +60,7 @@ class ProcessQueueCommand extends ContainerAwareCommand
             ];
             $input = new ArrayInput($options);
             $return_code = $command->run($input, $output);
-            $this->log($return_code, $nid, $path_to_yaml);
+            $this->log($return_code, $nid, $path_to_yaml, $timestamp);
 
             // Update the queue file after each entry is processed.
             $this->updateQueue($entries);
@@ -68,7 +68,7 @@ class ProcessQueueCommand extends ContainerAwareCommand
     }
 
     /**
-     * Writes the queueu file with the updated queue.
+     * Writes the queue file with the updated queue.
      *
      * @param array $entries
      *    The updated (i.e., array_shifted) array of entries in the queue.
@@ -99,8 +99,10 @@ class ProcessQueueCommand extends ContainerAwareCommand
      *   The node ID of the Islandora object being Bagged.
      * @param string $path_to_yaml
      *   The full path to the settings file.
+     * @param string $timestamp
+     *   ISO8601 timestamp.
      */
-    private function log($return_code, $nid, $path_to_yaml)
+    private function log($return_code, $nid, $path_to_yaml, $timestamp)
     {
         $details = array(
             'node ID' => $nid,

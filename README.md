@@ -245,9 +245,9 @@ Another approach is to use a post-Bag script (see below) to copy the Bag to a lo
 
 Islandora Bagger implements a simple processing queue, which is populated mainly by REST requests to generate Bags. However, the queue can be populated by any process (manually, scripted, etc.). Islandora Bagger processes the queue by inspecting each entry in first-in, first-out order and for each entry, runs the `app:islandora_bagger:create_bag` command, which creates the Bag by fetching the files and other data from the Islandora instance as defined in that entry's configuration file.
 
-The queue is a simple tab-delimited text file that contains one entry per line. The two fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, e.g.:
+The queue is a simple tab-delimited text file that contains one entry per line. The three fields in each entry are 1) the node ID, 2) the full path to the YAML configuration file, and 3) and ISO8601 timestamp, e.g.:
 
-`2073       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.2073.yaml`
+`2073       /home/mark/Documents/hacking/islandora_bagger/var/islandora_bagger.2073.yaml	2020-09-14T19:01:46-0700`
 
 To process the queue, run the following command:
 
