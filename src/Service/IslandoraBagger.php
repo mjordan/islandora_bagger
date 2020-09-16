@@ -110,14 +110,16 @@ class IslandoraBagger
             if (file_exists($bag_file_path)) {
                 @unlink($bag_file_path);
             }
+            $bag->finalize();
+            $this->registerBagWithIslandora($nid, $bag_name, $bag);
             $bag->package($bag_file_path);
             $this->removeDir($bag_dir);
             if ($this->settings['log_bag_location']) {
                 $this->logBagLocation($nid, $bag_name . '.' . $package);
             }
         } else {
-          // If we don't package we should finalize.
           $bag->finalize();
+          $this->registerBagWithIslandora($nid, $bag_name, $bag);
         }
 
         if ($this->settings['log_bag_creation']) {
@@ -135,6 +137,7 @@ class IslandoraBagger
         if ($this->settings['delete_settings_file']) {
             unlink(realpath($settings_path));
         }
+
 
         // @todo: Return Bag directory path on success or false failure.
         if ($package) {
@@ -206,5 +209,54 @@ class IslandoraBagger
             (is_dir("$dir/$file")) ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
+    }
+
+    /**
+     * Registers the Bag with Islandora Bagger Integration.
+     *
+     * @param string $nid
+     *   The node ID.
+     * @param string $bag_name
+     *   The Bag name.
+     * @param object $bag
+     *  The Bag object.
+     */
+    protected function registerBagWithIslandora($nid, $bag_name, $bag)
+    {
+        $bag_info_contents = file_get_contents($bag->makeAbsolute('bag-info.txt'));
+        $manifest_contents = file_get_contents($bag->makeAbsolute('manifest-' . $this->settings['hash_algorithm'] . '.txt'));
+        $fetch_path = $bag->makeAbsolute('fetch.txt');
+        if (file_exists($fetch_path)) {
+          $fetch_contents = file_get_contents($fetch_path);
+        } else {
+          $fetch_contents = '';
+        }
+   
+        $post_data = [
+            'nid' => $nid,
+            'bag_name' => $bag_name,
+            'bagit_version' => $bag->getVersionString(),
+            'hash_algorithm' => $this->settings['hash_algorithm'],
+            'manifest' => $manifest_contents,
+            'bag_info' => $bag_info_contents,
+            'fetch' => $fetch_contents,
+        ];
+        $post_data = json_encode($post_data);
+
+        $username = $this->settings['drupal_basic_auth'][0];
+        $password = $this->settings['drupal_basic_auth'][1];
+
+        $client = new Client(['http_errors' => false]);
+        $drupal_url = $this->settings['drupal_base_url'] . '/islandora_bagger_integration/bag_log';
+        $response = $client->post($drupal_url, ['auth' => [$username, $password], 'headers' => ['Content-Type' => 'application/json'], 'body' => $post_data]);
+        $response_body = (string) $response->getBody();
+        $response_body = json_decode($response_body, TRUE);
+        $this->logger->info(
+            "Bag registered with Islandora Bagger Integration.",
+            array(
+               'node URL' => $this->settings['drupal_base_url'] . '/node/' . $nid,
+               'entry ID' => $response_body['islandora_bagger_integration_bag_log_id']
+            )
+        );
     }
 }

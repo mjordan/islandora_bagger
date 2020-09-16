@@ -15,7 +15,8 @@ output_dir: /tmp
 
 # Required. Whether or not to zip up the Bag. This is the file extension to append as well as the archive type.
 # One of 'false', 'zip', 'tar, 'tar.gz' ('tgz' also supported) or 'tar.bz2'.
-serialize: zip
+# serialize: zip
+serialize: false
 
 # Required. Whether or not to log Bag creation. Set log output path in config/packages/{environment}/monolog.yaml.
 log_bag_creation: true
