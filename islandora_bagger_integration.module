@@ -51,3 +51,93 @@ function islandora_bagger_integration_islandora_bagger_config_file_contents_alte
    $config_file_contents = Yaml::dump($config);
  }
 }
+
+/**
+ * Implements hook_views_data().
+ */
+function islandora_bagger_integration_views_data() {
+  $data = [];
+  $data['islandora_bagger_integration_bag_log']['table']['group'] = t('Islandora Bagger');
+  $data['islandora_bagger_integration_bag_log']['table']['base'] = [
+    'title' => t('Islandora Bagger Integration'),
+    'help' => t('Log of Bags registered by Islandora Bagger.'),
+    'query_id' => 'views_query',
+  ];
+  // Fields.
+  $data['islandora_bagger_integration_bag_log']['nid'] = [
+    'title' => t('Node ID'),
+    'help' => t('The ID of the node the Bag was generated from.'),
+    'field' => [
+      'id' => 'numeric',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['hash_algorithm'] = [
+    'title' => t('Hash algorithm'),
+    'help' => t('The hash/digest algorithm used by in the Bag.'),
+    'field' => [
+      'id' => 'standard',
+    ],
+    'filter' => [
+      'id' => 'islandora_bagger_integration_hash_algorithm',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['bagit_version'] = [
+    'title' => t('Bagit version'),
+    'help' => t('The version of the Bagit spec declared by the Bag.'),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['ip_address'] = [
+    'title' => t('IP address'),
+    'help' => t('The IP address of Islandora Bagger.'),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['created'] = [
+    'title' => t('Timestamp'),
+    'help' => t('The timestamp when the Bag was registered.'),
+    'field' => [
+      'id' => 'numeric',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['bag_name'] = [
+    'title' => t('Bag name'),
+    'help' => t("The Bag's filename."),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['bag_info'] = [
+    'title' => t('bag-info.txt  contents'),
+    'help' => t("The contents of the Bag's bag-info.txt file."),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['bag_info'] = [
+    'title' => t('bag-info.txt  contents'),
+    'help' => t("The contents of the Bag's bag-info.txt file."),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['manifest'] = [
+    'title' => t('manifest-{algorithm}.txt contents'),
+    'help' => t("The contents of the Bag's manifest file."),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+  $data['islandora_bagger_integration_bag_log']['fetch'] = [
+    'title' => t('fetch.txt contents'),
+    'help' => t("The contents of the Bag's fetch.txt file."),
+    'field' => [
+      'id' => 'standard',
+    ],
+  ];
+
+  return $data;
+}
+
