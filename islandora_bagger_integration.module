@@ -77,9 +77,6 @@ function islandora_bagger_integration_views_data() {
     'field' => [
       'id' => 'standard',
     ],
-    'filter' => [
-      'id' => 'islandora_bagger_integration_hash_algorithm',
-    ],
   ];
   $data['islandora_bagger_integration_bag_log']['bagit_version'] = [
     'title' => t('Bagit version'),
