@@ -1,0 +1,18 @@
+{
+    "name": "islandora-rdm/islandora_bagger_integration",
+    "description": "Islandora module to export content in Bagger format.",
+    "type": "drupal-module",
+    "homepage": "https://github.com/roblib/islandora_bagger_integration",
+    "authors": [
+        {
+            "name": "Mark Jordan",
+            "homepage": "https://www.drupal.org/u/markj",
+            "role": "Maintainer"
+        }
+    ],
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "require": {
+        "islandora/islandora": "*"
+    }
+}
