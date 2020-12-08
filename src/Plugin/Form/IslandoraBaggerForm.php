@@ -92,7 +92,7 @@ class IslandoraBaggerForm extends FormBase {
       // file contents and modify $islandora_bagger_config_file_path to point to the modified file.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
       \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [$nid, &$config_file_contents]);
-      $tmp_dir = file_directory_temp();
+      $tmp_dir = \Drupal\Core\File\FileSystemInterface::getTempDirectory();
       $tmp_islandora_bagger_config_file_path = $tmp_dir . DIRECTORY_SEPARATOR .
 	      pathinfo($islandora_bagger_config_file_path, PATHINFO_BASENAME) . '.islandora_bagger.' . $nid . '.tmp.yml';
       file_put_contents($tmp_islandora_bagger_config_file_path, $config_file_contents);
