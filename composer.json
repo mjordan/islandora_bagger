@@ -1,5 +1,5 @@
 {
-    "name": "islandora_bagger",
+    "name": "islandora/islandora_bagger",
     "type": "project",
     "description": "A command-line utility for generating Bags for Islandora 8 content.",
     "license": "MIT",
