@@ -7,7 +7,7 @@ Drupal Module that allows user to create Bags with [Islandora Bagger](https://gi
 ## Requirements
 
 * An [Islandora Bagger](https://github.com/mjordan/islandora_bagger) microservice
-* [Islandora 8](https://github.com/Islandora-CLAW/islandora)
+* [Islandora 8](https://github.com/Islandora-CLAW/islandora). This module works with both Drupal 8 and Drupal 9.
 * [Context](https://www.drupal.org/project/context) if you want to define which Islandora Bagger configuration files to use other than the default file. A requirement of Islandora so will already be installed.
 
 ## Installation
