@@ -27,10 +27,11 @@
         "whikloj/bagittools": "^1.2"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "*",
+        "symfony/debug-bundle": "4.4.*",
         "symfony/dotenv": "*",
         "symfony/phpunit-bridge": "*",
-        "symfony/debug-pack": "*",
-        "squizlabs/php_codesniffer":"*"
+        "symfony/web-profiler-bundle": "4.4.*"
     },
     "config": {
         "preferred-install": {
