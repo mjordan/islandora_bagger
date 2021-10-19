@@ -25,6 +25,7 @@ The admin settings form for this module requires the following:
    1. the URL of the Islandora Bagger REST endpoint. If you are running Islandora in the CLAW Vagrant, and Islandora Bagger on the host machine (i.e., same machine that is hosing the Vagrant), use `10.0.2.2` as your endpoint IP address instead of `localhost`.
    1. an option to add to the configuration file the email address of the user who requested the Bag be created. If checked, the user's email address will be added to the configuration file using the key `recipient_email`. In addition, if this option is checked, the message displayed to the user will indicate they will receive an email when their Bag is ready for download.
 1. If running in local mode, the absolute path to the directory on your Drupal server where Islandora Bagger is installed.
+    - This directory needs to be writable by the web server process user, e.g., www-data on most Linux systems.
 
 After you configure the admin setting, place the "Islandora Bagger Block" as you normally would any other block. You should restrict this block to the content types of your Islandora nodes, and to user roles who you want to be able to create Bags.
 
