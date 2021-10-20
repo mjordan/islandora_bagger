@@ -67,7 +67,7 @@ class IslandoraBaggerForm extends FormBase {
 	  ['@file' => $config->get('islandora_bagger_default_config_file_path')]);
       $form_state->setErrorByName('submit', $message);
       \Drupal::logger('islandora_bagger_integration')->{'error'}($message);
-    }    
+    }
   }
 
   /**
@@ -120,11 +120,11 @@ class IslandoraBaggerForm extends FormBase {
 	@unlink($tmp_islandora_bagger_config_file_path);
       }
       else {
-	throw new ProcessFailedException($process);
+
         $messenger_level = 'addWarning';
         $logger_level = 'warning';
-        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code.',
-          ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code]
+        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code and error text @error_text.',
+          ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code, '@error_text' => $process->getErrorOutput()]
         );
       }
 
