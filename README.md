@@ -70,8 +70,11 @@ bag-info:
 # Optional. Whether or not to include the Payload-Oxum tag in bag-info.txt. Defaults to true.
 # include_payload_oxum: false
 
-# Optional. Which hash algorithm to use. One of 'sha1' or 'md5'. Default is sha1.
+# Optional. Which hash algorithm(s) to use.
+# One of md5, sha1, sha224, sha256, sha384, sha512, sha3224, sha3256, sha3384, sha3512,
+# or a list of values. Default is sha512.
 # hash_algorithm: md5
+# hash_algorithm: [md5, sha1, sha256]
 
 # Optional. Timeout to use for Guzzle requests, in seconds. Default is 60.
 # http_timeout: 120
@@ -119,7 +122,7 @@ include_media_use_list: true
 # Used by the 'AddFileFromTemplate' plugin.
 # template_path can be absolute or relative to the Islandora Bagger directory.
 template_path: 'templates/mods.twig'
-# template_output_filename will be assigned to the file generated from the teamplate,
+# template_output_filename will be assigned to the file generated from the template,
 # which will be added to the Bag's data directory. You may include a subdirectory
 # or subdirectories as part of the filename.
 templated_output_filename: 'metadata/MODS.xml'

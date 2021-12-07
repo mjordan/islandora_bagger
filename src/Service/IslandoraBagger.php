@@ -89,7 +89,20 @@ class IslandoraBagger
         // Create the Bag.
         $bag = Bag::create($bag_dir);
         $bag->setExtended(true);
-        $bag->setAlgorithm($this->settings['hash_algorithm']);
+        if (is_string($this->settings['hash_algorithm'])) {
+            $bag->setAlgorithm($this->settings['hash_algorithm']);
+        }
+        if (is_array($this->settings['hash_algorithm'])) {
+            if (count($this->settings['hash_algorithm']) == 1) {
+                $bag->setAlgorithm($this->settings['hash_algorithm'][0]);
+            } else {
+                $first_algo = array_shift($this->settings['hash_algorithm']);
+                $bag->setAlgorithm($first_algo);
+                foreach ($this->settings['hash_algorithm'] as $secondary_algo) {
+                    $bag->addAlgorithm($secondary_algo);
+                }
+            }
+        }
 
         // Add tags registered in the config file.
         foreach ($this->settings['bag-info'] as $key => $value) {
