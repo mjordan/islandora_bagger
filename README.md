@@ -52,7 +52,7 @@ bag_name: nid
 # Optional. Template for the Bag name. The % is replaced by the nid or uuid (depending on
 # the value of "bag_name") in the name of the Bag directory (or file if serialized). If absent,
 # the bare value of the nid or uuid is used.
-# my_repository_%
+# bag_name_template: sfu_aip_%
 
 # Both temp_dir and output_dir are required.
 temp_dir: /tmp/islandora_bagger_temp
