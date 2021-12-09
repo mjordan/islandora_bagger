@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<dublinCore
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+  <dc:title>{{ title[0]['value'] }}</dc:title>
+
+  {% if field_description[0]|length %}
+    <dc:description>{{ field_description[0]['value'] }}</dc:description>
+  {% endif %}
+
+  {% if field_rights[0]|length %}
+    <dc:rights>{{ field_rights[0]['value'] }}</dc:rights>
+  {% endif %}
+
+  {% if field_resource_type[0]|length %}
+    <dc:type>{{ field_resource_type[0]['url'] }}</dc:type>
+  {% endif %}
+
+  <dc:identifier>{{ uuid[0]['value'] }}</dc:identifier>
+  <dc:identifier>{{ node_url }}</dc:identifier>
+
+</dublinCore>
