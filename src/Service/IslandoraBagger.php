@@ -74,6 +74,10 @@ class IslandoraBagger
             $bag_name = $nid;
         }
 
+        if (array_key_exists('bag_name_template', $this->settings)) {
+            $bag_name = preg_replace('/%/', $bag_name, $this->settings['bag_name_template']);
+        }
+
         // Ensure bag directories don't exist. They are created by the Bag library.
         $bag_dir = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name;
         if (file_exists($bag_dir)) {
