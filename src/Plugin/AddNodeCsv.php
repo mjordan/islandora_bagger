@@ -34,7 +34,7 @@ class AddNodeCsv extends AbstractIbPlugin
      * Adds CSV file created from node field data. Multiple values are subdelimited
      * by a semicolon.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $metadata = json_decode($node_json, true);
 

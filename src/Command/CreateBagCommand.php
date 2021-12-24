@@ -35,7 +35,8 @@ class CreateBagCommand extends ContainerAwareCommand
             ->setDescription('Console tool for generating Bags from Islandora content.')
             ->addOption('node', null, InputOption::VALUE_REQUIRED, 'Drupal node ID to create Bag from.')
             ->addOption('settings', null, InputOption::VALUE_REQUIRED, 'Absolute path to YAML settings file.')
-            ->addOption('extra', null, InputOption::VALUE_OPTIONAL, 'Serialized JSON object containing key:value settings.');
+          ->addOption('extra', null, InputOption::VALUE_OPTIONAL, 'Serialized JSON object containing key:value settings.')
+          ->addOption('token', null, InputOption::VALUE_OPTIONAL, 'JWT token for authentication.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -45,6 +46,8 @@ class CreateBagCommand extends ContainerAwareCommand
         $nid = $input->getOption('node');
         $settings_path = $input->getOption('settings');
         $this->settings = Yaml::parseFile($settings_path);
+        $token = $input->getOption('token');
+
         // Loop through $this->params and add each param to $this->settings with a
         // key sans the 'app.' namespace.
         $params_keys = array_keys($this->params->all());
@@ -75,8 +78,8 @@ class CreateBagCommand extends ContainerAwareCommand
         $this->settings['post_bag_scripts'] = (!isset($this->settings['post_bag_scripts'])) ?
             array() : $this->settings['post_bag_scripts'];
 
-        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params);
-        $bag_dir = $islandora_bagger->createBag($nid, $settings_path);
+        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params, $token);
+        $bag_dir = $islandora_bagger->createBag($nid, $settings_path, $token);
 
         if ($bag_dir) {
             $io->success("Bag created for " . $this->settings['drupal_base_url'] . '/node/' . $nid

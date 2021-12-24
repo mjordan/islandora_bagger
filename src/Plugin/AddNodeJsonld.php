@@ -32,12 +32,13 @@ class AddNodeJsonld extends AbstractIbPlugin
      *
      * Adds Drupal's JSON-LD representation of the Islandora object to the Bag.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $client = new \GuzzleHttp\Client();
         $url = $this->settings['drupal_base_url'] . '/node/' . $nid;
         $response = $client->request('GET', $url, [
             'http_errors' => false,
+            'headers' => ['Authorization' => 'Bearer ' . $token],
             'query' => ['_format' => 'jsonld']
         ]);
         $node_jsonld = (string) $response->getBody();

@@ -32,7 +32,7 @@ class AddFile extends AbstractIbPlugin
      *
      * Adds file listed in the config setting 'files_to_add'.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         // @todo: Log if this setting doesn't exist.
         if (array_key_exists('files_to_add', $this->settings)) {

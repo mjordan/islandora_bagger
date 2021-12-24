@@ -33,7 +33,7 @@ class IslandoraBagger
      * @throws \whikloj\BagItTools\BagItException
      *   Problems creating the bag, adding files or writing to disk.
      */
-    public function createBag($nid, $settings_path)
+    public function createBag($nid, $settings_path, $token)
     {
         // Set some configuration defaults.
         $this->settings['http_timeout'] = (!isset($this->settings['http_timeout'])) ?
@@ -62,7 +62,7 @@ class IslandoraBagger
 
         // Get the node's UUID from Drupal.
         $drupal_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '?_format=json';
-        $response = $client->get($drupal_url);
+	      $response = $client->get($drupal_url, ['headers' => ['Authorization' => 'Bearer ' . $token]]);
         $response_body = (string) $response->getBody();
         $node_json = $response_body;
         $body_array = json_decode($response_body, true);
@@ -117,7 +117,7 @@ class IslandoraBagger
         foreach ($this->settings['plugins'] as $plugin) {
             $plugin_name = 'App\Plugin\\' . $plugin;
             $bag_plugin = new $plugin_name($this->settings, $this->logger);
-            $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json);
+            $bag = $bag_plugin->execute($bag, $bag_temp_dir, $nid, $node_json, $token);
         }
 
         $bag->update();
@@ -130,7 +130,7 @@ class IslandoraBagger
                 @unlink($bag_file_path);
             }
             $bag->finalize();
-            $this->registerBagWithIslandora($nid, $bag_name, $bag);
+            $this->registerBagWithIslandora($nid, $bag_name, $bag, $token);
             $bag->package($bag_file_path);
             $this->removeDir($bag_dir);
             if ($this->settings['log_bag_location']) {
@@ -138,7 +138,7 @@ class IslandoraBagger
             }
         } else {
           $bag->finalize();
-          $this->registerBagWithIslandora($nid, $bag_name, $bag);
+          $this->registerBagWithIslandora($nid, $bag_name, $bag, $token);
         }
 
         if ($this->settings['log_bag_creation']) {
@@ -239,8 +239,10 @@ class IslandoraBagger
      *   The Bag name.
      * @param object $bag
      *  The Bag object.
+     * @param string $token
+     *  JWT authorization token.
      */
-    protected function registerBagWithIslandora($nid, $bag_name, $bag)
+    protected function registerBagWithIslandora($nid, $bag_name, $bag, $token = NULL)
     {
         if (!$this->settings['register_bags_with_islandora']) {
           return;
@@ -271,7 +273,9 @@ class IslandoraBagger
 
         $client = new Client(['http_errors' => false]);
         $drupal_url = $this->settings['drupal_base_url'] . '/islandora_bagger_integration/bag_log';
-        $response = $client->post($drupal_url, ['auth' => [$username, $password], 'headers' => ['Content-Type' => 'application/json'], 'body' => $post_data]);
+        $response = $client->post($drupal_url,
+          ['headers' => ['Content-Type' => 'application/json',
+          'Authorization' => 'Bearer ' . $token], 'body' => $post_data]);
         $response_body = (string) $response->getBody();
         $response_body = json_decode($response_body, TRUE);
         $this->logger->info(

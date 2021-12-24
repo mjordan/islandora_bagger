@@ -28,14 +28,14 @@ class AddDataciteXML extends AbstractIbPlugin
   /**
    * Adds Datacite XML version of the Islandora object metadata to the Bag.
    */
-  public function execute($bag, $bag_temp_dir, $nid, $node_json)
+  public function execute($bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
   {
 
     // Assemble the Datacite XML URL and add it to the Bag.
     $drupal_url = $this->settings['drupal_base_url'] . '/islandora_rdm_datacite/get/' . $nid;
     // Get the xml from Drupal.
     $client = new \GuzzleHttp\Client();
-    $response = $client->get($drupal_url);
+    $response = $client->get($drupal_url, ['headers' => ['Authorization' => 'Bearer ' . $token]]);
     $response_body = (string) $response->getBody();
 
     $bag->createFile($response_body, $nid . '.datacite.xml');

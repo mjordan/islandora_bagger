@@ -41,8 +41,10 @@ abstract class AbstractIbPlugin
      *    The node ID.
      * @param string $node_json
      *    The node's JSON representation.
+     * @param string | null $token
+     *   The authorization token to add to HTTP requests to the Drupal site.
      *
      * @return Bag The modified Bag.
      */
-    abstract public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json);
+    abstract public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL);
 }

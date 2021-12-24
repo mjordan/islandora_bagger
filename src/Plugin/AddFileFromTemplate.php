@@ -34,7 +34,7 @@ class AddFileFromTemplate extends AbstractIbPlugin
      * Adds file created from a Twig template, with values from the node's JSON.
      * The node's canonical URL is added to the metadata array, in 'node_url'.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $metadata = json_decode($node_json, true);
         $metadata['node_url'] = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid;

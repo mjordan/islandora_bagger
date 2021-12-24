@@ -32,7 +32,7 @@ class AddMedia extends AbstractIbPlugin
      *
      * Adds a node's media to the Bag.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
             false: $this->settings['include_media_use_list'];
@@ -45,12 +45,12 @@ class AddMedia extends AbstractIbPlugin
         $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
         $media_response = $media_client->request('GET', $media_url, [
             'http_errors' => false,
-            'auth' => $this->settings['drupal_basic_auth'],
+            'headers' => ['Authorization' => 'Bearer ' . $token],
             'query' => ['_format' => 'json']
         ]);
         $media_status_code = $media_response->getStatusCode();
         $media_list = (string) $media_response->getBody();
-        $json_data = $media_list;
+
         $media_list = json_decode($media_list, true);
 
         // Loop through all the media and pick the ones that are tagged with terms in
@@ -58,6 +58,7 @@ class AddMedia extends AbstractIbPlugin
         if ($this->settings['include_media_use_list']) {
             $file_use_list = '';
         }
+
         foreach ($media_list as $media) {
             if (count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
@@ -71,7 +72,7 @@ class AddMedia extends AbstractIbPlugin
                         $filename = $this->getFilenameFromUrl($file_url);
 
                         if ($this->settings['include_media_use_list']) {
-                            $term_info = $this->fetchTermInfo($term['url']);
+                            $term_info = $this->fetchTermInfo($term['url'], $token);
                             $term_external_uri = $term_info['field_external_uri'][0]['uri'];
                             $file_use_list .= $filename . "\t" . $term_external_uri . PHP_EOL;
                         }
@@ -79,9 +80,12 @@ class AddMedia extends AbstractIbPlugin
                         $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
                         // Fetch file and save it to $bag_temp_dir with its original filename.
                         // @todo: Determine what to do if the file already exists.
+ 
+
                         $file_client = new \GuzzleHttp\Client();
                         $file_response = $file_client->get($file_url, ['stream' => true,
                             'timeout' => $this->settings['http_timeout'],
+                            'headers' => ['Authorization' => 'Bearer '  . $token],
                             'connect_timeout' => $this->settings['http_timeout'],
                             'verify' => $this->settings['verify_ca']
                         ]);
@@ -109,13 +113,13 @@ class AddMedia extends AbstractIbPlugin
         return $filename;
     }
 
-    protected function fetchTermInfo($term)
+    protected function fetchTermInfo($term, $token)
     {
         $client = new \GuzzleHttp\Client();
         $url = $this->settings['drupal_base_url'] . $term;
         $response = $client->request('GET', $url, [
             'http_errors' => false,
-            'auth' => $this->settings['drupal_basic_auth'],
+            'headers' => ['Authorization' => 'Bearer ' . $token],
             'query' => ['_format' => 'json']
         ]);
         $body = (string) $response->getBody();

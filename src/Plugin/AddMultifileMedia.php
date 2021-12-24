@@ -27,7 +27,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
   /**
    * Adds a node's media to the Bag.
    */
-  public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json) {
+  public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL) {
     $this->settings['include_media_use_list'] = (!isset($this->settings['include_media_use_list'])) ?
       FALSE : $this->settings['include_media_use_list'];
 
@@ -41,7 +41,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
     $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
     $media_response = $media_client->request('GET', $media_url, [
       'http_errors' => FALSE,
-      'headers' => ['Authorization' => $this->settings['auth']],
+      'headers' => ['Authorization' => 'Bearer ' . $token],
       'query' => ['_format' => 'json'],
     ]);
     $media_list = (string) $media_response->getBody();
@@ -73,7 +73,8 @@ class AddMultifileMedia extends AbstractIbPlugin {
           // @todo: Determine what to do if the file already exists.
           $file_client = new \GuzzleHttp\Client();
           $file_response = $file_client->get($file_url, ['stream' => TRUE,
-            'timeout' => $this->settings['http_timeout'],
+	          'timeout' => $this->settings['http_timeout'],
+            'headers' => ['Authorization' => 'Bearer ' . $token],
             'connect_timeout' => $this->settings['http_timeout'],
             'verify' => $this->settings['verify_ca'],
           ]);
@@ -104,7 +105,7 @@ class AddMultifileMedia extends AbstractIbPlugin {
     $url = $this->settings['drupal_base_url'] . $term;
     $response = $client->request('GET', $url, [
       'http_errors' => FALSE,
-      'auth' => $this->settings['drupal_basic_auth'],
+      'headers' =>  ['Authorization' => 'Bearer ' . $token],
       'query' => ['_format' => 'json'],
     ]);
     $body = (string) $response->getBody();

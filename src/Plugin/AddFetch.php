@@ -32,7 +32,7 @@ class AddFetch extends AbstractIbPlugin
      *
      * Adds URLs listed in the config setting 'fetch_urls'.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         if (array_key_exists('fetch_urls', $this->settings)) {
           foreach ($this->settings['fetch_urls'] as $url_to_add) {

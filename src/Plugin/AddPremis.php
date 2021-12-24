@@ -28,14 +28,14 @@ class AddPremis extends AbstractIbPlugin
   /**
    * Adds serialized PREMIS Turtle RDF produced by the Islandora PREMIS module.
    */
-  public function execute($bag, $bag_temp_dir, $nid, $node_json)
+  public function execute($bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
   {
 
     // Assemble the Datacite XML URL and add it to the Bag.
     $drupal_url = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid . '/premis';
     // Get the xml from Drupal.
     $client = new \GuzzleHttp\Client();
-    $response = $client->get($drupal_url);
+    $response = $client->get($drupal_url, ['headers' => ['Authorization' => 'Bearer ' . $token]]);
     $response_body = (string) $response->getBody();
 
     $bag->createFile($response_body, 'PREMIS.turtle');

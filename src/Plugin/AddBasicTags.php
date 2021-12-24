@@ -32,7 +32,7 @@ class AddBasicTags extends AbstractIbPlugin
      *
      * Adds basic bag-info.txt tags from dynamically generated data.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $node_id = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid;
         $bag->addBagInfoTag('Internal-Sender-Identifier', $node_id);

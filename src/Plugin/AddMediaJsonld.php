@@ -32,13 +32,13 @@ class AddMediaJsonld extends AbstractIbPlugin
      *
      * Adds the JSON-LD representation of the Islandora object's media to the Bag.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         $client = new \GuzzleHttp\Client();
         $media_url = $this->settings['drupal_base_url'] . '/node/' . $nid . '/media';
         $response = $client->request('GET', $media_url, [
             'http_errors' => false,
-            'auth' => $this->settings['drupal_basic_auth'],
+            'headers' => ['Authorization' => 'Bearer ' . $token],
             'query' => ['_format' => 'jsonld']
         ]);
         $media_jsonld = (string) $response->getBody();

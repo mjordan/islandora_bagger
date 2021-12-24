@@ -47,7 +47,7 @@ class Sample extends AbstractIbPlugin
      * @throws \whikloj\BagItTools\BagItException
      *    Problems creating or modifying the bag.
      */
-    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json)
+    public function execute(Bag $bag, $bag_temp_dir, $nid, $node_json, $token = NULL)
     {
         // Assemble, fetch, or copy data from somewhere to add
         // to the Bag.
