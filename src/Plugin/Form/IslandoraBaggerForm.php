@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Drupal\jwt\Authentication\Provider\JwtAuth;
 
 /**
  * Implements a form.
@@ -99,7 +100,14 @@ class IslandoraBaggerForm extends FormBase {
       $islandora_bagger_config_file_path = $tmp_islandora_bagger_config_file_path;
 
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
-      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid];
+
+      /**
+       * @var JwtAuth $jwt
+       */
+      $jwt = \Drupal::service('jwt.authentication.jwt');
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid,
+       '--token=' . $jwt->generateToken()];
+
 
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
