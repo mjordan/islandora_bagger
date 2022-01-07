@@ -60,7 +60,7 @@ class AddMedia extends AbstractIbPlugin
         }
 
         foreach ($media_list as $media) {
-            if (count($media['field_media_use'])) {
+            if (!empty($media['field_media_use']) && count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
                     if (count($this->settings['drupal_media_tags']) == 0 ||
                             in_array($term['url'], $this->settings['drupal_media_tags'])) {
