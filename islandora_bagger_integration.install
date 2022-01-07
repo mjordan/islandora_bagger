@@ -60,6 +60,15 @@ function islandora_bagger_integration_requirements($phase) {
       }
     }
   }
+  elseif ($phase == 'update') {
+    if (!\Drupal::moduleHandler()->moduleExists('getjwtonlogin')) {
+      $requirements['islandora_bagger_integration_getjwtonlogin_enabled'] = [
+        'title' => t("Islandora Bagger Integration"),
+        'description' => t("Islandora Bagger now requires the <a href=\"https://drupal.org/project/getjwtonlogin\">Get JWT on Login</a> module."),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
   return $requirements;
 }
 
