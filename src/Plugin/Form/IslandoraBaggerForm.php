@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Drupal\jwt\Authentication\Provider\JwtAuth;
 
 /**
  * Implements a form.
@@ -93,17 +94,18 @@ class IslandoraBaggerForm extends FormBase {
       // file contents and modify $islandora_bagger_config_file_path to point to the modified file.
       $config_file_contents = file_get_contents($islandora_bagger_config_file_path);
       \Drupal::moduleHandler()->invokeAll('islandora_bagger_config_file_contents_alter', [$nid, &$config_file_contents]);
-      $tmp_dir = file_directory_temp();
+      $tmp_dir = \Drupal::service('file_system')->getTempDirectory();
       $tmp_islandora_bagger_config_file_path = $tmp_dir . DIRECTORY_SEPARATOR .
 	      pathinfo($islandora_bagger_config_file_path, PATHINFO_BASENAME) . '.islandora_bagger.' . $nid . '.tmp.yml';
       file_put_contents($tmp_islandora_bagger_config_file_path, $config_file_contents);
       $islandora_bagger_config_file_path = $tmp_islandora_bagger_config_file_path;
       $bagger_directory = $config->get('islandora_bagger_local_bagger_directory');
-      $container = \Drupal::getContainer();
-      $jwt = $container->get('jwt.authentication.jwt');
-      $auth = 'Bearer ' . $jwt->generateToken();
-      $extras = Json::encode(["auth" => $auth]);
-      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid, "--extra={$extras}"];
+      /**
+       * @var JwtAuth $jwt
+       */
+      $jwt = \Drupal::service('jwt.authentication.jwt');
+      $bagger_cmd = ['./bin/console', 'app:islandora_bagger:create_bag', '--settings=' . $islandora_bagger_config_file_path, '--node=' . $nid,
+       '--token=' . $jwt->generateToken()];
       $process = new Process($bagger_cmd);
       $process->setWorkingDirectory($bagger_directory);
       $process->run();
@@ -123,11 +125,11 @@ class IslandoraBaggerForm extends FormBase {
 	@unlink($tmp_islandora_bagger_config_file_path);
       }
       else {
-	throw new ProcessFailedException($process);
+
         $messenger_level = 'addWarning';
         $logger_level = 'warning';
-        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code.',
-          ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code]
+        $message = $this->t('Request to create Bag for "@title" (node @nid) failed with return code @return_code and error text @error_text.',
+          ['@title' => $title, '@nid' => $nid, '@return_code' => $return_code, '@error_text' => $process->getErrorOutput()]
         );
       }
 
