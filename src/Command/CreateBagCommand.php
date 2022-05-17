@@ -2,10 +2,11 @@
 // src/Command/CreateBagCommand.php
 namespace App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -13,9 +14,13 @@ use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
 
-class CreateBagCommand extends ContainerAwareCommand
+class CreateBagCommand extends Command
 {
+    use ContainerAwareTrait;
+
     private $params;
+
+    private $logger;
 
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
@@ -78,7 +83,7 @@ class CreateBagCommand extends ContainerAwareCommand
         $this->settings['post_bag_scripts'] = (!isset($this->settings['post_bag_scripts'])) ?
             array() : $this->settings['post_bag_scripts'];
 
-        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params, $token);
+        $islandora_bagger = new IslandoraBagger($this->settings, $this->logger, $this->params);
         $bag_dir = $islandora_bagger->createBag($nid, $settings_path, $token);
 
         if ($bag_dir) {
