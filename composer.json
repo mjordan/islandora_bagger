@@ -15,22 +15,25 @@
         "ext-iconv": "*",
         "guzzlehttp/guzzle": "~6.0",
         "league/csv": "^9.3",
-        "symfony/console": "*",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "*",
-        "symfony/maker-bundle": "*",
+        "symfony/framework-bundle": "4.4.*",
         "symfony/monolog-bundle": "*",
-        "symfony/security-bundle": "*",
-        "symfony/stopwatch": "*",
-        "symfony/yaml": "*",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/yaml": "4.4.*",
         "twig/twig": "^2.0",
-        "whikloj/bagittools": "^1.2"
+        "whikloj/bagittools": "^2.1"
     },
     "require-dev": {
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpunit/phpunit": "^9.5",
         "squizlabs/php_codesniffer": "*",
+        "symfony/browser-kit": "4.4.*",
+        "symfony/css-selector": "4.4.*",
         "symfony/debug-bundle": "4.4.*",
-        "symfony/dotenv": "*",
-        "symfony/phpunit-bridge": "*",
+        "symfony/phpunit-bridge": "4.4.*",
+        "symfony/stopwatch": "4.4.*",
         "symfony/web-profiler-bundle": "4.4.*"
     },
     "config": {
@@ -70,6 +73,15 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "phpunit": [
+            "./vendor/bin/phpunit"
+        ],
+        "sniff": [
+            "./vendor/bin/phpcs --standard=PSR2 src tests"
+        ],
+        "test": [
+            "@phpunit"
         ]
     },
     "conflict": {
