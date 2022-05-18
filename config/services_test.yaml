@@ -1,0 +1,32 @@
+# You may need to set the first two application parameters, but you will want to change
+# app.bag.download.prefix.
+
+parameters:
+    test_location_log_path: '%kernel.project_dir%/tests/fixtures/islandora_bagger.locations'
+    test_queue_path: '%kernel.project_dir%/tests/fixtures/islandora_bagger.queue'
+    # The below means use the environment variable "ISLANDORA_BAGGER_LOCATION_LOG_PATH", and if it is not set
+    # use the parameter "test_location_log_path" defined above.
+    app.location.log.path: '%env(default:test_location_log_path:ISLANDORA_BAGGER_LOCATION_LOG_PATH)%'
+    # Same for the queue.
+    app.queue.path: '%env(default:test_queue_path:ISLANDORA_BAGGER_QUEUE_PATH)%'
+    # The hostname/path to where users can download serialized bags. This string
+    # will be appended to the Bag's filename.
+    app.bag.download.prefix: 'http://example.com/bags/'
+
+
+# You should not modify anything below this line.
+
+services:
+    # Default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # Makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
