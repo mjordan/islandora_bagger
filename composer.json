@@ -10,10 +10,10 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "~7.0",
         "league/csv": "^9.3",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
@@ -24,14 +24,14 @@
         "symfony/stopwatch": "*",
         "symfony/yaml": "*",
         "twig/twig": "^2.0",
-        "whikloj/bagittools": "^1.2"
+        "whikloj/bagittools": "^4.2.2"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "*",
-        "symfony/debug-bundle": "4.4.*",
+        "symfony/debug-bundle": "5.4.*",
         "symfony/dotenv": "*",
         "symfony/phpunit-bridge": "*",
-        "symfony/web-profiler-bundle": "4.4.*"
+        "symfony/web-profiler-bundle": "5.4.*"
     },
     "config": {
         "preferred-install": {
@@ -78,7 +78,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.4.*"
+            "require": "5.4.*"
         }
     }
 }

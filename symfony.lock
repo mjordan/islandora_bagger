@@ -182,9 +182,6 @@
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
-    "symfony/polyfill-intl-idn": {
-        "version": "v1.14.0"
-    },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.23.0"
     },
