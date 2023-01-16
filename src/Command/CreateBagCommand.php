@@ -41,6 +41,8 @@ class CreateBagCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $ret;
+
         $io = new SymfonyStyle($input, $output);
 
         $nid = $input->getOption('node');
@@ -103,9 +105,12 @@ class CreateBagCommand extends Command
                     }
                 }
             }
+            $ret = Command::SUCCESS;
         } else {
             $io->error("Bag not created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
                 . " at " . $bag_dir);
+            $ret = Command::FAILURE;
         }
+        return $ret;
     }
 }

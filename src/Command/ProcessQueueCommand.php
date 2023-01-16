@@ -65,6 +65,8 @@ class ProcessQueueCommand extends Command
             // Update the queue file after each entry is processed.
             $this->updateQueue($entries);
         }
+
+        return Command::SUCCESS;
     }
 
     /**

@@ -54,5 +54,7 @@ class GetQueueCommand extends Command
         if ($input->getOption('output_format') == 'csv') {
             print file_get_contents($this->queue_path);
         }
+
+        return Command::SUCCESS;
     }
 }
