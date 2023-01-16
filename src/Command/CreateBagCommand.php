@@ -2,18 +2,18 @@
 // src/Command/CreateBagCommand.php
 namespace App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Yaml\Yaml;
 use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
 
-class CreateBagCommand extends ContainerAwareCommand
+class CreateBagCommand extends Command
 {
     private $params;
 
