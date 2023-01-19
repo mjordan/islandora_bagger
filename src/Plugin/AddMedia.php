@@ -66,7 +66,7 @@ class AddMedia extends AbstractIbPlugin
                             in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
                             $file_url = $media['field_media_image'][0]['url'];
-                        } elseif(isset($media['field_media_file'])) {
+                        } elseif (isset($media['field_media_file'][0]['url'])) {
                             $file_url = $media['field_media_file'][0]['url'];
                         } else {
                             // Get the file's URL from the file entity using the file ID provided by the media entity.
@@ -80,7 +80,7 @@ class AddMedia extends AbstractIbPlugin
                             $file_status_code = $file_response->getStatusCode();
                             $file_json = (string) $file_response->getBody();
                             $file_json = json_decode($file_json, true);
-                            $file_url = $this->settings['drupal_base_url'] . $file_json['uri']['url'];
+                            $file_url = $this->settings['drupal_base_url'] . $file_json['uri'][0]['url'];
                         }
                         $filename = $this->getFilenameFromUrl($file_url);
 
