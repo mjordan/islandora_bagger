@@ -66,7 +66,7 @@ class AddMedia extends AbstractIbPlugin
                             in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
                             $file_url = $media['field_media_image'][0]['url'];
-                        if (isset($media['field_media_file'])) {
+                        } elseif(isset($media['field_media_file'])) {
                             $file_url = $media['field_media_file'][0]['url'];
                         } else {
                             // Get the file's URL from the file entity using the file ID provided by the media entity.
