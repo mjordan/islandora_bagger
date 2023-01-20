@@ -20,10 +20,10 @@
         "symfony/framework-bundle": "*",
         "symfony/maker-bundle": "*",
         "symfony/monolog-bundle": "*",
-        "symfony/security-bundle": "*",
+        "symfony/security-bundle": "5.4.*",
         "symfony/stopwatch": "*",
         "symfony/yaml": "*",
-        "twig/twig": "^2.0",
+        "twig/twig": "^3.5",
         "whikloj/bagittools": "^4.2.2"
     },
     "require-dev": {
