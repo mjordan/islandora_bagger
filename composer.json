@@ -16,7 +16,7 @@
         "guzzlehttp/guzzle": "~7.0",
         "league/csv": "^9.3",
         "symfony/console": "*",
-        "symfony/flex": "^1.1",
+        "symfony/flex": "^2.0",
         "symfony/framework-bundle": "*",
         "symfony/maker-bundle": "*",
         "symfony/monolog-bundle": "*",
