@@ -6,8 +6,9 @@ This utility is for Islandora 8.x-1.x. For creating Bags for Islandora 7.x, use 
 
 ## Requirements
 
-* PHP 7.2 or higher
+* PHP 8.1 nor higher
 * [composer](https://getcomposer.org/)
+* [getjwtonlogin module installed on the Islandora/Drupal target server](https://www.drupal.org/project/getjwtonlogin)
 
 ## Installation
 
