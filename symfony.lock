@@ -179,9 +179,6 @@
             "ref": "b14c7f62fabeedf256d3211b0f704402b5530ba1"
         }
     },
-    "symfony/polyfill-intl-grapheme": {
-        "version": "v1.24.0"
-    },
     "symfony/polyfill-intl-idn": {
         "version": "v1.14.0"
     },
@@ -205,9 +202,6 @@
     },
     "symfony/property-access": {
         "version": "v4.1.7"
-    },
-    "symfony/property-info": {
-        "version": "v5.4.3"
     },
     "symfony/routing": {
         "version": "4.0",
@@ -244,9 +238,6 @@
     },
     "symfony/stopwatch": {
         "version": "v4.1.7"
-    },
-    "symfony/string": {
-        "version": "v5.4.3"
     },
     "symfony/translation-contracts": {
         "version": "v2.0.1"

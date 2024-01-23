@@ -60,15 +60,26 @@ class AddMedia extends AbstractIbPlugin
         }
 
         foreach ($media_list as $media) {
+            // @todo: Get the media source in a more robust way.
+            $media_source_field = $this->getMediaSourceFieldName($media);
             if (!empty($media['field_media_use']) && count($media['field_media_use'])) {
                 foreach ($media['field_media_use'] as $term) {
                     if (count($this->settings['drupal_media_tags']) == 0 ||
                             in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
                             $file_url = $media['field_media_image'][0]['url'];
-                        } elseif (isset($media['field_media_file'][0]['url'])) {
-                            $file_url = $media['field_media_file'][0]['url'];
+                        } elseif (isset($media[$media_source_field][0]['url'])) {
+                            $file_url = $media[$media_source_field][0]['url'];
                         } else {
+                            if (!($media_source_field && !empty($media[$media_source_field][0]['target_id']))) {
+                                $this->logger->info(
+                                    "Skipping field with no known media source field.",
+                                    array(
+                                        'drupal_url' => $this->settings['drupal_base_url'],
+                                    )
+                                );
+                                continue;
+                            }
                             // Get the file's URL from the file entity using the file ID provided by the media entity.
                             $file_client = new \GuzzleHttp\Client();
                             $file_uri = $this->settings['drupal_base_url'] . '/entity/file/' . $media['field_media_file'][0]['target_id'];
@@ -93,7 +104,7 @@ class AddMedia extends AbstractIbPlugin
                         $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
                         // Fetch file and save it to $bag_temp_dir with its original filename.
                         // @todo: Determine what to do if the file already exists.
- 
+
 
                         $file_client = new \GuzzleHttp\Client();
                         $file_response = $file_client->get($file_url, ['stream' => true,
@@ -138,5 +149,21 @@ class AddMedia extends AbstractIbPlugin
         $body = (string) $response->getBody();
         $tag_info = json_decode($body, true);
         return $tag_info;
+    }
+
+    protected function getMediaSourceFieldName(array $media) {
+        $media_source_field_name = FALSE;
+
+        if (!empty($media['field_media_image'])) {
+            $media_source_field_name = 'field_media_image';
+        }
+        elseif (!empty($media['field_media_document'])) {
+            $media_source_field_name = 'field_media_document';
+        }
+        elseif (!empty($media['field_media_file'])) {
+            $media_source_field_name = 'field_media_file';
+        }
+
+        return $media_source_field_name;
     }
 }
