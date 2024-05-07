@@ -200,9 +200,6 @@
     "symfony/property-access": {
         "version": "v4.1.7"
     },
-    "symfony/property-info": {
-        "version": "v5.4.3"
-    },
     "symfony/routing": {
         "version": "4.0",
         "recipe": {
@@ -238,9 +235,6 @@
     },
     "symfony/stopwatch": {
         "version": "v4.1.7"
-    },
-    "symfony/string": {
-        "version": "v5.4.3"
     },
     "symfony/translation-contracts": {
         "version": "v2.0.1"

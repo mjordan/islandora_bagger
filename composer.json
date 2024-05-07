@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^7.2 || ^8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "guzzlehttp/guzzle": "~7.0",
-        "league/csv": "^9.3",
+        "league/csv": "^9.6.2",
         "symfony/console": "*",
         "symfony/flex": "^2.0",
         "symfony/framework-bundle": "*",
