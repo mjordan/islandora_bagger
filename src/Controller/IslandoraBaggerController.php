@@ -15,6 +15,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class IslandoraBaggerController extends AbstractController
 {
+    private $application_directory;
+
     public function create(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
         $this->application_directory = dirname(__DIR__, 2);

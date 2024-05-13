@@ -13,6 +13,10 @@ use Psr\Log\LoggerInterface;
 
 class GetQueueCommand extends Command
 {
+    private $application_directory;
+    private $logger;
+    private $params;
+
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
         // Set in the parameters section of config/services.yaml.
@@ -43,7 +47,7 @@ class GetQueueCommand extends Command
         if (!file_exists($this->queue_path)) {
             $this->logger->info("Queue file not found", $details);
             return;
-        } 
+        }
 
         $entries = file($this->queue_path, FILE_IGNORE_NEW_LINES);
         $num_entries_in_queue = count($entries);

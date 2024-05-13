@@ -15,7 +15,9 @@ use Psr\Log\LoggerInterface;
 
 class CreateBagCommand extends Command
 {
+    private $logger;
     private $params;
+    private $settings;
 
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {

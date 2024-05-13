@@ -13,6 +13,11 @@ use Psr\Log\LoggerInterface;
 
 class ProcessQueueCommand extends Command
 {
+    private $application_directory;
+    private $logger;
+    private $params;
+    private $queue_path;
+
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
         // Set in the parameters section of config/services.yaml.
