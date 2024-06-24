@@ -14,6 +14,9 @@ use whikloj\BagItTools\Bag;
  */
 abstract class AbstractIbPlugin
 {
+    protected $logger;
+    protected $settings;
+
     /**
      * Constructor.
      *
