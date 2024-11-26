@@ -26,15 +26,17 @@ class IslandoraBagger
      *   The node ID.
      * @param string $settings_path
      *   The path to the settings YAML file passed in from the Create Bag command.
+     * @param string $token
+     *   A JWT token
      *
      * @return string|bool
      *   The path to the Bag if successful, false if unsuccessful.
      *   If Bag is serialized, path includes path and Bag filename.
      *
-     * @throws \whikloj\BagItTools\BagItException
+     * @throws \whikloj\BagItTools\Exceptions\BagItException
      *   Problems creating the bag, adding files or writing to disk.
      */
-    public function createBag($nid, $settings_path, $token)
+    public function createBag(string $nid, string $settings_path, string $token='')
     {
       $this->setDefaults();
 
@@ -112,7 +114,7 @@ class IslandoraBagger
         $bag->update();
         $this->removeDir($bag_temp_dir);
 
-        $package = isset($this->settings['serialize']) ? $this->settings['serialize'] : false;
+        $package = $this->settings['serialize'] ?? false;
         if ($package) {
             $bag_file_path = $this->settings['output_dir'] . DIRECTORY_SEPARATOR . $bag_name  . '.' . $package;
             if (file_exists($bag_file_path)) {
@@ -226,12 +228,12 @@ class IslandoraBagger
      *   The node ID.
      * @param string $bag_name
      *   The Bag name.
-     * @param object $bag
+     * @param \whikloj\BagItTools\Bag $bag
      *  The Bag object.
-     * @param string $token
+     * @param ?string $token
      *  JWT authorization token.
      */
-    protected function registerBagWithIslandora($nid, $bag_name, $bag, $token = NULL)
+    protected function registerBagWithIslandora(string $nid, string $bag_name, Bag $bag, ?string $token = NULL)
     {
         if (!$this->settings['register_bags_with_islandora']) {
           return;
@@ -245,7 +247,7 @@ class IslandoraBagger
         } else {
           $fetch_contents = '';
         }
-   
+
         $post_data = [
             'nid' => $nid,
             'bag_name' => $bag_name,

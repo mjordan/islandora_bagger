@@ -15,15 +15,16 @@ use Symfony\Component\Yaml\Yaml;
 
 class IslandoraBaggerController extends AbstractController
 {
+
     public function create(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
-        $this->application_directory = dirname(__DIR__, 2);
+        $application_directory = dirname(__DIR__, 2);
 
         $nid = $request->headers->get('Islandora-Node-ID');
 
         // Get POSTed YAML from request body.
         $body = $request->getContent();
-        $yaml_path = $this->application_directory . '/var/islandora_bagger.' . $nid . '.yml';
+        $yaml_path = $application_directory . '/var/islandora_bagger.' . $nid . '.yml';
         file_put_contents($yaml_path, $body);
 
         // @todo: If this method fails (returned false), log that.
@@ -42,9 +43,7 @@ class IslandoraBaggerController extends AbstractController
     public function getLocation(Request $request, ParameterBagInterface $params, LoggerInterface $logger)
     {
         // Set in the parameters section of config/services.yaml.
-        $this->params = $params;
-
-        $location_log_path = $this->params->get('app.location.log.path');
+        $location_log_path = $params->get('app.location.log.path');
 
         // If the log file doesn't exist, return an empty array.
         if (!file_exists($location_log_path)) {
@@ -58,7 +57,7 @@ class IslandoraBaggerController extends AbstractController
         $locations = file($location_log_path, FILE_IGNORE_NEW_LINES);
         foreach ($locations as $location) {
             if (preg_match('/^' . $nid . '\t/', $location)) {
-                list($throwaway_nid, $bag_path, $timestamp) = explode('	', $location);
+                list(, $bag_path, $timestamp) = explode('	', $location);
                 break;
             }
         }
@@ -85,21 +84,20 @@ class IslandoraBaggerController extends AbstractController
      * @return bool
      *   Whether or not the queue file was written.
      */
-    private function writeToQueue($params, $nid, $yaml_path)
+    private function writeToQueue(ParameterBagInterface $params, string $nid, string $yaml_path)
     {
         // Write the request to the queue.
         $queue_path = $params->get('app.queue.path');
+        $update = false;
         $fp = fopen($queue_path, "a+");
         if (flock($fp, LOCK_EX)) {
             fwrite($fp, "$nid\t$yaml_path\t" . date(\DateTime::ISO8601) . "\n");
             fflush($fp);
             flock($fp, LOCK_UN);
-            fclose($fp);
-            return true;
+            $update = true;
         }
-        else {
-            return false;
-        }
+        fclose($fp);
+        return $update;
     }
 
     /**
