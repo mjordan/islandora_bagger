@@ -82,7 +82,7 @@ class AddMedia extends AbstractIbPlugin
                             }
                             // Get the file's URL from the file entity using the file ID provided by the media entity.
                             $file_client = new \GuzzleHttp\Client();
-                            $file_uri = $this->settings['drupal_base_url'] . '/entity/file/' . $media['field_media_file'][0]['target_id'];
+                            $file_uri = $this->settings['drupal_base_url'] . '/entity/file/' . $media[$media_source_field][0]['target_id'];
                             $file_response = $file_client->request('GET', $file_uri, [
                                 'http_errors' => false,
                                 'headers' => ['Authorization' => 'Bearer ' . $token],

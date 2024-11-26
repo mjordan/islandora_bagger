@@ -9,6 +9,11 @@ use whikloj\BagItTools\Bag;
 
 class IslandoraBagger
 {
+    private $application_directory;
+    private $logger;
+    private $params;
+    private $settings;
+
     public function __construct($settings, $logger, $params)
     {
         $this->params = $params;
@@ -245,7 +250,7 @@ class IslandoraBagger
         } else {
           $fetch_contents = '';
         }
-   
+
         $post_data = [
             'nid' => $nid,
             'bag_name' => $bag_name,
@@ -297,8 +302,9 @@ class IslandoraBagger
 
         $body_array = json_decode($response_body, true);
       } catch (RequestException $e) {
+        # response may be undefined if certificate problem
         $this->logger->error("Request for login token returned error.", [
-          'Code' => $response->getStatusCode(),
+          'Code' => (isset($response)) ? $response->getStatusCode() : "",
           'Message' => $e->getMessage()
         ]);
         return NULL;
@@ -306,7 +312,7 @@ class IslandoraBagger
 
       // Validate the response contains a JWT
       if (!empty($body_array['csrf_token']) && empty($body_array['access_token'])) {
-        $this->logger->error("Logged in successfully but no JWT token was received. ' 
+        $this->logger->error("Logged in successfully but no JWT token was received. '
         . 'Ensure that the Drupal site has the Get JWT on Login module installed and enabled.", [
           'name' => $name
         ]);

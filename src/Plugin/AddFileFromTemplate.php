@@ -39,8 +39,8 @@ class AddFileFromTemplate extends AbstractIbPlugin
         $metadata = json_decode($node_json, true);
         $metadata['node_url'] = rtrim($this->settings['drupal_base_url'], '/') . '/node/' . $nid;
 
-        $loader = new \Twig_Loader_Filesystem(dirname($this->settings['template_path']));
-        $twig = new \Twig_Environment($loader);
+        $loader = new \Twig\Loader\FilesystemLoader(dirname($this->settings['template_path']));
+        $twig = new \Twig\Environment($loader);
         $output_from_template = $twig->render(basename($this->settings['template_path']), (array) $metadata);
 
         $template_output_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $this->settings['templated_output_filename'];

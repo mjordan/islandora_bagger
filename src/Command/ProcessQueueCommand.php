@@ -2,17 +2,22 @@
 // src/Command/ProcessQueueCommand.php
 namespace App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 use Psr\Log\LoggerInterface;
 
-class ProcessQueueCommand extends ContainerAwareCommand
+class ProcessQueueCommand extends Command
 {
+    private $application_directory;
+    private $logger;
+    private $params;
+    private $queue_path;
+
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
         // Set in the parameters section of config/services.yaml.
@@ -65,6 +70,8 @@ class ProcessQueueCommand extends ContainerAwareCommand
             // Update the queue file after each entry is processed.
             $this->updateQueue($entries);
         }
+
+        return Command::SUCCESS;
     }
 
     /**

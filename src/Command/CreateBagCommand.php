@@ -2,20 +2,22 @@
 // src/Command/CreateBagCommand.php
 namespace App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Yaml\Yaml;
 use App\Service\IslandoraBagger;
 
 use Psr\Log\LoggerInterface;
 
-class CreateBagCommand extends ContainerAwareCommand
+class CreateBagCommand extends Command
 {
+    private $logger;
     private $params;
+    private $settings;
 
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
@@ -41,6 +43,8 @@ class CreateBagCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $ret;
+
         $io = new SymfonyStyle($input, $output);
 
         $nid = $input->getOption('node');
@@ -103,9 +107,12 @@ class CreateBagCommand extends ContainerAwareCommand
                     }
                 }
             }
+            $ret = Command::SUCCESS;
         } else {
             $io->error("Bag not created for " . $this->settings['drupal_base_url'] . '/node/' . $nid
                 . " at " . $bag_dir);
+            $ret = Command::FAILURE;
         }
+        return $ret;
     }
 }
